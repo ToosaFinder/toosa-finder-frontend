@@ -1,2 +1,2 @@
-#Build application and start in dev mode
+# Build application and start in dev mode
 ``next dev``
