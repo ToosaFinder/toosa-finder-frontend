@@ -1,0 +1,14 @@
+.container {
+    height: 100vh;
+}
+
+.fullname {
+    height: 50vh;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.group {
+    height: 50vh;
+    justify-content: center;
+}
