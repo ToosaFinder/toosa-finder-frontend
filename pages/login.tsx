@@ -78,7 +78,7 @@ export default function SignIn() {
                         </Form.Group>
                         <Form.Group>
                             <Button size='sm' variant="light">
-                                <Link href='/sign-up'>
+                                    <Link href='/sign-up'>
                                     Don't have an account yet?
                                 </Link>
                             </Button>
