@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from "react";
-import {Container, Form, Row} from "react-bootstrap";
+import {Button, Container, Form, Row} from "react-bootstrap";
 import styles from "../../shared/css/registration.module.css"
 import Link from "next/link";
 
 export default function Registration() {
     const [email, setEmail] = useState<string>('');
     const [login, setLogin] = useState<string>('');
-    const [emailError, setEmailError] = useState<string>('');
-    const [loginError, setLoginError] = useState<string>('');
+    const [checked, setChecked] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
     const regExpEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const regExpLogin = /^[a-zA-Z](.[a-zA-Z0-9_-]*)$/;
@@ -20,37 +19,23 @@ export default function Registration() {
         return regExpLogin.test(String(login));
     };
 
-    const handleChange = (event) => {
-        event.preventDefault();
-        const {name, value} = event.target;
-
-        switch (name) {
-            case 'email':
-                setEmail(value);
-                setEmailError(
-                    validateEmail(value) || value === ''
-                        ? ''
-                        : 'Email is not valid'
-                );
-                break;
-            case 'login':
-                setLogin(value);
-                setLoginError(
-                    validateLogin(value) || value === ''
-                        ? ''
-                        : 'Login is not valid'
-                );
-                break;
-            default:
-                break;
-        }
-    };
-
     useEffect(() => {
         setCanSubmit(
-            validateEmail(email) && validateLogin(login)
+            validateEmail(email) && validateLogin(login) && checked
         );
     });
+
+    const getLoginClassName = () => {
+        if (validateLogin(login) || login === '') {
+           return '';
+        } else return 'is-invalid'
+    };
+
+    const getEmailClassName = () => {
+        if (validateEmail(email) || email === '') {
+            return '';
+        } else return 'is-invalid'
+    };
 
     return (
         <Container className={styles.container}>
@@ -60,47 +45,57 @@ export default function Registration() {
                         <Form.Label>Sign up</Form.Label>
                     </h3>
 
-                    <Form.Group controlId='formEmail' className={styles.input}>
+                    <Form.Group className={styles.input}>
                         <Form.Label className={styles.label}>Email</Form.Label>
                         <Form.Control
                             type='email'
                             name='email'
                             placeholder='Your email address'
                             value={email}
-                            onChange={handleChange}
+                            className={getEmailClassName()}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
-                        {emailError.length > 0 ?
-                        <span className={styles.error}>{emailError}</span> : null}
+                        <Form.Label className='invalid-feedback'>Invalid Email</Form.Label>
                     </Form.Group>
 
-                    <Form.Group controlId='formLogin' className={styles.input}>
+                    <Form.Group className={styles.input}>
                         <Form.Label className={styles.label}>Login</Form.Label>
                         <Form.Control
                             type='text'
                             name='login'
                             value={login}
-                            onChange={handleChange}
+                            className={getLoginClassName()}
+                            onChange={(e) => setLogin(e.target.value)}
                         />
-                        {loginError.length > 0 ?
-                            <span className={styles.error}>{loginError}</span> : null}
+                        <Form.Label className='invalid-feedback'>Invalid Login</Form.Label>
                     </Form.Group>
 
-                    <Form.Group controlId='formCheckbox'>
-                        <Form.Check type='checkbox' label='Not finished'/>
+                    <Form.Group className='custom-control custom-checkbox'>
+                        <Form.Control
+                            type='checkbox'
+                            className='custom-control-input'
+                            id='customCheck1'
+                            checked={checked}
+                            onChange={() => setChecked((prev) => !prev)}
+                        />
+                        <Form.Label className='custom-control-label' htmlFor='customCheck1'>
+                            I agree to the <Link href='/terms-of-services'> Terms of Services </Link>
+                            and <Link href='/privacy-policy'> Privacy Policy</Link>.
+                        </Form.Label>
                     </Form.Group>
 
-                    <button
-                        type='submit'
-                        className={styles.submitButton}
-                        disabled={!canSubmit}>
-                        Continue
-                    </button>
-
-                    <div className={styles.rowContainer}>
-                        <h6>Have an account?</h6>
-                        <h6 className={styles.link}><Link href='/sign-in'>Sign in</Link></h6>
-                    </div>
-
+                    <Form.Group>
+                        <Button
+                            type='submit'
+                            className={styles.submitButton}
+                            disabled={!canSubmit}>
+                            Continue
+                        </Button>
+                        <Row className={styles.signIn}>
+                            <h6 className={styles.secondaryText}>Have an account?</h6>
+                            <h6 className={styles.link}><Link href='/sign-in'>Sign in</Link></h6>
+                        </Row>
+                    </Form.Group>
                 </Form>
             </Row>
         </Container>
