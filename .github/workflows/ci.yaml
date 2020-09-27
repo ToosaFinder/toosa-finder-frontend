@@ -48,3 +48,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
           eslint: true
           prettier: true
+          eslint_args: "--no-error-on-unmatched-pattern"
