@@ -7,7 +7,7 @@ on:
   pull_request:
 jobs:
   build:
-    name: build
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,24 +25,8 @@ jobs:
         run: |
           npm ci
           npm run build --if-present
-  eslint:
-    name: Setup eslint and prettier
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-      - name: Restore node modules from cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: node-modules
-      - name: Install eslint and prettier
-        run: npm ci
-      - name: Run eslint and prettier
+      # We don't need separate job for this, because this step generate jobs both for ESlint and Prettier
+      - name: Start eslint and prettier
         uses: wearerequired/lint-action@v1
         with:
           github_token: ${{ secrets.github_token }}
