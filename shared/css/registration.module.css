@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: column;
     min-height: 13.5vh;
-    margin-bottom: 0.5vh;
+    margin-bottom: 0.1vh;
 }
 
 .label {
