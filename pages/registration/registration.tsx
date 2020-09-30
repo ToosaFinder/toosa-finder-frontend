@@ -3,11 +3,20 @@ import {Button, Container, Form, Row} from "react-bootstrap";
 import styles from "../../shared/css/registration.module.css"
 import Link from "next/link";
 
+interface Credentials {
+    email: string,
+    login: string,
+    password: string,
+    passwordConfirmation: string,
+}
+
 export default function Registration() {
-    const [email, setEmail] = useState<string>('');
-    const [login, setLogin] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
+    const [credentials, setCredentials] = React.useState<Credentials>({
+        email: '',
+        login: '',
+        password: '',
+        passwordConfirmation: ''
+    });
     const [checked, setChecked] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
     const regExpEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -23,90 +32,91 @@ export default function Registration() {
 
     useEffect(() => {
         setCanSubmit(
-            validateEmail(email) && validateLogin(login)
-            && checked && password.length >= 8 &&
-            password === passwordConfirmation
+            validateEmail(credentials.email) && validateLogin(credentials.login)
+            && checked && credentials.password.length >= 8 &&
+            credentials.password === credentials.passwordConfirmation
         );
     });
 
+
     const getLoginClassName = () => {
-        if (validateLogin(login) || login === '') {
+        if (validateLogin(credentials.login) || credentials.login === '') {
             return '';
-        } else return 'is-invalid'
+        } else {
+            return 'is-invalid';
+        }
     };
 
     const getEmailClassName = () => {
-        if (validateEmail(email) || email === '') {
+        if (validateEmail(credentials.email) || credentials.email === '') {
             return '';
-        } else return 'is-invalid'
+        } else {
+            return 'is-invalid';
+        }
     };
 
     const getPasswordConfirmationClassName = () => {
-        if (passwordConfirmation === password || passwordConfirmation.length < 8
-            || password.length < 8 || passwordConfirmation === '') {
+        if (credentials.passwordConfirmation === credentials.password || credentials.passwordConfirmation.length < 8
+            || credentials.password.length < 8 || credentials.password === '') {
             return '';
-        } else return 'is-invalid'
+        } else {
+            return 'is-invalid';
+        }
     };
 
     const getPasswordClassName = () => {
-        if (password.length >= 8 || password === '') {
+        if (credentials.password.length >= 8 || credentials.password === '') {
             return '';
-        } else return 'is-invalid'
+        } else {
+            return 'is-invalid';
+        }
+    };
+
+    const onFormChange = (event) => {
+        setCredentials({...credentials, [event.target.id]: event.target.value});
     };
 
     return (
         <Container className={styles.container}>
             <Row className={styles.formRow}>
-                <Form className={styles.form}>
+                <Form className={styles.form} onChange={onFormChange}>
                     <h3>
                         <Form.Label>Sign up</Form.Label>
                     </h3>
 
-                    <Form.Group className={styles.input}>
+                    <Form.Group className={styles.input} controlId='email'>
                         <Form.Label className={styles.label}>Email</Form.Label>
                         <Form.Control
                             type='email'
-                            name='email'
                             placeholder='Your email address'
-                            value={email}
                             className={getEmailClassName()}
-                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <Form.Label className='invalid-feedback'>Invalid Email</Form.Label>
                     </Form.Group>
 
-                    <Form.Group className={styles.input}>
+                    <Form.Group className={styles.input} controlId='login'>
                         <Form.Label className={styles.label}>Login</Form.Label>
                         <Form.Control
                             type='text'
-                            name='login'
-                            value={login}
                             className={getLoginClassName()}
-                            onChange={(e) => setLogin(e.target.value)}
                         />
                         <Form.Label className='invalid-feedback'>Invalid Login</Form.Label>
                     </Form.Group>
 
-                    <Form.Group className={styles.input}>
+                    <Form.Group className={styles.input} controlId='password'>
                         <Form.Label className={styles.label}>Password</Form.Label>
                         <Form.Control
                             type='password'
-                            name='password'
-                            value={password}
                             className={getPasswordClassName()}
-                            onChange={(e) => setPassword(e.target.value)}
                         />
                         <Form.Label className='invalid-feedback'>Password must be at least 8 symbols long</Form.Label>
                     </Form.Group>
 
-                    <Form.Group className={styles.input}>
+                    <Form.Group className={styles.input} controlId='passwordConfirmation'>
                         <Form.Label className={styles.label}>Password confirmation</Form.Label>
                         <Form.Control
                             type='password'
-                            name='passwordConfirmation'
-                            value={passwordConfirmation}
                             className={getPasswordConfirmationClassName()}
-                            onChange={(e) => setPasswordConfirmation(e.target.value)}
                         />
                         <Form.Label className='invalid-feedback'>Does not match password</Form.Label>
                     </Form.Group>
