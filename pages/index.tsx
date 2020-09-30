@@ -1,29 +1,27 @@
-import Head from 'next/head'
+import Head from "next/head";
 import Link from "next/link";
 
 export default function Home() {
-    return (
-        <div className="container">
-            <Head>
-                <title>Toosa finder</title>
-                <link rel="icon" href="/favicon.ico"/>
-            </Head>
+  return (
+    <div className="container">
+      <Head>
+        <title>Toosa finder</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-            <main>
-                <h1 className="title">
-                    Welcome to Toosa Finder!
-                </h1>
-                <h4>
-                    Test <Link href="/login">login</Link> page. Developers:
-                </h4>
-                <h5>
-                    <Link href="/devs/dima"> Дима </Link>
-                    <Link href="/devs/olya"> Оля </Link>
-                    <Link href="/devs/grisha"> Гриша </Link>
-                </h5>
-            </main>
+      <main>
+        <h1 className="title">Welcome to Toosa Finder!</h1>
+        <h4>
+          Test <Link href="/login">login</Link> page. Developers:
+        </h4>
+        <h5>
+          <Link href="/devs/dima"> Дима </Link>
+          <Link href="/devs/olya"> Оля </Link>
+          <Link href="/devs/grisha"> Гриша </Link>
+        </h5>
+      </main>
 
-            <style jsx>{`
+      <style jsx>{`
         .container {
           min-height: 100vh;
           padding: 0 0.5rem;
@@ -49,7 +47,7 @@ export default function Home() {
         }
       `}</style>
 
-            <style jsx global>{`
+      <style jsx global>{`
         html,
         body {
           padding: 0;
@@ -63,6 +61,6 @@ export default function Home() {
           box-sizing: border-box;
         }
       `}</style>
-        </div>
-    )
+    </div>
+  );
 }
