@@ -1,0 +1,14 @@
+.github
+.idea
+.next
+build
+node_modules
+public
+
+.eslint*
+.prettier*
+*.md
+*.json
+*.yml
+.gitignore
+Dockerfile
