@@ -15,7 +15,7 @@ export default function Registration(): JSX.Element {
     email: "",
     login: "",
     password: "",
-    passwordConfirmation: ""
+    passwordConfirmation: "",
   });
   const [checked, setChecked] = useState<boolean>(false);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
@@ -30,14 +30,14 @@ export default function Registration(): JSX.Element {
   const validateLogin = (login) => {
     return regExpLogin.test(String(login));
   };
-// eslint-disable-next-line
+  // eslint-disable-next-line
   useEffect(() => {
     setCanSubmit(
       validateEmail(credentials.email) &&
-      validateLogin(credentials.login) &&
-      checked &&
-      credentials.password.length >= 8 &&
-      credentials.password === credentials.passwordConfirmation
+        validateLogin(credentials.login) &&
+        checked &&
+        credentials.password.length >= 8 &&
+        credentials.password === credentials.passwordConfirmation
     );
   });
 
@@ -102,13 +102,13 @@ export default function Registration(): JSX.Element {
 
           <Form.Group className={styles.input} controlId="login">
             <Form.Label className={styles.label}>Login</Form.Label>
-            <Form.Control type="text" className={getLoginClassName()}/>
+            <Form.Control type="text" className={getLoginClassName()} />
             <Form.Label className="invalid-feedback">Invalid Login</Form.Label>
           </Form.Group>
 
           <Form.Group className={styles.input} controlId="password">
             <Form.Label className={styles.label}>Password</Form.Label>
-            <Form.Control type="password" className={getPasswordClassName()}/>
+            <Form.Control type="password" className={getPasswordClassName()} />
             <Form.Label className="invalid-feedback">
               Password must be at least 8 symbols long
             </Form.Label>

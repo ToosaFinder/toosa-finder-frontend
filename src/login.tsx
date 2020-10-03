@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import styles from "./css/login.module.css";
-import {LinkContainer} from "react-router-bootstrap"
+import { LinkContainer } from "react-router-bootstrap";
 
 interface ApiResponse<T> {
   code: number;
@@ -31,8 +31,8 @@ class DummyApiClient implements ApiClient {
       code: 200,
       response: {
         jwt: this.JWT,
-        refreshToken: this.REFRESH_TOKEN
-      }
+        refreshToken: this.REFRESH_TOKEN,
+      },
     };
   }
 }
@@ -41,7 +41,7 @@ export default function SignIn(): JSX.Element {
   const [credentials, setCredentials] = React.useState<Credentials>();
   // Simply to check that it works
   const apiClient: ApiClient = new DummyApiClient();
-  const onSubmit = (event) : void => {
+  const onSubmit = (event): void => {
     console.log(
       `Login "${credentials?.login}" \nPassword "${credentials?.password}"`
     );
@@ -50,7 +50,7 @@ export default function SignIn(): JSX.Element {
     event.preventDefault();
   };
 
-  const onFormChange = (event) : void => {
+  const onFormChange = (event): void => {
     setCredentials({ ...credentials, [event.target.id]: event.target.value });
   };
 
@@ -64,12 +64,12 @@ export default function SignIn(): JSX.Element {
                 <Form.Label>Authorization</Form.Label>
               </h1>
               <Form.Label>Your nickname or email</Form.Label>
-              <Form.Control placeholder="Enter your login"/>
+              <Form.Control placeholder="Enter your login" />
             </Form.Group>
 
             <Form.Group controlId="password">
               <Form.Label>Your password</Form.Label>
-              <Form.Control type="password" placeholder="Enter your password"/>
+              <Form.Control type="password" placeholder="Enter your password" />
             </Form.Group>
             <Form.Group>
               <Button className="float-right" variant="primary" type="submit">
@@ -79,10 +79,14 @@ export default function SignIn(): JSX.Element {
             <Form.Group>
               <LinkContainer to="/sign-up">
                 {/* eslint-disable-next-line react/no-unescaped-entities */}
-                <Button size="sm" variant="light">Don't have an account yet?</Button>
+                <Button size="sm" variant="light">
+                  Don't have an account yet?
+                </Button>
               </LinkContainer>
               <LinkContainer to="/restore">
-                <Button size="sm" variant="light">Forgot your password?</Button>
+                <Button size="sm" variant="light">
+                  Forgot your password?
+                </Button>
               </LinkContainer>
             </Form.Group>
           </Form>

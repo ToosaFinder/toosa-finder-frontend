@@ -9,7 +9,11 @@ type DeveloperProps = {
 };
 
 // Simply to check that css modules work correctly
-export default function Developer({ name, surname, group }: DeveloperProps) : JSX.Element {
+export default function Developer({
+  name,
+  surname,
+  group,
+}: DeveloperProps): JSX.Element {
   return (
     <Container className={styles.container}>
       <Row className={styles.fullname}>
