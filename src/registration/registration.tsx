@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Container, Form, Row } from "react-bootstrap";
-import styles from "../../shared/css/registration.module.css";
-import Link from "next/link";
+import styles from "../css/registration.module.css";
+import { Link } from "react-router-dom";
 
 interface Credentials {
   email: string;
@@ -10,7 +10,7 @@ interface Credentials {
   passwordConfirmation: string;
 }
 
-export default function Registration() {
+export default function Registration() : JSX.Element {
   const [credentials, setCredentials] = React.useState<Credentials>({
     email: "",
     login: "",
@@ -19,6 +19,7 @@ export default function Registration() {
   });
   const [checked, setChecked] = useState<boolean>(false);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
+  // eslint-disable-next-line no-useless-escape
   const regExpEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const regExpLogin = /^[a-zA-Z](.[a-zA-Z0-9_-]*)$/;
 
@@ -136,8 +137,8 @@ export default function Registration() {
             />
             <Form.Label className="custom-control-label" htmlFor="customCheck1">
               I agree to the{" "}
-              <Link href="/terms-of-services"> Terms of Services </Link>
-              and <Link href="/privacy-policy"> Privacy Policy</Link>.
+              <Link to="/terms-of-services"> Terms of Services </Link>
+              and <Link to="/privacy-policy"> Privacy Policy</Link>.
             </Form.Label>
           </Form.Group>
 
@@ -152,7 +153,7 @@ export default function Registration() {
             <Row className={styles.signIn}>
               <h6 className={styles.secondaryText}>Have an account?</h6>
               <h6 className={styles.link}>
-                <Link href="/sign-in">Sign in</Link>
+                <Link to="/sign-in">Sign in</Link>
               </h6>
             </Row>
           </Form.Group>
