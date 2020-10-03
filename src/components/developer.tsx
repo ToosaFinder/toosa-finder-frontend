@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row } from "react-bootstrap";
-import styles from "../shared/css/developer.module.css";
+import styles from "../css/developer.module.css";
 
 type DeveloperProps = {
   name: string;
@@ -9,7 +9,11 @@ type DeveloperProps = {
 };
 
 // Simply to check that css modules work correctly
-export default function Developer({ name, surname, group }: DeveloperProps) {
+export default function Developer({
+  name,
+  surname,
+  group,
+}: DeveloperProps): JSX.Element {
   return (
     <Container className={styles.container}>
       <Row className={styles.fullname}>

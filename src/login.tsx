@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import Link from "next/link";
-import styles from "../shared/css/login.module.css";
+import styles from "./css/login.module.css";
+import { LinkContainer } from "react-router-bootstrap";
 
 interface ApiResponse<T> {
   code: number;
@@ -23,10 +23,10 @@ interface Credentials {
 }
 
 class DummyApiClient implements ApiClient {
-  JWT: string = "DUMMY_JWT";
-  REFRESH_TOKEN: string = "DUMMY_REFRESH_TOKEN";
+  JWT = "DUMMY_JWT";
+  REFRESH_TOKEN = "DUMMY_REFRESH_TOKEN";
 
-  login(credentials: Credentials): ApiResponse<LoginResponseBody> {
+  login(_: Credentials): ApiResponse<LoginResponseBody> {
     return {
       code: 200,
       response: {
@@ -37,11 +37,11 @@ class DummyApiClient implements ApiClient {
   }
 }
 
-export default function SignIn() {
+export default function SignIn(): JSX.Element {
   const [credentials, setCredentials] = React.useState<Credentials>();
   // Simply to check that it works
   const apiClient: ApiClient = new DummyApiClient();
-  const onSubmit = (event) => {
+  const onSubmit = (event): void => {
     console.log(
       `Login "${credentials?.login}" \nPassword "${credentials?.password}"`
     );
@@ -50,7 +50,7 @@ export default function SignIn() {
     event.preventDefault();
   };
 
-  const onFormChange = (event) => {
+  const onFormChange = (event): void => {
     setCredentials({ ...credentials, [event.target.id]: event.target.value });
   };
 
@@ -63,14 +63,12 @@ export default function SignIn() {
               <h1>
                 <Form.Label>Authorization</Form.Label>
               </h1>
+              <Form.Label>Your nickname or email</Form.Label>
               <Form.Control placeholder="Enter your login" />
-              <Form.Text className="text-muted">
-                Your nickname or email
-              </Form.Text>
             </Form.Group>
 
             <Form.Group controlId="password">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Your password</Form.Label>
               <Form.Control type="password" placeholder="Enter your password" />
             </Form.Group>
             <Form.Group>
@@ -79,12 +77,17 @@ export default function SignIn() {
               </Button>
             </Form.Group>
             <Form.Group>
-              <Button size="sm" variant="light">
-                <Link href="/sign-up">Don't have an account yet?</Link>
-              </Button>
-              <Button size="sm" variant="light">
-                <Link href="/restore">Forgot your password?</Link>
-              </Button>
+              <LinkContainer to="/sign-up">
+                {/* eslint-disable-next-line react/no-unescaped-entities */}
+                <Button size="sm" variant="light">
+                  Don't have an account yet?
+                </Button>
+              </LinkContainer>
+              <LinkContainer to="/restore">
+                <Button size="sm" variant="light">
+                  Forgot your password?
+                </Button>
+              </LinkContainer>
             </Form.Group>
           </Form>
         </Col>
