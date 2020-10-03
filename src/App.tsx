@@ -5,7 +5,6 @@ import {
   Redirect,
   useHistory
 } from "react-router-dom";
-import "./App.css";
 import SignIn from "./login";
 import Dima from "./devs/dima";
 import Grisha from "./devs/olya";
@@ -15,7 +14,7 @@ import Registration from "./registration/registration";
 function App(): JSX.Element {
   const history = useHistory();
   return (
-    <div className="App">
+    <div>
       <Switch>
         <Route history={history} path='/sign-in' component={SignIn}/>
         <Route history={history} path='/sign-up' component={Registration}/>
