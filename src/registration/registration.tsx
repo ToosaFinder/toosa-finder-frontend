@@ -30,6 +30,7 @@ export default function Registration(): JSX.Element {
   const validateLogin = (login) => {
     return regExpLogin.test(String(login));
   };
+
   // eslint-disable-next-line
   useEffect(() => {
     setCanSubmit(

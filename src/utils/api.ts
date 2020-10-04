@@ -8,14 +8,14 @@ export interface User {
 }
 
 export interface LoginResponseBody {
-  jwt: string;
+  accessToken: string;
   refreshToken: string;
 }
 
 export interface ApiClient {
+  accessToken: string;
+  refreshToken: string;
   login(credentials: Credentials): Promise<ApiResponse<LoginResponseBody>>;
-
-  isLogged(jwtToken: string): Promise<ApiResponse<null | User>>;
 }
 
 export interface Credentials {
@@ -25,6 +25,8 @@ export interface Credentials {
 
 class DummyApiClient implements ApiClient {
   private static api: ApiClient;
+  accessToken: string;
+  refreshToken: string;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
@@ -44,27 +46,13 @@ class DummyApiClient implements ApiClient {
     return Promise.resolve({
       code: 200,
       response: {
-        jwt: this.JWT,
+        accessToken: this.JWT,
         refreshToken: this.REFRESH_TOKEN,
       },
     });
   }
-
-  isLogged(_: string): Promise<ApiResponse<User | null>> {
-    console.log("IsLogged called!");
-    return Promise.resolve({
-      code: 200,
-      response: {
-        name: "TEST_USER",
-      },
-    });
-  }
-
-  logout(): void {
-    console.log("Logout called!");
-  }
 }
 
-export function api(): ApiClient {
+export default function api(): ApiClient {
   return DummyApiClient.getInstance();
 }
