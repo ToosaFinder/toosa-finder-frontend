@@ -1,14 +1,14 @@
 .container {
-  height: 100vh;
+  height: 30vh;
 }
 
 .fullname {
-  height: 50vh;
+  height: 20vh;
   align-items: flex-end;
   justify-content: center;
 }
 
 .group {
-  height: 50vh;
+  height: 20vh;
   justify-content: center;
 }

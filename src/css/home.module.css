@@ -1,0 +1,9 @@
+.container {
+  height: 50vh;
+  margin-top: 10vh;
+}
+
+.formRow {
+  align-items: center;
+  justify-content: center;
+}

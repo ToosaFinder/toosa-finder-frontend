@@ -1,22 +1,19 @@
 import React from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 import SignIn from "./login";
-import Dima from "./devs/dima";
-import Grisha from "./devs/olya";
-import Olya from "./devs/olya";
 import Registration from "./registration/registration";
+import PrivateRoute from "./utils/private_route";
+import UnloggedRoute from "./utils/unlogged_route";
+import Home from "./home";
 
 function App(): JSX.Element {
-  const history = useHistory();
   return (
     <div>
       <Switch>
-        <Route history={history} path="/sign-in" component={SignIn} />
-        <Route history={history} path="/sign-up" component={Registration} />
-        <Route history={history} path="/dima" component={Dima} />
-        <Route history={history} path="/olya" component={Olya} />
-        <Route history={history} path="/grisha" component={Grisha} />
-        <Redirect from="/" to="/sign-in" />
+        <UnloggedRoute path="/sign-in" component={SignIn} exact />
+        <UnloggedRoute path="/sign-up" component={Registration} exact />
+        <PrivateRoute path="/home" component={Home} />
+        <Redirect from="/" to="/sign-in" exact />
       </Switch>
     </div>
   );

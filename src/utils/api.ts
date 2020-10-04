@@ -13,8 +13,9 @@ export interface LoginResponseBody {
 }
 
 export interface ApiClient {
+  jwt: string;
+  refreshToken: string;
   login(credentials: Credentials): Promise<ApiResponse<LoginResponseBody>>;
-
   isLogged(jwtToken: string): Promise<ApiResponse<null | User>>;
 }
 
@@ -25,6 +26,8 @@ export interface Credentials {
 
 class DummyApiClient implements ApiClient {
   private static api: ApiClient;
+  jwt: string;
+  refreshToken: string;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
@@ -65,6 +68,6 @@ class DummyApiClient implements ApiClient {
   }
 }
 
-export function api(): ApiClient {
+export default function api(): ApiClient {
   return DummyApiClient.getInstance();
 }
