@@ -16,7 +16,6 @@ export interface ApiClient {
   accessToken: string;
   refreshToken: string;
   login(credentials: Credentials): Promise<ApiResponse<LoginResponseBody>>;
-  isLogged(jwtToken: string): Promise<ApiResponse<null | User>>;
 }
 
 export interface Credentials {
@@ -51,20 +50,6 @@ class DummyApiClient implements ApiClient {
         refreshToken: this.REFRESH_TOKEN,
       },
     });
-  }
-
-  isLogged(_: string): Promise<ApiResponse<User | null>> {
-    console.log("IsLogged called!");
-    return Promise.resolve({
-      code: 200,
-      response: {
-        name: "TEST_USER",
-      },
-    });
-  }
-
-  logout(): void {
-    console.log("Logout called!");
   }
 }
 
