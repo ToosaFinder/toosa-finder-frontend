@@ -2,7 +2,7 @@ import api, { Credentials } from "./api";
 import Cookies from "js-cookie";
 
 export async function login(credentials: Credentials): Promise<void> {
-  const { response: response, code } = await api().login(credentials);
+  const { response, code } = await api().login(credentials);
   if (code === 200) {
     const { jwt, refreshToken } = response;
     console.log(`JWT ${jwt} Refresh ${refreshToken}`);
