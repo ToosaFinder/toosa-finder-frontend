@@ -7,3 +7,36 @@
   align-items: center;
   justify-content: center;
 }
+
+.form {
+  width: 25vw;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  min-height: 13.5vh;
+  margin-bottom: 0.1vh;
+}
+
+.label {
+  color: #f95f6b;
+}
+
+.link {
+  margin-left: 0.5vw;
+}
+
+.submitButton {
+  width: 100%;
+  height: 40px;
+}
+
+.secondaryText {
+  color: dimgrey;
+}
+
+.signUp {
+  margin-top: 1vw;
+  justify-content: center;
+}
