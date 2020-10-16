@@ -27,7 +27,7 @@ export default function SignIn(): JSX.Element {
   const alert = history.location.state;
 
   useEffect(() => {
-    if (alert != undefined) {
+    if (alert !== undefined) {
       setAlertMsg(alert.message);
       setShow(true);
       alert.success ? setAlertVariant("success") : setAlertVariant("danger");

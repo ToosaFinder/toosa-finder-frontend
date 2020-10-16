@@ -29,7 +29,7 @@ export default function CreatePassword(): JSX.Element {
   if (match == null) {
     history.push("/sign-in", {
       success: false,
-      message: "Invalid link or token!"
+      message: "Invalid link or token!",
     });
   }
   const [passwordCheck, setPasswordCheck] = React.useState<PasswordCheck>({
