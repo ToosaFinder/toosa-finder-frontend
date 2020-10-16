@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, Container, Form, Row } from "react-bootstrap";
-import styles from "../css/registration.module.css";
+import styles from "../../css/registration.module.css";
 import { Link } from "react-router-dom";
+import { validateEmail, validateLogin } from "../../utils/validations";
 
 interface Credentials {
   email: string;
@@ -19,17 +20,6 @@ export default function Registration(): JSX.Element {
   });
   const [checked, setChecked] = useState<boolean>(false);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
-  // eslint-disable-next-line no-useless-escape
-  const regExpEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const regExpLogin = /^[a-zA-Z](.[a-zA-Z0-9_-]*)$/;
-
-  const validateEmail = (email) => {
-    return regExpEmail.test(String(email).toLowerCase());
-  };
-
-  const validateLogin = (login) => {
-    return regExpLogin.test(String(login));
-  };
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -80,6 +70,7 @@ export default function Registration(): JSX.Element {
   };
 
   const onFormChange = (event) => {
+    event.preventDefault();
     setCredentials({ ...credentials, [event.target.id]: event.target.value });
   };
 
@@ -146,7 +137,7 @@ export default function Registration(): JSX.Element {
           <Form.Group>
             <Button
               type="submit"
-              className={styles.submitButton}
+              className={`${styles.submitButton} btn-danger`}
               disabled={!canSubmit}
             >
               Continue

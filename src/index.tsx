@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import "bootswatch/dist/journal/bootstrap.min.css";
+import "bootswatch/dist/litera/bootstrap.min.css";
 
 ReactDOM.render(
   <BrowserRouter basename="/">

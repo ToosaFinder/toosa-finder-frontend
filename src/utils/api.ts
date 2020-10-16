@@ -16,6 +16,11 @@ export interface ApiClient {
   accessToken: string;
   refreshToken: string;
   login(credentials: Credentials): Promise<ApiResponse<LoginResponseBody>>;
+  forgotPassword(email: string): Promise<ApiResponse<string>>;
+  createNewPassword(
+    password: string,
+    token: string
+  ): Promise<ApiResponse<string>>;
 }
 
 export interface Credentials {
@@ -49,6 +54,29 @@ class DummyApiClient implements ApiClient {
         accessToken: this.JWT,
         refreshToken: this.REFRESH_TOKEN,
       },
+    });
+  }
+
+  forgotPassword(email: string): Promise<ApiResponse<string>> {
+    return Promise.resolve({
+      code: 200,
+      response: email,
+    });
+  }
+
+  createNewPassword(
+    password: string,
+    token: string
+  ): Promise<ApiResponse<string>> {
+    if (token === "228") {
+      return Promise.resolve({
+        code: 404,
+        response: "error!",
+      });
+    }
+    return Promise.resolve({
+      code: 200,
+      response: password + " " + token,
     });
   }
 }
