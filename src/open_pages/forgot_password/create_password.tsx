@@ -65,22 +65,42 @@ export default function CreatePassword(): JSX.Element {
     });
   };
 
+  const getPasswordClassName = (): string => {
+    return validatePassword(passwordCheck.password) ||
+      passwordCheck.password === ""
+      ? ""
+      : "is-invalid";
+  };
+
+  const getPasswordConfirmationClassName = (): string => {
+    return passwordCheck.password === passwordCheck.passwordConfirmation ||
+      passwordCheck.passwordConfirmation === ""
+      ? ""
+      : "is-invalid";
+  };
+
+  const isButtonDisabled = (): boolean => {
+    return (
+      !validatePassword(passwordCheck.password) ||
+      passwordCheck.password !== passwordCheck.passwordConfirmation
+    );
+  };
+
   return (
     <Container className={styles.container}>
       <Row className={styles.formRow}>
         <Col md="auto">
-          <Form onSubmit={onSubmit} onChange={onFormChange}>
+          <Form
+            className={styles.form}
+            onSubmit={onSubmit}
+            onChange={onFormChange}
+          >
             <h3 className="mb-4">Change Password</h3>
             <Form.Group className={styles.input} controlId="password">
               <Form.Label className={styles.label}>Password</Form.Label>
               <Form.Control
                 type="password"
-                className={
-                  validatePassword(passwordCheck.password) ||
-                  passwordCheck.password === ""
-                    ? ""
-                    : "is-invalid"
-                }
+                className={getPasswordClassName()}
               />
               <Form.Label className="invalid-feedback">
                 Password must be at least 8 symbols long
@@ -96,13 +116,7 @@ export default function CreatePassword(): JSX.Element {
               </Form.Label>
               <Form.Control
                 type="password"
-                className={
-                  passwordCheck.password ===
-                    passwordCheck.passwordConfirmation ||
-                  passwordCheck.passwordConfirmation === ""
-                    ? ""
-                    : "is-invalid"
-                }
+                className={getPasswordConfirmationClassName()}
               />
               <Form.Label className="invalid-feedback">
                 Does not match password
@@ -113,10 +127,7 @@ export default function CreatePassword(): JSX.Element {
               <Button
                 className={`${styles.submitButton} btn-danger`}
                 type="submit"
-                disabled={
-                  !validatePassword(passwordCheck.password) ||
-                  passwordCheck.password !== passwordCheck.passwordConfirmation
-                }
+                disabled={isButtonDisabled()}
               >
                 Restore Password
               </Button>

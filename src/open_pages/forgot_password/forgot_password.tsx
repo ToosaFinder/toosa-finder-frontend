@@ -30,20 +30,26 @@ export default function ForgotPassword(): JSX.Element {
     setEmail(event.target.value);
   };
 
+  const getEmailClassName = (): string => {
+    return validateEmail(email) || email === "" ? "" : "is-invalid";
+  };
+
   return (
     <Container className={styles.container}>
       <Row className={styles.formRow}>
         <Col md="auto">
-          <Form onSubmit={onSubmit} onChange={onFormChange}>
+          <Form
+            className={styles.form}
+            onSubmit={onSubmit}
+            onChange={onFormChange}
+          >
             <h3 className="mb-4">Restore Password</h3>
 
             <Form.Group className={styles.input} controlId="email">
               <Form.Label className={styles.label}>Email</Form.Label>
               <Form.Control
                 placeholder="Enter your email"
-                className={
-                  validateEmail(email) || email === "" ? "" : "is-invalid"
-                }
+                className={getEmailClassName()}
               />
               <Form.Label className="invalid-feedback">
                 Invalid Email

@@ -67,7 +67,11 @@ export default function SignIn(): JSX.Element {
       <Container className={styles.container}>
         <Row className={styles.formRow}>
           <Col md="auto">
-            <Form onSubmit={onSubmit} onChange={onFormChange}>
+            <Form
+              className={styles.form}
+              onSubmit={onSubmit}
+              onChange={onFormChange}
+            >
               <h3 className="mb-4">Sign in</h3>
               <Form.Group className={styles.input} controlId="login">
                 <Form.Label className={styles.label}>Email or login</Form.Label>
