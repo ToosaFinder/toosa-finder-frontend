@@ -21,6 +21,7 @@ export interface ApiClient {
     password: string,
     token: string
   ): Promise<ApiResponse<string>>;
+  confirmEmail(emailToken: string): Promise<ApiResponse<string>>;
 }
 
 export interface Credentials {
@@ -86,6 +87,19 @@ class DummyApiClient implements ApiClient {
     return Promise.resolve({
       code: 200,
       response: password + " " + token,
+    });
+  }
+
+  confirmEmail(emailToken: string): Promise<ApiResponse<string>> {
+    if (emailToken === "228") {
+      return Promise.resolve({
+        code: 404,
+        response: "error!",
+      });
+    }
+    return Promise.resolve({
+      code: 200,
+      response: emailToken,
     });
   }
 }

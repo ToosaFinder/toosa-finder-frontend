@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import styles from "../../css/restorePassword.module.css";
+import styles from "../../css/restore_password.module.css";
 import { forgotPassword } from "../../utils/auth";
 import { Link, useHistory } from "react-router-dom";
 import { validateEmail } from "../../utils/validations";
@@ -66,7 +66,7 @@ export default function ForgotPassword(): JSX.Element {
               </Button>
             </Form.Group>
             <Row className={styles.signIn}>
-              <Link to="/sign-in" className={styles.link}>
+              <Link to="/sign-in" className={`${styles.link} text-danger`}>
                 Back to login
               </Link>
             </Row>

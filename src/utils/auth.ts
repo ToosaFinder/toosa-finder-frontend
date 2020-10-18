@@ -45,6 +45,16 @@ export async function createNewPassword(
   return false;
 }
 
+export async function confirmEmail(emailToken: string): Promise<boolean> {
+  const { code } = await api().confirmEmail(emailToken);
+  if (code === 200) {
+    console.log(`successful email confirmation`);
+    return true;
+  }
+  console.log(`228 email confirmation`);
+  return false;
+}
+
 export function logout(): void {
   Cookies.remove(ACCESS_TOKEN_COOKIE);
   Cookies.remove(REFRESH_TOKEN_COOKIE);

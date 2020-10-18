@@ -82,7 +82,7 @@ export default function Registration(): JSX.Element {
             <Form.Label>Sign up</Form.Label>
           </h3>
 
-          <Form.Group className={styles.input} controlId="email">
+          <Form.Group className={`${styles.input} mb-1`} controlId="email">
             <Form.Label className={styles.label}>Email</Form.Label>
             <Form.Control
               type="email"
@@ -92,13 +92,13 @@ export default function Registration(): JSX.Element {
             <Form.Label className="invalid-feedback">Invalid Email</Form.Label>
           </Form.Group>
 
-          <Form.Group className={styles.input} controlId="login">
+          <Form.Group className={`${styles.input} mb-1`} controlId="login">
             <Form.Label className={styles.label}>Login</Form.Label>
             <Form.Control type="text" className={getLoginClassName()} />
             <Form.Label className="invalid-feedback">Invalid Login</Form.Label>
           </Form.Group>
 
-          <Form.Group className={styles.input} controlId="password">
+          <Form.Group className={`${styles.input} mb-1`} controlId="password">
             <Form.Label className={styles.label}>Password</Form.Label>
             <Form.Control type="password" className={getPasswordClassName()} />
             <Form.Label className="invalid-feedback">
@@ -106,7 +106,10 @@ export default function Registration(): JSX.Element {
             </Form.Label>
           </Form.Group>
 
-          <Form.Group className={styles.input} controlId="passwordConfirmation">
+          <Form.Group
+            className={`${styles.input} mb-1`}
+            controlId="passwordConfirmation"
+          >
             <Form.Label className={styles.label}>
               Password confirmation
             </Form.Label>
@@ -129,8 +132,14 @@ export default function Registration(): JSX.Element {
             />
             <Form.Label className="custom-control-label" htmlFor="customCheck1">
               I agree to the{" "}
-              <Link to="/terms-of-services"> Terms of Services </Link>
-              and <Link to="/privacy-policy"> Privacy Policy</Link>.
+              <Link to="/terms-of-services" className={`text-danger`}>
+                Terms of Services
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy-policy" className={`text-danger`}>
+                Privacy Policy
+              </Link>
+              .
             </Form.Label>
           </Form.Group>
 
@@ -142,11 +151,15 @@ export default function Registration(): JSX.Element {
             >
               Continue
             </Button>
+
             <Row className={styles.signIn}>
               <h6 className={styles.secondaryText}>Have an account?</h6>
-              <h6 className={styles.link}>
-                <Link to="/sign-in">Sign in</Link>
-              </h6>
+              <Link
+                to="/sign-in"
+                className={`${styles.link} text-danger float-right`}
+              >
+                Sign In
+              </Link>
             </Row>
           </Form.Group>
         </Form>
