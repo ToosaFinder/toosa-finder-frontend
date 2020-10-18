@@ -48,6 +48,15 @@ class DummyApiClient implements ApiClient {
 
   login(_: Credentials): Promise<ApiResponse<LoginResponseBody>> {
     console.log("Login called!");
+    if (_.login === "error") {
+      return Promise.resolve({
+        code: 404,
+        response: {
+          accessToken: "fail :(",
+          refreshToken: "fail :(",
+        },
+      });
+    }
     return Promise.resolve({
       code: 200,
       response: {

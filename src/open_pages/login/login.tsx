@@ -16,22 +16,36 @@ export default function SignIn(): JSX.Element {
   const [alertMsg, setAlertMsg] = useState<string>("");
   const [alertVariant, setAlertVariant] = useState<string>("");
   const [credentials, setCredentials] = React.useState<Credentials>();
+  const history = useHistory<AlertMessage>();
+
+  const enableAlert = (alert: AlertMessage): void => {
+    if (alert !== undefined && alert.message !== undefined) {
+      setAlertMsg(alert.message);
+      setShow(true);
+      alert.success ? setAlertVariant("success") : setAlertVariant("danger");
+    }
+  };
+
   const onSubmit = async (event): Promise<void> => {
     event.preventDefault();
     console.log(
       `Login "${credentials?.login}" \nPassword "${credentials?.password}"`
     );
-    await login(credentials);
+    const success = await login(credentials);
+    if (success) {
+      history.push("/");
+    } else {
+      const failAlert = {
+        success: false,
+        message: "Wrong credentials :(",
+      };
+      enableAlert(failAlert);
+    }
   };
-  const history = useHistory<AlertMessage>();
   const alert = history.location.state;
 
   useEffect(() => {
-    if (alert !== undefined) {
-      setAlertMsg(alert.message);
-      setShow(true);
-      alert.success ? setAlertVariant("success") : setAlertVariant("danger");
-    }
+    enableAlert(alert);
   }, [alert]);
 
   const onFormChange = (event): void => {
