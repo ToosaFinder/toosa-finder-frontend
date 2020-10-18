@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom";
-import PrivateRoute from "./utils/private_route";
-import Dima from "./devs/dima";
-import Olya from "./devs/olya";
-import Grisha from "./devs/grisha";
+import PrivateRoute from "../utils/private_route";
+import Dima from "../devs/dima";
+import Olya from "../devs/olya";
+import Grisha from "../devs/grisha";
 import { Button, Container, Row } from "react-bootstrap";
-import styles from "./css/home.module.css";
-import { logout } from "./utils/auth";
+import styles from "../css/home.module.css";
+import { logout } from "../utils/auth";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
