@@ -5,19 +5,21 @@ const ACCESS_TOKEN_COOKIE = "token";
 const REFRESH_TOKEN_COOKIE = "rtoken";
 
 export async function login(credentials: Credentials): Promise<true | string> {
-  return api().login(credentials).then(resp => {
-    const { response, code } = resp;
-    if (code === 200) {
-      const { accessToken, refreshToken } = response as LoginResponseBody;
-      console.log(`JWT ${accessToken} Refresh ${refreshToken}`);
-      Cookies.set(ACCESS_TOKEN_COOKIE, accessToken, { expires: 3600 });
-      Cookies.set(REFRESH_TOKEN_COOKIE, refreshToken, { expires: 3600 });
-      return true;
-    } else {
-      const {error} = response as ErrorBody;
-      return error;
-    }
-  });
+  return api()
+    .login(credentials)
+    .then((resp) => {
+      const { response, code } = resp;
+      if (code === 200) {
+        const { accessToken, refreshToken } = response as LoginResponseBody;
+        console.log(`JWT ${accessToken} Refresh ${refreshToken}`);
+        Cookies.set(ACCESS_TOKEN_COOKIE, accessToken, { expires: 3600 });
+        Cookies.set(REFRESH_TOKEN_COOKIE, refreshToken, { expires: 3600 });
+        return true;
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
+      }
+    });
 }
 
 export function isLogged(): boolean {

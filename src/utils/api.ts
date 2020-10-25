@@ -53,19 +53,20 @@ class ApiClientImpl implements ApiClient {
   async login(creds: Credentials): Promise<ApiResponse<LoginResponse>> {
     console.log("Login called!");
 
-    return await axios.post<LoginResponse>(`http://${getURL()}/user/login`, creds)
-      .then(result => {
+    return await axios
+      .post<LoginResponse>(`http://${getURL()}/user/login`, creds)
+      .then((result) => {
         const { accessToken, refreshToken } = result.data as LoginResponseBody;
         if (result.status === 200) {
           this.accessToken = accessToken;
           this.refreshToken = refreshToken;
           return {
             code: 200,
-            response: result.data
-          } as ApiResponse<LoginResponseBody>
+            response: result.data,
+          } as ApiResponse<LoginResponseBody>;
         }
       })
-      .catch(error => {
+      .catch((error) => {
         const result = error.response;
         if (error.response) {
           console.log(error.response.data);
@@ -74,13 +75,13 @@ class ApiClientImpl implements ApiClient {
         } else if (error.request) {
           console.log(error.request);
         } else {
-          console.log('Error', error.message);
+          console.log("Error", error.message);
         }
         return {
           code: error.status,
           response: {
             error: result.data,
-          }
+          },
         } as ApiResponse<ErrorBody>;
       });
   }
