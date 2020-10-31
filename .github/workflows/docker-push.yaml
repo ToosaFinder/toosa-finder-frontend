@@ -52,7 +52,7 @@ jobs:
           gcloud --quiet auth configure-docker
       - name: Get the GKE credentials
         run: |-
-          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} --zone ${{ secrets.$GKE_ZONE }}
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} --zone ${{ secrets.GKE_ZONE }}
       - name: Deploy
         run: |-
           kubectl apply -f ./deployments/toosa-frontend.yaml
