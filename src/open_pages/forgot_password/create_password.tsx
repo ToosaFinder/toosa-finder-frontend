@@ -1,9 +1,14 @@
 import React from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {matchPath, useHistory, useLocation, useParams,} from "react-router-dom";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import {
+  matchPath,
+  useHistory,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import styles from "../../css/restore_password.module.css";
-import {createNewPassword} from "../../utils/auth";
-import {validatePassword} from "../../utils/validations";
+import { createNewPassword } from "../../utils/auth";
+import { validatePassword } from "../../utils/validations";
 
 interface PasswordCheck {
   password: string;
