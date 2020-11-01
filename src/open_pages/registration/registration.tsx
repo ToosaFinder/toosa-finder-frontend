@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Button, Container, Form, Row } from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {Button, Container, Form, Row} from "react-bootstrap";
 import styles from "../../css/registration.module.css";
-import { Link } from "react-router-dom";
-import { validateEmail, validateLogin } from "../../utils/validations";
+import {Link} from "react-router-dom";
+import {validateEmail, validateLogin} from "../../utils/validations";
 
 interface Credentials {
   email: string;

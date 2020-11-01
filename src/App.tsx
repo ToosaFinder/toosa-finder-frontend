@@ -23,7 +23,10 @@ function App(): JSX.Element {
         <UnloggedRoute path="/sign-up" component={Registration} exact />
         <PrivateRoute path="/home" component={Home} />
         <Redirect from="/" to="/sign-in" exact />
-        <UnloggedRoute path="/user/confirm-email/:emailToken" component={ConfirmEmail}/>
+        <UnloggedRoute
+          path="/user/confirm-email/:emailToken"
+          component={ConfirmEmail}
+        />
         <UnloggedRoute path="/error-page" component={ErrorPage} />
       </Switch>
     </div>

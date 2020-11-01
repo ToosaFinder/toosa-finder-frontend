@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Route, Redirect, RouteProps } from "react-router-dom";
-import { isLogged } from "./auth";
+import {Redirect, Route, RouteProps} from "react-router-dom";
+import {isLogged} from "./auth";
 
 /**
  * Роут, на который можно перейти, только если пользователь не авторизован.
