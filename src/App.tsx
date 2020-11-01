@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Redirect } from "react-router-dom";
+import {Redirect, Switch} from "react-router-dom";
 import SignIn from "./open_pages/login/login";
 import Registration from "./open_pages/registration/registration";
 import PrivateRoute from "./utils/private_route";
@@ -7,8 +7,8 @@ import UnloggedRoute from "./utils/unlogged_route";
 import Home from "./open_pages/home";
 import ForgotPassword from "./open_pages/forgot_password/forgot_password";
 import CreatePassword from "./open_pages/forgot_password/create_password";
-import EmailConfirmRoute from "./utils/email_confirm_route";
-import ErrorPage from "./open_pages/error_page";
+import ErrorPage from "./open_pages/confirm_email/error_page";
+import ConfirmEmail from "./open_pages/confirm_email/confirm_email";
 
 function App(): JSX.Element {
   return (
@@ -23,7 +23,7 @@ function App(): JSX.Element {
         <UnloggedRoute path="/sign-up" component={Registration} exact />
         <PrivateRoute path="/home" component={Home} />
         <Redirect from="/" to="/sign-in" exact />
-        <EmailConfirmRoute path="/user/confirm-email/:emailToken" />
+        <UnloggedRoute path="/user/confirm-email/:emailToken" component={ConfirmEmail}/>
         <UnloggedRoute path="/error-page" component={ErrorPage} />
       </Switch>
     </div>
