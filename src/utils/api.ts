@@ -1,3 +1,6 @@
+import axios from "axios";
+import { getURL } from "./utils";
+
 export interface ApiResponse<T> {
   code: number;
   response: T;
@@ -66,11 +69,25 @@ class DummyApiClient implements ApiClient {
     });
   }
 
-  forgotPassword(email: string): Promise<ApiResponse<string>> {
-    return Promise.resolve({
-      code: 200,
-      response: email,
-    });
+  async forgotPassword(email: string): Promise<ApiResponse<string>> {
+    console.log("Recovering password called!");
+
+    return await axios
+        .post<string>(`http://${getURL()}/user/restore-password`, email)
+        .then((result) => {
+          if (result.status === 200) {
+            return {
+              code: 200,
+              response: 'success'
+            } as ApiResponse<string>;
+          }
+        })
+        .catch((error) => {
+          return {
+            code: error.status,
+            response: error.name
+          } as ApiResponse<string>;
+        });
   }
 
   createNewPassword(
