@@ -1,21 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { getURL } from "./utils";
-
-export interface ApiResponse<T> {
-  code: number;
-  response: T;
-}
-
-export interface ErrorBody {
-  error: string;
-}
-
-export interface LoginResponseBody {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export type LoginResponse = LoginResponseBody | ErrorBody;
+import { ApiResponse, Credentials, ErrorBody, LoginResponse } from "./interfaces";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -26,9 +11,31 @@ export interface ApiClient {
   ): Promise<ApiResponse<string>>;
 }
 
-export interface Credentials {
-  userId: string;
-  password: string;
+function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
+  const message = result.data as T;
+  return {
+    code: result.status,
+    response: message
+  } as ApiResponse<T>;
+}
+
+function errorHandler(error: AxiosError): ApiResponse<ErrorBody> {
+  const result = error.response;
+  if (error.response !== undefined) {
+    return {
+      code: parseInt(error.code),
+      response: {
+        error: result.data.message === null ? result.data.code : result.data.message,
+      },
+    } as ApiResponse<ErrorBody>;
+  } else {
+    return {
+      code: parseInt(error.code),
+      response: {
+        error: error.message
+      }
+    }
+  }
 }
 
 export interface ApiClient {
@@ -37,8 +44,6 @@ export interface ApiClient {
 
 class ApiClientImpl implements ApiClient {
   private static api: ApiClient;
-  private accessToken: string;
-  private refreshToken: string;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
@@ -55,35 +60,8 @@ class ApiClientImpl implements ApiClient {
 
     return await axios
       .post<LoginResponse>(`http://${getURL()}/user/login`, creds)
-      .then((result) => {
-        const { accessToken, refreshToken } = result.data as LoginResponseBody;
-        if (result.status === 200) {
-          this.accessToken = accessToken;
-          this.refreshToken = refreshToken;
-          return {
-            code: 200,
-            response: result.data,
-          } as ApiResponse<LoginResponseBody>;
-        }
-      })
-      .catch((error) => {
-        const result = error.response;
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log("Error", error.message);
-        }
-        return {
-          code: error.status,
-          response: {
-            error: result.data,
-          },
-        } as ApiResponse<ErrorBody>;
-      });
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 
   forgotPassword(email: string): Promise<ApiResponse<string>> {

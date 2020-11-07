@@ -1,5 +1,6 @@
-import api, { Credentials, ErrorBody, LoginResponseBody } from "./api";
+import api from "./api";
 import Cookies from "js-cookie";
+import { Credentials, ErrorBody, LoginResponseBody } from "./interfaces";
 
 const ACCESS_TOKEN_COOKIE = "token";
 const REFRESH_TOKEN_COOKIE = "rtoken";
@@ -11,7 +12,6 @@ export async function login(credentials: Credentials): Promise<true | string> {
       const { response, code } = resp;
       if (code === 200) {
         const { accessToken, refreshToken } = response as LoginResponseBody;
-        console.log(`JWT ${accessToken} Refresh ${refreshToken}`);
         Cookies.set(ACCESS_TOKEN_COOKIE, accessToken, { expires: 3600 });
         Cookies.set(REFRESH_TOKEN_COOKIE, refreshToken, { expires: 3600 });
         return true;
