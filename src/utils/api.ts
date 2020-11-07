@@ -1,6 +1,11 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getURL } from "./utils";
-import { ApiResponse, Credentials, ErrorBody, LoginResponse } from "./interfaces";
+import {
+  ApiResponse,
+  Credentials,
+  ErrorBody,
+  LoginResponse,
+} from "./interfaces";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -15,7 +20,7 @@ function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
   const message = result.data as T;
   return {
     code: result.status,
-    response: message
+    response: message,
   } as ApiResponse<T>;
 }
 
@@ -25,16 +30,17 @@ function errorHandler(error: AxiosError): ApiResponse<ErrorBody> {
     return {
       code: parseInt(error.code),
       response: {
-        error: result.data.message === null ? result.data.code : result.data.message,
+        error:
+          result.data.message === null ? result.data.code : result.data.message,
       },
     } as ApiResponse<ErrorBody>;
   } else {
     return {
       code: parseInt(error.code),
       response: {
-        error: error.message
-      }
-    }
+        error: error.message,
+      },
+    };
   }
 }
 

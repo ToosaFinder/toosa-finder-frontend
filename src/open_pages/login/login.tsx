@@ -28,17 +28,17 @@ export default function SignIn(): JSX.Element {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    login(credentials).then(success => {
+    login(credentials).then((success) => {
       if (success === true) {
         history.push("/");
       } else {
         const failAlert = {
           success: false,
-          message: success as string
+          message: success as string,
         };
         enableAlert(failAlert);
       }
-    })
+    });
   };
   const alert = history.location.state;
 
@@ -71,7 +71,7 @@ export default function SignIn(): JSX.Element {
               <h3 className="mb-4">Sign in</h3>
               <Form.Group className={styles.input} controlId="userId">
                 <Form.Label className={styles.label}>Email or login</Form.Label>
-                <Form.Control placeholder="Enter your login"/>
+                <Form.Control placeholder="Enter your login" />
               </Form.Group>
 
               <Form.Group className={styles.input} controlId="password">
