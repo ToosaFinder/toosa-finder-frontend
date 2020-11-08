@@ -12,6 +12,7 @@ export interface LoginResponseBody {
 }
 
 export type LoginResponse = LoginResponseBody | ErrorBody;
+export type ConfirmEmailResponse = string | ErrorBody;
 
 export interface Credentials {
   userId: string;

@@ -1,11 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { getURL } from "./utils";
-import {
-  ApiResponse,
-  Credentials,
-  ErrorBody,
-  LoginResponse,
-} from "./interfaces";
+import axios, {AxiosError, AxiosResponse} from "axios";
+import {getURL} from "./utils";
+import {ApiResponse, ConfirmEmailResponse, Credentials, ErrorBody, LoginResponse,} from "./interfaces";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -14,7 +9,7 @@ export interface ApiClient {
     password: string,
     token: string
   ): Promise<ApiResponse<string>>;
-  confirmEmail(emailToken: string): Promise<ApiResponse<string>>;
+  confirmEmail(emailToken: string): Promise<ApiResponse<ConfirmEmailResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -94,17 +89,13 @@ class ApiClientImpl implements ApiClient {
     });
   }
 
-  confirmEmail(emailToken: string): Promise<ApiResponse<string>> {
-    if (emailToken === "228") {
-      return Promise.resolve({
-        code: 404,
-        response: "error!",
-      });
-    }
-    return Promise.resolve({
-      code: 200,
-      response: emailToken,
-    });
+  async confirmEmail(emailToken: string): Promise<ApiResponse<ConfirmEmailResponse>> {
+    console.log("confirmEmail called");
+
+    return await axios
+        .put<ConfirmEmailResponse>(`http://${getURL()}/user/email-confirmed/${emailToken}`)
+        .then(confirmationHandler)
+        .catch(errorHandler);
   }
 }
 
