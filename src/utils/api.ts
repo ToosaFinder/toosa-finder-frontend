@@ -5,6 +5,7 @@ import {
   Credentials,
   ErrorBody,
   LoginResponse,
+  PasswordRestore,
 } from "./interfaces";
 
 export interface ApiClient {
@@ -43,10 +44,6 @@ function errorHandler(error: AxiosError): ApiResponse<ErrorBody> {
       },
     };
   }
-}
-
-export interface PasswordRestore{
-  email: string;
 }
 
 export interface ApiClient {

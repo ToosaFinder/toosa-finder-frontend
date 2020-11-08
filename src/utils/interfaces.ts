@@ -11,6 +11,10 @@ export interface LoginResponseBody {
   accessToken: string;
 }
 
+export interface PasswordRestore{
+  email: string;
+}
+
 export type LoginResponse = LoginResponseBody | ErrorBody;
 
 export interface Credentials {

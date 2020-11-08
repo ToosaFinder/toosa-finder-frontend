@@ -1,6 +1,6 @@
 import api from "./api";
 import Cookies from "js-cookie";
-import { Credentials, ErrorBody, LoginResponseBody } from "./interfaces";
+import {Credentials, ErrorBody, LoginResponseBody, PasswordRestore} from "./interfaces";
 
 const ACCESS_TOKEN_COOKIE = "token";
 const REFRESH_TOKEN_COOKIE = "rtoken";
