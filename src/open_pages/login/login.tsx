@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import styles from "../../css/login.module.css";
-import { Credentials } from "../../utils/api";
 import { login } from "../../utils/auth";
 import { Link, useHistory } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
+import { Credentials } from "../../utils/interfaces";
 
 interface AlertMessage {
   success: boolean;
@@ -26,21 +26,19 @@ export default function SignIn(): JSX.Element {
     }
   };
 
-  const onSubmit = async (event): Promise<void> => {
+  const onSubmit = (event) => {
     event.preventDefault();
-    console.log(
-      `Login "${credentials?.userId}" \nPassword "${credentials?.password}"`
-    );
-    const success = await login(credentials);
-    if (success === true) {
-      history.push("/");
-    } else {
-      const failAlert = {
-        success: false,
-        message: success as string,
-      };
-      enableAlert(failAlert);
-    }
+    login(credentials).then((success) => {
+      if (success === true) {
+        history.push("/");
+      } else {
+        const failAlert = {
+          success: false,
+          message: success as string,
+        };
+        enableAlert(failAlert);
+      }
+    });
   };
   const alert = history.location.state;
 
