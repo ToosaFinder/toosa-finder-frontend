@@ -6,10 +6,15 @@ import {
   Credentials,
   ErrorBody,
   LoginResponse,
+  RegistrationCredentials,
+  RegistrationResponse,
 } from "./interfaces";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
+  registration(
+    credentials: RegistrationCredentials
+  ): Promise<ApiResponse<RegistrationResponse>>;
   forgotPassword(email: string): Promise<ApiResponse<string>>;
   createNewPassword(
     password: string,
@@ -68,6 +73,17 @@ class ApiClientImpl implements ApiClient {
 
     return await axios
       .post<LoginResponse>(`http://${getURL()}/user/login`, creds)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async registration(
+    creds: RegistrationCredentials
+  ): Promise<ApiResponse<RegistrationResponse>> {
+    console.log("Registration called!");
+
+    return await axios
+      .post<string>(`http://${getURL()}/user/registration`, creds)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
