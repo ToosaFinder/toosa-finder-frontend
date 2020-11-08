@@ -1,6 +1,12 @@
-import axios, {AxiosError, AxiosResponse} from "axios";
-import {getURL} from "./utils";
-import {ApiResponse, ConfirmEmailResponse, Credentials, ErrorBody, LoginResponse,} from "./interfaces";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { getURL } from "./utils";
+import {
+  ApiResponse,
+  ConfirmEmailResponse,
+  Credentials,
+  ErrorBody,
+  LoginResponse,
+} from "./interfaces";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -89,13 +95,17 @@ class ApiClientImpl implements ApiClient {
     });
   }
 
-  async confirmEmail(emailToken: string): Promise<ApiResponse<ConfirmEmailResponse>> {
+  async confirmEmail(
+    emailToken: string
+  ): Promise<ApiResponse<ConfirmEmailResponse>> {
     console.log("confirmEmail called");
 
     return await axios
-        .put<ConfirmEmailResponse>(`http://${getURL()}/user/email-confirmed/${emailToken}`)
-        .then(confirmationHandler)
-        .catch(errorHandler);
+      .put<ConfirmEmailResponse>(
+        `http://${getURL()}/user/email-confirmed/${emailToken}`
+      )
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 }
 

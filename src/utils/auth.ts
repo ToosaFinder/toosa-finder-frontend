@@ -1,6 +1,6 @@
 import api from "./api";
 import Cookies from "js-cookie";
-import {Credentials, ErrorBody, LoginResponseBody} from "./interfaces";
+import { Credentials, ErrorBody, LoginResponseBody } from "./interfaces";
 
 const ACCESS_TOKEN_COOKIE = "token";
 const REFRESH_TOKEN_COOKIE = "rtoken";
@@ -50,16 +50,16 @@ export async function createNewPassword(
 
 export async function confirmEmail(emailToken: string): Promise<true | string> {
   return api()
-      .confirmEmail(emailToken)
-      .then((resp) => {
-        const { response, code } = resp;
-        if (code === 200) {
-          return true;
-        } else {
-          const { error } = response as ErrorBody;
-          return error;
-        }
-      });
+    .confirmEmail(emailToken)
+    .then((resp) => {
+      const { response, code } = resp;
+      if (code === 200) {
+        return true;
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
+      }
+    });
 }
 
 export function logout(): void {
