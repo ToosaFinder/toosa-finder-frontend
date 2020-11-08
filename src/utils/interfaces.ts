@@ -16,8 +16,15 @@ export interface PasswordRestore {
 }
 
 export type LoginResponse = LoginResponseBody | ErrorBody;
+export type RegistrationResponse = string | ErrorBody;
 
 export interface Credentials {
   userId: string;
+  password: string;
+}
+
+export interface RegistrationCredentials {
+  email: string;
+  login: string;
   password: string;
 }

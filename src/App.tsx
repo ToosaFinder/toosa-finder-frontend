@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Redirect } from "react-router-dom";
+import { Redirect, Switch } from "react-router-dom";
 import SignIn from "./open_pages/login/login";
 import Registration from "./open_pages/registration/registration";
 import PrivateRoute from "./utils/private_route";
