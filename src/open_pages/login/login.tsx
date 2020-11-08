@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import styles from "../../css/login.module.css";
-import { Credentials } from "../../utils/api";
 import { login } from "../../utils/auth";
 import { Link, useHistory } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
+import { Credentials } from "../../utils/interfaces";
 
 interface AlertMessage {
   success: boolean;
@@ -26,21 +26,19 @@ export default function SignIn(): JSX.Element {
     }
   };
 
-  const onSubmit = async (event): Promise<void> => {
+  const onSubmit = (event) => {
     event.preventDefault();
-    console.log(
-      `Login "${credentials?.login}" \nPassword "${credentials?.password}"`
-    );
-    const success = await login(credentials);
-    if (success) {
-      history.push("/");
-    } else {
-      const failAlert = {
-        success: false,
-        message: "Wrong credentials :(",
-      };
-      enableAlert(failAlert);
-    }
+    login(credentials).then((success) => {
+      if (success === true) {
+        history.push("/");
+      } else {
+        const failAlert = {
+          success: false,
+          message: success as string,
+        };
+        enableAlert(failAlert);
+      }
+    });
   };
   const alert = history.location.state;
 
@@ -51,8 +49,6 @@ export default function SignIn(): JSX.Element {
   const onFormChange = (event): void => {
     setCredentials({ ...credentials, [event.target.id]: event.target.value });
   };
-
-  console.log(history.location.state);
 
   return (
     <>
@@ -73,7 +69,7 @@ export default function SignIn(): JSX.Element {
               onChange={onFormChange}
             >
               <h3 className="mb-4">Sign in</h3>
-              <Form.Group className={styles.input} controlId="login">
+              <Form.Group className={styles.input} controlId="userId">
                 <Form.Label className={styles.label}>Email or login</Form.Label>
                 <Form.Control placeholder="Enter your login" />
               </Form.Group>

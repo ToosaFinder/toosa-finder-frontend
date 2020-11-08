@@ -1,21 +1,24 @@
-import api, { Credentials } from "./api";
+import api from "./api";
 import Cookies from "js-cookie";
+import { Credentials, ErrorBody, LoginResponseBody } from "./interfaces";
 
 const ACCESS_TOKEN_COOKIE = "token";
 const REFRESH_TOKEN_COOKIE = "rtoken";
 
-export async function login(credentials: Credentials): Promise<boolean> {
-  const { response, code } = await api().login(credentials);
-  if (code === 200) {
-    const { accessToken, refreshToken } = response;
-    console.log(`JWT ${accessToken} Refresh ${refreshToken}`);
-    api().accessToken = accessToken;
-    api().refreshToken = refreshToken;
-    Cookies.set(ACCESS_TOKEN_COOKIE, accessToken, { expires: 3600 });
-    Cookies.set(REFRESH_TOKEN_COOKIE, refreshToken, { expires: 3600 });
-    return true;
-  }
-  return false;
+export async function login(credentials: Credentials): Promise<true | string> {
+  return api()
+    .login(credentials)
+    .then((resp) => {
+      const { response, code } = resp;
+      if (code === 200) {
+        const { accessToken } = response as LoginResponseBody;
+        Cookies.set(ACCESS_TOKEN_COOKIE, accessToken, { expires: 3600 });
+        return true;
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
+      }
+    });
 }
 
 export function isLogged(): boolean {
@@ -47,5 +50,4 @@ export async function createNewPassword(
 
 export function logout(): void {
   Cookies.remove(ACCESS_TOKEN_COOKIE);
-  Cookies.remove(REFRESH_TOKEN_COOKIE);
 }
