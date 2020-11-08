@@ -12,7 +12,7 @@ import {
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
   registration(
-      credentials: RegistrationCredentials
+    credentials: RegistrationCredentials
   ): Promise<ApiResponse<RegistrationResponse>>;
   forgotPassword(email: string): Promise<ApiResponse<string>>;
   createNewPassword(
@@ -76,14 +76,14 @@ class ApiClientImpl implements ApiClient {
   }
 
   async registration(
-      creds: RegistrationCredentials
+    creds: RegistrationCredentials
   ): Promise<ApiResponse<RegistrationResponse>> {
     console.log("Registration called!");
 
     return await axios
-        .post<string>(`http://${getURL()}/user/registration`, creds)
-        .then(confirmationHandler)
-        .catch(errorHandler);
+      .post<string>(`http://${getURL()}/user/registration`, creds)
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 
   forgotPassword(email: string): Promise<ApiResponse<string>> {

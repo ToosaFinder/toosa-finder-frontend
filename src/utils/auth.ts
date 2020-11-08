@@ -22,19 +22,19 @@ export async function login(credentials: Credentials): Promise<true | string> {
 }
 
 export async function registration(
-    credentials: RegistrationCredentials
+  credentials: RegistrationCredentials
 ): Promise<true | string> {
   return api()
-      .registration(credentials)
-      .then((resp) => {
-          const {response, code} = resp;
-          if (code === 200) {
-              return true;
-          } else {
-              const {error} = response as ErrorBody;
-              return error;
-          }
-      });
+    .registration(credentials)
+    .then((resp) => {
+      const { response, code } = resp;
+      if (code === 200) {
+        return true;
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
+      }
+    });
 }
 
 export function isLogged(): boolean {
