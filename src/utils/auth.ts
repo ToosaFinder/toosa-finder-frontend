@@ -1,4 +1,4 @@
-import api, { Credentials, ErrorBody, LoginResponseBody } from "./api";
+import api, {Credentials, ErrorBody, LoginResponseBody, RegistrationCredentials,} from "./api";
 import Cookies from "js-cookie";
 
 const ACCESS_TOKEN_COOKIE = "token";
@@ -20,6 +20,21 @@ export async function login(credentials: Credentials): Promise<true | string> {
         return error;
       }
     });
+}
+
+export async function registration(
+    credentials: RegistrationCredentials
+): Promise<true | string> {
+  return api()
+      .registration(credentials)
+      .then((resp) => {
+        const {response, code} = resp;
+        if (code === 200) {
+          return true;
+        } else {
+          return response;
+        }
+      });
 }
 
 export function isLogged(): boolean {

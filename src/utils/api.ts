@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getURL } from "./utils";
+import {getURL} from "./utils";
 
 export interface ApiResponse<T> {
   code: number;
@@ -19,6 +19,10 @@ export type LoginResponse = LoginResponseBody | ErrorBody;
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
+
+  registration(
+      credentials: RegistrationCredentials
+  ): Promise<ApiResponse<string>>;
   forgotPassword(email: string): Promise<ApiResponse<string>>;
   createNewPassword(
     password: string,
@@ -28,6 +32,12 @@ export interface ApiClient {
 
 export interface Credentials {
   userId: string;
+  password: string;
+}
+
+export interface RegistrationCredentials {
+  email: string;
+  login: string;
   password: string;
 }
 
@@ -84,6 +94,29 @@ class ApiClientImpl implements ApiClient {
           },
         } as ApiResponse<ErrorBody>;
       });
+  }
+
+  async registration(
+      creds: RegistrationCredentials
+  ): Promise<ApiResponse<string>> {
+    console.log("Registration called!");
+
+    return await axios
+        .post<string>(`http://${getURL()}/user/registration`, creds)
+        .then((result) => {
+          if (result.status === 200) {
+            return {
+              code: 200,
+              response: "success",
+            } as ApiResponse<string>;
+          }
+        })
+        .catch((error) => {
+          return {
+            code: error.status,
+            response: error.response.data.message,
+          } as ApiResponse<string>;
+        });
   }
 
   forgotPassword(email: string): Promise<ApiResponse<string>> {
