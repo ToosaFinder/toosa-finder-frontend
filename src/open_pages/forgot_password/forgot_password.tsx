@@ -4,10 +4,12 @@ import styles from "../../css/restorePassword.module.css";
 import { forgotPassword } from "../../utils/auth";
 import { Link, useHistory } from "react-router-dom";
 import { validateEmail } from "../../utils/validations";
-import {PasswordRestore} from "../../utils/interfaces";
+import { PasswordRestore } from "../../utils/interfaces";
 
 export default function ForgotPassword(): JSX.Element {
-  const [passwordRestore, setPasswordRestore] = React.useState<PasswordRestore>({email: ""});
+  const [passwordRestore, setPasswordRestore] = React.useState<PasswordRestore>(
+    { email: "" }
+  );
   const history = useHistory();
   const onSubmit = async (event): Promise<void> => {
     event.preventDefault();
@@ -29,11 +31,16 @@ export default function ForgotPassword(): JSX.Element {
 
   const onFormChange = (event): void => {
     /*setEmail(event.target.value);*/
-    setPasswordRestore({...passwordRestore, [event.target.id]: event.target.value});
+    setPasswordRestore({
+      ...passwordRestore,
+      [event.target.id]: event.target.value,
+    });
   };
 
   const getEmailClassName = (): string => {
-    return validateEmail(passwordRestore.email) || passwordRestore.email === "" ? "" : "is-invalid";
+    return validateEmail(passwordRestore.email) || passwordRestore.email === ""
+      ? ""
+      : "is-invalid";
   };
 
   return (

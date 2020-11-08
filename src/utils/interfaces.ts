@@ -11,7 +11,7 @@ export interface LoginResponseBody {
   accessToken: string;
 }
 
-export interface PasswordRestore{
+export interface PasswordRestore {
   email: string;
 }
 

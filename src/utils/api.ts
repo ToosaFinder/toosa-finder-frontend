@@ -9,7 +9,6 @@ import {
 } from "./interfaces";
 
 export interface ApiClient {
-
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
   forgotPassword(email: PasswordRestore): Promise<ApiResponse<string>>;
   createNewPassword(
@@ -76,30 +75,38 @@ class ApiClientImpl implements ApiClient {
     console.log("Recovering password called!");
     console.log("FORGOT PASSWORD url: ", getURL());
     return await axios
-        .post<string>(`http://${getURL()}/user/restore-password`, email)
-        .then((result) => {
-          if (result.status === 200) {
-            return {
-              code: 200,
-              response: 'success'
-            } as ApiResponse<string>;
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            console.log("FORGOTPASSWORD TESTING error.response.data: " + error.response.data);
-            console.log("FORGOTPASSWORD TESTING error.response.status: " + error.response.status);
-            console.log("FORGOTPASSWORD TESTING error.response.headers: " + error.response.headers);
-          } else if (error.request) {
-            console.log("FORGOTPASSWORD TESTING error.request: " + error.request);
-          } else {
-            console.log("FORGOTPASSWORD TESTING error.request: " + error.message);
-          }
+      .post<string>(`http://${getURL()}/user/restore-password`, email)
+      .then((result) => {
+        if (result.status === 200) {
           return {
-            code: error.status,
-            response: error.name
+            code: 200,
+            response: "success",
           } as ApiResponse<string>;
-        });
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(
+            "FORGOTPASSWORD TESTING error.response.data: " + error.response.data
+          );
+          console.log(
+            "FORGOTPASSWORD TESTING error.response.status: " +
+              error.response.status
+          );
+          console.log(
+            "FORGOTPASSWORD TESTING error.response.headers: " +
+              error.response.headers
+          );
+        } else if (error.request) {
+          console.log("FORGOTPASSWORD TESTING error.request: " + error.request);
+        } else {
+          console.log("FORGOTPASSWORD TESTING error.request: " + error.message);
+        }
+        return {
+          code: error.status,
+          response: error.name,
+        } as ApiResponse<string>;
+      });
   }
 
   createNewPassword(
