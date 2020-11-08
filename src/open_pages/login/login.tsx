@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import styles from "../../css/login.module.css";
-import { Credentials } from "../../utils/api";
-import { login } from "../../utils/auth";
-import { Link, useHistory } from "react-router-dom";
+import {Credentials} from "../../utils/api";
+import {login} from "../../utils/auth";
+import {Link, useHistory} from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 
 interface AlertMessage {
