@@ -1,21 +1,14 @@
-export interface ApiResponse<T> {
-  code: number;
-  response: T;
-}
-
-export interface User {
-  name: string;
-}
-
-export interface LoginResponseBody {
-  accessToken: string;
-  refreshToken: string;
-}
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { getURL } from "./utils";
+import {
+  ApiResponse,
+  Credentials,
+  ErrorBody,
+  LoginResponse,
+} from "./interfaces";
 
 export interface ApiClient {
-  accessToken: string;
-  refreshToken: string;
-  login(credentials: Credentials): Promise<ApiResponse<LoginResponseBody>>;
+  login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
   forgotPassword(email: string): Promise<ApiResponse<string>>;
   createNewPassword(
     password: string,
@@ -24,47 +17,58 @@ export interface ApiClient {
   confirmEmail(emailToken: string): Promise<ApiResponse<string>>;
 }
 
-export interface Credentials {
-  login: string;
-  password: string;
+function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
+  const message = result.data as T;
+  return {
+    code: result.status,
+    response: message,
+  } as ApiResponse<T>;
 }
 
-class DummyApiClient implements ApiClient {
+function errorHandler(error: AxiosError): ApiResponse<ErrorBody> {
+  const result = error.response;
+  if (error.response !== undefined) {
+    return {
+      code: parseInt(error.code),
+      response: {
+        error:
+          result.data.message === null ? result.data.code : result.data.message,
+      },
+    } as ApiResponse<ErrorBody>;
+  } else {
+    return {
+      code: parseInt(error.code),
+      response: {
+        error: error.message,
+      },
+    };
+  }
+}
+
+export interface ApiClient {
+  login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
+}
+
+class ApiClientImpl implements ApiClient {
   private static api: ApiClient;
-  accessToken: string;
-  refreshToken: string;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
 
   public static getInstance(): ApiClient {
-    if (DummyApiClient.api == null) {
-      DummyApiClient.api = new DummyApiClient();
+    if (ApiClientImpl.api == null) {
+      ApiClientImpl.api = new ApiClientImpl();
     }
-    return DummyApiClient.api;
+    return ApiClientImpl.api;
   }
 
-  JWT = "DUMMY_JWT";
-  REFRESH_TOKEN = "DUMMY_REFRESH_TOKEN";
-
-  login(_: Credentials): Promise<ApiResponse<LoginResponseBody>> {
+  async login(creds: Credentials): Promise<ApiResponse<LoginResponse>> {
     console.log("Login called!");
-    if (_.login === "error") {
-      return Promise.resolve({
-        code: 404,
-        response: {
-          accessToken: "fail :(",
-          refreshToken: "fail :(",
-        },
-      });
-    }
-    return Promise.resolve({
-      code: 200,
-      response: {
-        accessToken: this.JWT,
-        refreshToken: this.REFRESH_TOKEN,
-      },
-    });
+
+    return await axios
+      .post<LoginResponse>(`http://${getURL()}/user/login`, creds)
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 
   forgotPassword(email: string): Promise<ApiResponse<string>> {
@@ -105,5 +109,5 @@ class DummyApiClient implements ApiClient {
 }
 
 export default function api(): ApiClient {
-  return DummyApiClient.getInstance();
+  return ApiClientImpl.getInstance();
 }
