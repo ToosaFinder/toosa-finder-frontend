@@ -1,10 +1,10 @@
 import React from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import {
-  useParams,
-  useLocation,
   matchPath,
   useHistory,
+  useLocation,
+  useParams,
 } from "react-router-dom";
 import styles from "../../css/restorePassword.module.css";
 import { createNewPassword } from "../../utils/auth";
