@@ -10,5 +10,5 @@ export default function ConfirmEmail(): JSX.Element {
   if (loading) {
     return null;
   }
-  return value ? <Redirect to="/sign-in" /> : <Redirect to="/error-page" />;
+  return value === true ? <Redirect to="/sign-in" /> : <Redirect to="/error-page" />;
 }
