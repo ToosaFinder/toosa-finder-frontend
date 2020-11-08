@@ -40,19 +40,20 @@ export default function Registration(): JSX.Element {
     }
   };
 
-  const onSubmit = async (event): Promise<void> => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     const {email, login, password} = credentials;
-    const success = await registration({email, login, password});
-    if (success === true) {
-      history.push("/sign-in");
-    } else {
-      const failAlert = {
-        success: false,
-        message: success as string,
-      };
-      enableAlert(failAlert);
-    }
+    registration({email, login, password}).then((success) => {
+      if (success === true) {
+        history.push("/sign-in");
+      } else {
+        const failAlert = {
+          success: false,
+          message: success as string,
+        };
+        enableAlert(failAlert);
+      }
+    });
   };
   const alert = history.location.state;
 

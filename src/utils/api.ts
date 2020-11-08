@@ -1,34 +1,19 @@
-import axios from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {getURL} from "./utils";
 import {
   ApiResponse,
   Credentials,
   ErrorBody,
   LoginResponse,
+  RegistrationCredentials,
+  RegistrationResponse,
 } from "./interfaces";
-
-export interface ApiResponse<T> {
-  code: number;
-  response: T;
-}
-
-export interface ErrorBody {
-  error: string;
-}
-
-export interface LoginResponseBody {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export type LoginResponse = LoginResponseBody | ErrorBody;
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
-
   registration(
       credentials: RegistrationCredentials
-  ): Promise<ApiResponse<string>>;
+  ): Promise<ApiResponse<RegistrationResponse>>;
   forgotPassword(email: string): Promise<ApiResponse<string>>;
   createNewPassword(
     password: string,
@@ -64,17 +49,6 @@ function errorHandler(error: AxiosError): ApiResponse<ErrorBody> {
   }
 }
 
-export interface Credentials {
-  userId: string;
-  password: string;
-}
-
-export interface RegistrationCredentials {
-  email: string;
-  login: string;
-  password: string;
-}
-
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
 }
@@ -103,25 +77,13 @@ class ApiClientImpl implements ApiClient {
 
   async registration(
       creds: RegistrationCredentials
-  ): Promise<ApiResponse<string>> {
+  ): Promise<ApiResponse<RegistrationResponse>> {
     console.log("Registration called!");
 
     return await axios
         .post<string>(`http://${getURL()}/user/registration`, creds)
-        .then((result) => {
-          if (result.status === 200) {
-            return {
-              code: 200,
-              response: "success",
-            } as ApiResponse<string>;
-          }
-        })
-        .catch((error) => {
-          return {
-            code: error.status,
-            response: error.response.data.message,
-          } as ApiResponse<string>;
-        });
+        .then(confirmationHandler)
+        .catch(errorHandler);
   }
 
   forgotPassword(email: string): Promise<ApiResponse<string>> {

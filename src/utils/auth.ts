@@ -1,6 +1,6 @@
-import api from "./api";
 import Cookies from "js-cookie";
-import { Credentials, ErrorBody, LoginResponseBody } from "./interfaces";
+import {Credentials, ErrorBody, LoginResponseBody, RegistrationCredentials,} from "./interfaces";
+import api from "./api";
 
 const ACCESS_TOKEN_COOKIE = "token";
 const REFRESH_TOKEN_COOKIE = "rtoken";
@@ -27,12 +27,13 @@ export async function registration(
   return api()
       .registration(credentials)
       .then((resp) => {
-        const {response, code} = resp;
-        if (code === 200) {
-          return true;
-        } else {
-          return response;
-        }
+          const {response, code} = resp;
+          if (code === 200) {
+              return true;
+          } else {
+              const {error} = response as ErrorBody;
+              return error;
+          }
       });
 }
 
