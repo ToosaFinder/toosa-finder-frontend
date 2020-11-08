@@ -18,8 +18,9 @@ export interface LoginResponseBody {
 export type LoginResponse = LoginResponseBody | ErrorBody;
 
 export interface ApiClient {
+
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
-  forgotPassword(email: string): Promise<ApiResponse<string>>;
+  forgotPassword(email: PasswordRestore): Promise<ApiResponse<string>>;
   createNewPassword(
     password: string,
     token: string
@@ -29,6 +30,10 @@ export interface ApiClient {
 export interface Credentials {
   userId: string;
   password: string;
+}
+
+export interface PasswordRestore{
+  email: string;
 }
 
 export interface ApiClient {
@@ -86,9 +91,9 @@ class ApiClientImpl implements ApiClient {
       });
   }
 
-  async forgotPassword(email: string): Promise<ApiResponse<string>> {
+  async forgotPassword(email: PasswordRestore): Promise<ApiResponse<string>> {
     console.log("Recovering password called!");
-
+    console.log("FORGOT PASSWORD url: ", getURL());
     return await axios
         .post<string>(`http://${getURL()}/user/restore-password`, email)
         .then((result) => {
@@ -100,6 +105,15 @@ class ApiClientImpl implements ApiClient {
           }
         })
         .catch((error) => {
+          if (error.response) {
+            console.log("FORGOTPASSWORD TESTING error.response.data: " + error.response.data);
+            console.log("FORGOTPASSWORD TESTING error.response.status: " + error.response.status);
+            console.log("FORGOTPASSWORD TESTING error.response.headers: " + error.response.headers);
+          } else if (error.request) {
+            console.log("FORGOTPASSWORD TESTING error.request: " + error.request);
+          } else {
+            console.log("FORGOTPASSWORD TESTING error.request: " + error.message);
+          }
           return {
             code: error.status,
             response: error.name

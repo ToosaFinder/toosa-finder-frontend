@@ -4,13 +4,14 @@ import styles from "../../css/restorePassword.module.css";
 import { forgotPassword } from "../../utils/auth";
 import { Link, useHistory } from "react-router-dom";
 import { validateEmail } from "../../utils/validations";
+import {PasswordRestore} from "../../utils/api";
 
 export default function ForgotPassword(): JSX.Element {
-  const [email, setEmail] = React.useState<string>("");
+  const [passwordRestore, setPasswordRestore] = React.useState<PasswordRestore>({email: ""});
   const history = useHistory();
   const onSubmit = async (event): Promise<void> => {
     event.preventDefault();
-    const success = await forgotPassword(email);
+    const success = await forgotPassword(passwordRestore);
     let state;
     if (success) {
       state = {
@@ -27,11 +28,12 @@ export default function ForgotPassword(): JSX.Element {
   };
 
   const onFormChange = (event): void => {
-    setEmail(event.target.value);
+    /*setEmail(event.target.value);*/
+    setPasswordRestore({...passwordRestore, [event.target.id]: event.target.value});
   };
 
   const getEmailClassName = (): string => {
-    return validateEmail(email) || email === "" ? "" : "is-invalid";
+    return validateEmail(passwordRestore.email) || passwordRestore.email === "" ? "" : "is-invalid";
   };
 
   return (
@@ -58,7 +60,7 @@ export default function ForgotPassword(): JSX.Element {
 
             <Form.Group controlId="submit-btn">
               <Button
-                disabled={!validateEmail(email)}
+                disabled={!validateEmail(passwordRestore.email)}
                 className={`${styles.submitButton} btn-danger`}
                 type="submit"
               >

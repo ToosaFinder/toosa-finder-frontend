@@ -1,4 +1,4 @@
-import api, { Credentials, ErrorBody, LoginResponseBody } from "./api";
+import api, {Credentials, ErrorBody, LoginResponseBody, PasswordRestore} from "./api";
 import Cookies from "js-cookie";
 
 const ACCESS_TOKEN_COOKIE = "token";
@@ -28,7 +28,7 @@ export function isLogged(): boolean {
   return typeof jwt != "undefined" && typeof rtoken != "undefined";
 }
 
-export async function forgotPassword(email: string): Promise<boolean> {
+export async function forgotPassword(email: PasswordRestore): Promise<boolean> {
   const { code } = await api().forgotPassword(email);
   if (code === 200) {
     console.log(`forgot password for email ${email}`);
