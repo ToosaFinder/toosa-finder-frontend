@@ -1,5 +1,10 @@
 import Cookies from "js-cookie";
-import {Credentials, ErrorBody, LoginResponseBody, RegistrationCredentials,} from "./interfaces";
+import {
+  Credentials,
+  ErrorBody,
+  LoginResponseBody,
+  RegistrationCredentials,
+} from "./interfaces";
 import api from "./api";
 
 const ACCESS_TOKEN_COOKIE = "token";

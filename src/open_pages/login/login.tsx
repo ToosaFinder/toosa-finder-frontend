@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import styles from "../../css/login.module.css";
-import {login} from "../../utils/auth";
-import {Link, useHistory} from "react-router-dom";
+import { login } from "../../utils/auth";
+import { Link, useHistory } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import {Credentials} from "../../utils/interfaces";
+import { Credentials } from "../../utils/interfaces";
 
 interface AlertMessage {
   success: boolean;

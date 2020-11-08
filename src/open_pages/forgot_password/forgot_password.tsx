@@ -1,9 +1,9 @@
 import React from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import styles from "../../css/restorePassword.module.css";
-import {forgotPassword} from "../../utils/auth";
-import {Link, useHistory} from "react-router-dom";
-import {validateEmail} from "../../utils/validations";
+import { forgotPassword } from "../../utils/auth";
+import { Link, useHistory } from "react-router-dom";
+import { validateEmail } from "../../utils/validations";
 
 export default function ForgotPassword(): JSX.Element {
   const [email, setEmail] = React.useState<string>("");

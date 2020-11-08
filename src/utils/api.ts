@@ -1,5 +1,5 @@
-import axios, {AxiosError, AxiosResponse} from "axios";
-import {getURL} from "./utils";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { getURL } from "./utils";
 import {
   ApiResponse,
   Credentials,
