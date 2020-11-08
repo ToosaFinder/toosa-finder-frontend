@@ -9,7 +9,6 @@ export interface ErrorBody {
 
 export interface LoginResponseBody {
   accessToken: string;
-  refreshToken: string;
 }
 
 export type LoginResponse = LoginResponseBody | ErrorBody;
