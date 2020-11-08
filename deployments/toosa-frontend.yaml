@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toosa-frontend
+spec:
+  selector:
+    matchLabels:
+      app: toosa-frontend
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: toosa-frontend
+    spec:
+      containers:
+        - image: toosafinder/toosafinder-front:dev
+          imagePullPolicy: Always
+          name: toosa-frontend
+          ports:
+            - containerPort: 80
