@@ -4,7 +4,7 @@ import styles from "../../css/restorePassword.module.css";
 import { forgotPassword } from "../../utils/auth";
 import { Link, useHistory } from "react-router-dom";
 import { validateEmail } from "../../utils/validations";
-import {PasswordRestore} from "../../utils/api";
+import {PasswordRestore} from "../../utils/interfaces";
 
 export default function ForgotPassword(): JSX.Element {
   const [passwordRestore, setPasswordRestore] = React.useState<PasswordRestore>({email: ""});
