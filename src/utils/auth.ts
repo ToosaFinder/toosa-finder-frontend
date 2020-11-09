@@ -4,7 +4,8 @@ import {
   ErrorBody,
   LoginResponseBody,
   RestorePasswordCredentials,
-  RegistrationCredentials, SetPasswordCredentials,
+  RegistrationCredentials,
+  SetPasswordCredentials,
 } from "./interfaces";
 import api from "./api";
 
@@ -49,7 +50,9 @@ export function isLogged(): boolean {
   return typeof jwt != "undefined" && typeof rtoken != "undefined";
 }
 
-export async function forgotPassword(email: RestorePasswordCredentials): Promise<boolean> {
+export async function forgotPassword(
+  email: RestorePasswordCredentials
+): Promise<boolean> {
   const { code } = await api().forgotPassword(email);
   if (code === 200) {
     console.log(`forgot password for email ${email}`);
@@ -59,7 +62,7 @@ export async function forgotPassword(email: RestorePasswordCredentials): Promise
 }
 
 export async function createNewPassword(
-    credentials: SetPasswordCredentials
+  credentials: SetPasswordCredentials
 ): Promise<boolean> {
   const { code } = await api().createNewPassword(credentials);
   if (code === 200) {

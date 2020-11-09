@@ -29,7 +29,7 @@ export interface RegistrationCredentials {
   password: string;
 }
 
-export interface SetPasswordCredentials{
+export interface SetPasswordCredentials {
   emailToken: string;
   password: string;
 }

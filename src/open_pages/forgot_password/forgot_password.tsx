@@ -7,9 +7,9 @@ import { validateEmail } from "../../utils/validations";
 import { RestorePasswordCredentials } from "../../utils/interfaces";
 
 export default function ForgotPassword(): JSX.Element {
-  const [passwordRestore, setPasswordRestore] = React.useState<RestorePasswordCredentials>(
-    { email: "" }
-  );
+  const [passwordRestore, setPasswordRestore] = React.useState<
+    RestorePasswordCredentials
+  >({ email: "" });
   const history = useHistory();
   const onSubmit = async (event): Promise<void> => {
     event.preventDefault();

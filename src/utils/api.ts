@@ -3,11 +3,14 @@ import { getURL } from "./utils";
 import {
   ApiResponse,
   Credentials,
-  ErrorBody, ForgotPasswordResponse,
+  ErrorBody,
+  ForgotPasswordResponse,
   LoginResponse,
   RestorePasswordCredentials,
   RegistrationCredentials,
-  RegistrationResponse, SetPasswordCredentials, SetPasswordResponse,
+  RegistrationResponse,
+  SetPasswordCredentials,
+  SetPasswordResponse,
 } from "./interfaces";
 
 export interface ApiClient {
@@ -15,9 +18,11 @@ export interface ApiClient {
   registration(
     credentials: RegistrationCredentials
   ): Promise<ApiResponse<RegistrationResponse>>;
-  forgotPassword(email: RestorePasswordCredentials): Promise<ApiResponse<ForgotPasswordResponse>>;
+  forgotPassword(
+    email: RestorePasswordCredentials
+  ): Promise<ApiResponse<ForgotPasswordResponse>>;
   createNewPassword(
-      credentials: SetPasswordCredentials
+    credentials: SetPasswordCredentials
   ): Promise<ApiResponse<SetPasswordResponse>>;
 }
 
@@ -86,20 +91,22 @@ class ApiClientImpl implements ApiClient {
       .catch(errorHandler);
   }
 
-  async forgotPassword(credentials: RestorePasswordCredentials): Promise<ApiResponse<ForgotPasswordResponse/*string*/>> {
+  async forgotPassword(
+    credentials: RestorePasswordCredentials
+  ): Promise<ApiResponse<ForgotPasswordResponse /*string*/>> {
     return await axios
-        .post<string>(`http://${getURL()}/user/restore-password`, credentials)
-        .then(confirmationHandler)
-        .catch(errorHandler);
+      .post<string>(`http://${getURL()}/user/restore-password`, credentials)
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 
   async createNewPassword(
-      credentials: SetPasswordCredentials
+    credentials: SetPasswordCredentials
   ): Promise<ApiResponse<SetPasswordResponse>> {
     return await axios
-        .post<string>(`http://${getURL()}/user/set-password`, credentials)
-        .then(confirmationHandler)
-        .catch(errorHandler);
+      .post<string>(`http://${getURL()}/user/set-password`, credentials)
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 }
 
