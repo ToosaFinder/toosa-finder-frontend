@@ -11,7 +11,7 @@ export interface LoginResponseBody {
   accessToken: string;
 }
 
-export interface PasswordRestore {
+export interface RestorePasswordCredentials {
   email: string;
 }
 
@@ -28,3 +28,12 @@ export interface RegistrationCredentials {
   login: string;
   password: string;
 }
+
+export interface SetPasswordCredentials{
+  emailToken: string;
+  password: string;
+}
+
+export type SetPasswordResponse = string | ErrorBody;
+
+export type ForgotPasswordResponse = string | ErrorBody;

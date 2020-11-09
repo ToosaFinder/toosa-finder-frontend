@@ -3,11 +3,11 @@ import { getURL } from "./utils";
 import {
   ApiResponse,
   Credentials,
-  ErrorBody,
+  ErrorBody, ForgotPasswordResponse,
   LoginResponse,
-  PasswordRestore,
+  RestorePasswordCredentials,
   RegistrationCredentials,
-  RegistrationResponse,
+  RegistrationResponse, SetPasswordCredentials, SetPasswordResponse,
 } from "./interfaces";
 
 export interface ApiClient {
@@ -15,11 +15,10 @@ export interface ApiClient {
   registration(
     credentials: RegistrationCredentials
   ): Promise<ApiResponse<RegistrationResponse>>;
-  forgotPassword(email: PasswordRestore): Promise<ApiResponse<string>>;
+  forgotPassword(email: RestorePasswordCredentials): Promise<ApiResponse<ForgotPasswordResponse>>;
   createNewPassword(
-    password: string,
-    token: string
-  ): Promise<ApiResponse<string>>;
+      credentials: SetPasswordCredentials
+  ): Promise<ApiResponse<SetPasswordResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -87,58 +86,20 @@ class ApiClientImpl implements ApiClient {
       .catch(errorHandler);
   }
 
-  async forgotPassword(email: PasswordRestore): Promise<ApiResponse<string>> {
-    console.log("Recovering password called!");
-    console.log("FORGOT PASSWORD url: ", getURL());
+  async forgotPassword(credentials: RestorePasswordCredentials): Promise<ApiResponse<ForgotPasswordResponse/*string*/>> {
     return await axios
-      .post<string>(`http://${getURL()}/user/restore-password`, email)
-      .then((result) => {
-        if (result.status === 200) {
-          return {
-            code: 200,
-            response: "success",
-          } as ApiResponse<string>;
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(
-            "FORGOTPASSWORD TESTING error.response.data: " + error.response.data
-          );
-          console.log(
-            "FORGOTPASSWORD TESTING error.response.status: " +
-              error.response.status
-          );
-          console.log(
-            "FORGOTPASSWORD TESTING error.response.headers: " +
-              error.response.headers
-          );
-        } else if (error.request) {
-          console.log("FORGOTPASSWORD TESTING error.request: " + error.request);
-        } else {
-          console.log("FORGOTPASSWORD TESTING error.request: " + error.message);
-        }
-        return {
-          code: error.status,
-          response: error.name,
-        } as ApiResponse<string>;
-      });
+        .post<string>(`http://${getURL()}/user/restore-password`, credentials)
+        .then(confirmationHandler)
+        .catch(errorHandler);
   }
 
-  createNewPassword(
-    password: string,
-    token: string
-  ): Promise<ApiResponse<string>> {
-    if (token === "228") {
-      return Promise.resolve({
-        code: 404,
-        response: "error!",
-      });
-    }
-    return Promise.resolve({
-      code: 200,
-      response: password + " " + token,
-    });
+  async createNewPassword(
+      credentials: SetPasswordCredentials
+  ): Promise<ApiResponse<SetPasswordResponse>> {
+    return await axios
+        .post<string>(`http://${getURL()}/user/set-password`, credentials)
+        .then(confirmationHandler)
+        .catch(errorHandler);
   }
 }
 

@@ -3,8 +3,8 @@ import {
   Credentials,
   ErrorBody,
   LoginResponseBody,
-  PasswordRestore,
-  RegistrationCredentials,
+  RestorePasswordCredentials,
+  RegistrationCredentials, SetPasswordCredentials,
 } from "./interfaces";
 import api from "./api";
 
@@ -49,7 +49,7 @@ export function isLogged(): boolean {
   return typeof jwt != "undefined" && typeof rtoken != "undefined";
 }
 
-export async function forgotPassword(email: PasswordRestore): Promise<boolean> {
+export async function forgotPassword(email: RestorePasswordCredentials): Promise<boolean> {
   const { code } = await api().forgotPassword(email);
   if (code === 200) {
     console.log(`forgot password for email ${email}`);
@@ -59,12 +59,11 @@ export async function forgotPassword(email: PasswordRestore): Promise<boolean> {
 }
 
 export async function createNewPassword(
-  password: string,
-  token: string
+    credentials: SetPasswordCredentials
 ): Promise<boolean> {
-  const { code } = await api().createNewPassword(password, token);
+  const { code } = await api().createNewPassword(credentials);
   if (code === 200) {
-    console.log(`new password for ${password}`);
+    console.log(`new password for ${credentials.password}`);
     return true;
   }
   return false;

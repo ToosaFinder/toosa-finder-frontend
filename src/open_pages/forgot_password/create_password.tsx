@@ -40,8 +40,10 @@ export default function CreatePassword(): JSX.Element {
   const onSubmit = async (event): Promise<void> => {
     event.preventDefault();
     const success = await createNewPassword(
-      passwordCheck.password,
-      restoreToken
+        {
+          emailToken: restoreToken,
+          password: passwordCheck.password
+        }
     );
     let state;
     if (success) {
