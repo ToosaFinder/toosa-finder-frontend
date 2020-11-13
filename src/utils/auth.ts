@@ -10,7 +10,6 @@ import {
 import api from "./api";
 
 const ACCESS_TOKEN_COOKIE = "token";
-const REFRESH_TOKEN_COOKIE = "rtoken";
 
 export async function login(credentials: Credentials): Promise<true | string> {
   return api()
