@@ -30,7 +30,6 @@ export default function ForgotPassword(): JSX.Element {
   };
 
   const onFormChange = (event): void => {
-    /*setEmail(event.target.value);*/
     setPasswordRestore({
       ...passwordRestore,
       [event.target.id]: event.target.value,

@@ -46,8 +46,7 @@ export async function registration(
 
 export function isLogged(): boolean {
   const jwt = Cookies.get(ACCESS_TOKEN_COOKIE);
-  const rtoken = Cookies.get(REFRESH_TOKEN_COOKIE);
-  return typeof jwt != "undefined" && typeof rtoken != "undefined";
+  return typeof jwt != "undefined";
 }
 
 export async function forgotPassword(

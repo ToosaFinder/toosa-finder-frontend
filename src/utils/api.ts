@@ -93,7 +93,7 @@ class ApiClientImpl implements ApiClient {
 
   async forgotPassword(
     credentials: RestorePasswordCredentials
-  ): Promise<ApiResponse<ForgotPasswordResponse /*string*/>> {
+  ): Promise<ApiResponse<ForgotPasswordResponse>> {
     return await axios
       .post<string>(`http://${getURL()}/user/restore-password`, credentials)
       .then(confirmationHandler)
