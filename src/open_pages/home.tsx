@@ -7,6 +7,10 @@ import Grisha from "../devs/grisha";
 import { Button, Container, Row } from "react-bootstrap";
 import styles from "../css/home.module.css";
 import { logout } from "../utils/auth";
+import Image from "react-bootstrap/Image";
+import Col from "react-bootstrap/Col";
+import eventCreationIcon from "./roundedcircle.png";
+import EventCreation from "./event_creation/event_creation";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -17,9 +21,11 @@ export default function Home(): JSX.Element {
     history.push("/");
     event.preventDefault();
   };
-
+  const handleClick = (): void => {
+    console.log("clicked");
+  };
   return (
-    <Container className={styles.container}>
+    <Container fluid className={styles.container}>
       <Row className={styles.formRow}>
         <h1 className="title, text-lg-center">Welcome to Toosa Finder!</h1>
       </Row>
@@ -39,12 +45,28 @@ export default function Home(): JSX.Element {
           <PrivateRoute path={`${url}/dima`} component={Dima} />
           <PrivateRoute path={`${url}/olya`} component={Olya} />
           <PrivateRoute path={`${url}/grisha`} component={Grisha} />
+          <PrivateRoute
+            path={`${url}/eventCreation`}
+            component={EventCreation}
+          />
         </Switch>
       </Row>
       <Row className={styles.formRow}>
         <Button className="btn-danger" onClick={onLogoutClick}>
           Logout
         </Button>
+      </Row>
+
+      <Row className={styles.eventCreation}>
+        <Link to={`${url}/eventCreation`}>
+          <Button variant="outline-light" onClick={handleClick}>
+            <Image
+              className={styles.enlargingEffect}
+              src={eventCreationIcon}
+              alt="logo"
+            />
+          </Button>
+        </Link>
       </Row>
     </Container>
   );
