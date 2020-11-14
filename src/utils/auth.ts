@@ -3,12 +3,13 @@ import {
   Credentials,
   ErrorBody,
   LoginResponseBody,
+  RestorePasswordCredentials,
   RegistrationCredentials,
+  SetPasswordCredentials,
 } from "./interfaces";
 import api from "./api";
 
 const ACCESS_TOKEN_COOKIE = "token";
-const REFRESH_TOKEN_COOKIE = "rtoken";
 
 export async function login(credentials: Credentials): Promise<true | string> {
   return api()
@@ -44,11 +45,12 @@ export async function registration(
 
 export function isLogged(): boolean {
   const jwt = Cookies.get(ACCESS_TOKEN_COOKIE);
-  const rtoken = Cookies.get(REFRESH_TOKEN_COOKIE);
-  return typeof jwt != "undefined" && typeof rtoken != "undefined";
+  return typeof jwt != "undefined";
 }
 
-export async function forgotPassword(email: string): Promise<boolean> {
+export async function forgotPassword(
+  email: RestorePasswordCredentials
+): Promise<boolean> {
   const { code } = await api().forgotPassword(email);
   if (code === 200) {
     console.log(`forgot password for email ${email}`);
@@ -58,12 +60,11 @@ export async function forgotPassword(email: string): Promise<boolean> {
 }
 
 export async function createNewPassword(
-  password: string,
-  token: string
+  credentials: SetPasswordCredentials
 ): Promise<boolean> {
-  const { code } = await api().createNewPassword(password, token);
+  const { code } = await api().createNewPassword(credentials);
   if (code === 200) {
-    console.log(`new password for ${password}`);
+    console.log(`new password for ${credentials.password}`);
     return true;
   }
   return false;
