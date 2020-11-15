@@ -15,8 +15,7 @@
 .input {
   display: flex;
   flex-direction: column;
-  min-height: 13.5vh;
-  margin-bottom: 0.1vh;
+  min-height: 14vh;
 }
 
 .label {
@@ -33,7 +32,9 @@
 }
 
 .secondaryText {
-  color: dimgrey;
+  color: #606162;
+  font-weight: 400;
+  margin-top: 2px;
 }
 
 .signIn {

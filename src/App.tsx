@@ -7,6 +7,8 @@ import UnloggedRoute from "./utils/unlogged_route";
 import Home from "./open_pages/home";
 import ForgotPassword from "./open_pages/forgot_password/forgot_password";
 import CreatePassword from "./open_pages/forgot_password/create_password";
+import ErrorPage from "./open_pages/confirm_email/error_page";
+import ConfirmEmail from "./open_pages/confirm_email/confirm_email";
 
 function App(): JSX.Element {
   return (
@@ -21,6 +23,11 @@ function App(): JSX.Element {
         <UnloggedRoute path="/sign-up" component={Registration} exact />
         <PrivateRoute path="/home" component={Home} />
         <Redirect from="/" to="/sign-in" exact />
+        <UnloggedRoute
+          path="/user/confirm-email/:emailToken"
+          component={ConfirmEmail}
+        />
+        <UnloggedRoute path="/error-page" component={ErrorPage} />
       </Switch>
     </div>
   );

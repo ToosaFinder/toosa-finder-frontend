@@ -6,7 +6,7 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import styles from "../../css/restorePassword.module.css";
+import styles from "../../css/restore_password.module.css";
 import { createNewPassword } from "../../utils/auth";
 import { validatePassword } from "../../utils/validations";
 
