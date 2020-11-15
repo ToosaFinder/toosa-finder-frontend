@@ -1,5 +1,5 @@
 import React from "react";
-import { Form } from "react-bootstrap";
+import {Form} from "react-bootstrap";
 import styles from "../../css/error_page.module.css";
 
 export default function ErrorPage(): JSX.Element {
