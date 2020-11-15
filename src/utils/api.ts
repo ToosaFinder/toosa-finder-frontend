@@ -5,9 +5,13 @@ import {
   ConfirmEmailResponse,
   Credentials,
   ErrorBody,
+  ForgotPasswordResponse,
   LoginResponse,
+  RestorePasswordCredentials,
   RegistrationCredentials,
   RegistrationResponse,
+  SetPasswordCredentials,
+  SetPasswordResponse,
 } from "./interfaces";
 
 export interface ApiClient {
@@ -15,11 +19,12 @@ export interface ApiClient {
   registration(
     credentials: RegistrationCredentials
   ): Promise<ApiResponse<RegistrationResponse>>;
-  forgotPassword(email: string): Promise<ApiResponse<string>>;
+  forgotPassword(
+    email: RestorePasswordCredentials
+  ): Promise<ApiResponse<ForgotPasswordResponse>>;
   createNewPassword(
-    password: string,
-    token: string
-  ): Promise<ApiResponse<string>>;
+    credentials: SetPasswordCredentials
+  ): Promise<ApiResponse<SetPasswordResponse>>;
   confirmEmail(emailToken: string): Promise<ApiResponse<ConfirmEmailResponse>>;
 }
 
@@ -88,27 +93,22 @@ class ApiClientImpl implements ApiClient {
       .catch(errorHandler);
   }
 
-  forgotPassword(email: string): Promise<ApiResponse<string>> {
-    return Promise.resolve({
-      code: 200,
-      response: email,
-    });
+  async forgotPassword(
+    credentials: RestorePasswordCredentials
+  ): Promise<ApiResponse<ForgotPasswordResponse>> {
+    return await axios
+      .post<string>(`http://${getURL()}/user/restore-password`, credentials)
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 
-  createNewPassword(
-    password: string,
-    token: string
-  ): Promise<ApiResponse<string>> {
-    if (token === "228") {
-      return Promise.resolve({
-        code: 404,
-        response: "error!",
-      });
-    }
-    return Promise.resolve({
-      code: 200,
-      response: password + " " + token,
-    });
+  async createNewPassword(
+    credentials: SetPasswordCredentials
+  ): Promise<ApiResponse<SetPasswordResponse>> {
+    return await axios
+      .post<string>(`http://${getURL()}/user/set-password`, credentials)
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 
   async confirmEmail(
