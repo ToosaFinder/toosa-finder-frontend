@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {Button, Container, Form, Row} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Container, Form, Row } from "react-bootstrap";
 import styles from "../../css/registration.module.css";
-import {Link, useHistory} from "react-router-dom";
-import {validateEmail, validateLogin} from "../../utils/validations";
+import { Link, useHistory } from "react-router-dom";
+import { validateEmail, validateLogin } from "../../utils/validations";
 import Alert from "react-bootstrap/Alert";
-import {registration} from "../../utils/auth";
+import { registration } from "../../utils/auth";
 
 interface Credentials {
   email: string;

@@ -3,8 +3,8 @@ import {
   Credentials,
   ErrorBody,
   LoginResponseBody,
-  RestorePasswordCredentials,
   RegistrationCredentials,
+  RestorePasswordCredentials,
   SetPasswordCredentials,
 } from "./interfaces";
 import api from "./api";

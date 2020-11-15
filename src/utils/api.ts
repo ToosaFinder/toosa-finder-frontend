@@ -7,9 +7,9 @@ import {
   ErrorBody,
   ForgotPasswordResponse,
   LoginResponse,
-  RestorePasswordCredentials,
   RegistrationCredentials,
   RegistrationResponse,
+  RestorePasswordCredentials,
   SetPasswordCredentials,
   SetPasswordResponse,
 } from "./interfaces";
