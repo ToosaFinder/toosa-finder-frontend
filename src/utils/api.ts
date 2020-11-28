@@ -10,8 +10,9 @@ import {
   RegistrationCredentials,
   RegistrationResponse,
   SetPasswordCredentials,
-  SetPasswordResponse,
+  SetPasswordResponse, PopularTagsResponse, PopularTags,
 } from "./interfaces";
+import Cookies from "js-cookie";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -24,6 +25,7 @@ export interface ApiClient {
   createNewPassword(
     credentials: SetPasswordCredentials
   ): Promise<ApiResponse<SetPasswordResponse>>;
+  getPopularTags(): Promise<ApiResponse<PopularTagsResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -108,6 +110,15 @@ class ApiClientImpl implements ApiClient {
       .then(confirmationHandler)
       .catch(errorHandler);
   }
+
+  async getPopularTags(): Promise<ApiResponse<PopularTagsResponse>>{
+    return await axios
+        .get<PopularTagsResponse>(`http://${getURL()}/event/tag/popular`,
+            {headers: {Authorization: `Bearer ${Cookies.get("token")}`}})
+        .then(confirmationHandler)
+        .catch(errorHandler);
+  }
+
 }
 
 export default function api(): ApiClient {

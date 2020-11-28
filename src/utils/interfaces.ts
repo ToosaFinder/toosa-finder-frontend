@@ -37,3 +37,9 @@ export interface SetPasswordCredentials {
 export type SetPasswordResponse = string | ErrorBody;
 
 export type ForgotPasswordResponse = string | ErrorBody;
+
+export interface PopularTags {
+  tags: string[];
+}
+
+export type PopularTagsResponse = PopularTags | ErrorBody;
