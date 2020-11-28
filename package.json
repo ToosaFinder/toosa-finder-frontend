@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "axios": "^0.21.0",
+    "google-map-react": "^2.1.9",
     "prettier": "2.1.2"
   }
 }

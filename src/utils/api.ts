@@ -4,15 +4,16 @@ import {
   ApiResponse,
   ConfirmEmailResponse,
   Credentials,
-  ErrorBody,
+  ErrorBody, EventResponse,
   ForgotPasswordResponse,
   LoginResponse,
   RegistrationCredentials,
   RegistrationResponse,
   RestorePasswordCredentials,
   SetPasswordCredentials,
-  SetPasswordResponse,
+  SetPasswordResponse
 } from "./interfaces";
+import Cookies from "js-cookie";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -26,6 +27,7 @@ export interface ApiClient {
     credentials: SetPasswordCredentials
   ): Promise<ApiResponse<SetPasswordResponse>>;
   confirmEmail(emailToken: string): Promise<ApiResponse<ConfirmEmailResponse>>;
+  getEvents(): Promise<ApiResponse<EventResponse>>
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -54,10 +56,6 @@ function errorHandler(error: AxiosError): ApiResponse<ErrorBody> {
       },
     };
   }
-}
-
-export interface ApiClient {
-  login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
 }
 
 class ApiClientImpl implements ApiClient {
@@ -120,6 +118,12 @@ class ApiClientImpl implements ApiClient {
       .put<ConfirmEmailResponse>(
         `http://${getURL()}/user/email-confirmed/${emailToken}`
       )
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async getEvents(): Promise<ApiResponse<EventResponse>> {
+    return await axios.get<EventResponse>(`http://${getURL()}/event`, {headers: { 'Authorization': `Bearer ${Cookies.get('token')}`}})
       .then(confirmationHandler)
       .catch(errorHandler);
   }
