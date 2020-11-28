@@ -29,7 +29,6 @@ export default function Home(): JSX.Element {
           <PrivateRoute path={`${url}/dima`} component={Dima} />
           <PrivateRoute path={`${url}/olya`} component={Olya} />
           <PrivateRoute path={`${url}/grisha`} component={Grisha} />
-            {/*<PrivateRoute path={`${url}/eventCreation`} component={EventCreation}/>*/}
             <PrivateRoute path={`${url}`} exact>
                 <Container fluid className={styles.container}>
                 <Row className={styles.formRow}>
