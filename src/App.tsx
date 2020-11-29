@@ -17,7 +17,7 @@ function App(): JSX.Element {
         <UnloggedRoute path="/sign-in" component={SignIn} exact />
         <UnloggedRoute path="/restore" component={ForgotPassword} exact />
         <UnloggedRoute
-          path="/restore/:restoreToken"
+          path="/user/restore-password/:restoreToken"
           component={CreatePassword}
         />
         <UnloggedRoute path="/sign-up" component={Registration} exact />
