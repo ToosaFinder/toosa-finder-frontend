@@ -56,5 +56,5 @@ jobs:
       - name: Deploy
         run: |-
           kubectl apply -f ./deployments/toosa-frontend.yaml
-          kubectl patch deployment toosa-frontend -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"build\":\"${{ github.run_number }}\"}}}}}}"
+          kubectl rollout restart deployment/toosa-frontend
           kubectl apply -f ./deployments/load-balancer.yaml
