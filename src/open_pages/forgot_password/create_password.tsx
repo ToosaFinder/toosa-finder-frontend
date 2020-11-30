@@ -15,7 +15,7 @@ interface PasswordCheck {
   passwordConfirmation: string;
 }
 
-const url = "/restore/:restoreToken";
+const url = "/user/restore-password/:restoreToken";
 
 export default function CreatePassword(): JSX.Element {
   const { restoreToken } = useParams();
