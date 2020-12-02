@@ -13,7 +13,7 @@ export default function parseLocation(
   let region: string;
   let country: string;
   let address: string[] = [];
-// eslint-disable-next-line
+  // eslint-disable-next-line
   location.results[0].address_components.map((val) => {
     if (val.types.includes("establishment")) {
       establishment = val.long_name;
