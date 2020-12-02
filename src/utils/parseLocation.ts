@@ -51,15 +51,15 @@ export default function parseLocation(
 
   let districtName: string;
 
-  if (district != undefined) districtName = district.long_name;
+  if (district !== undefined) districtName = district.long_name;
 
-  if (districtName != undefined) {
+  if (districtName !== undefined) {
     let index;
-    if (city != undefined) {
+    if (city !== undefined) {
       index = address.indexOf(city);
-    } else if (region != undefined) {
+    } else if (region !== undefined) {
       index = address.indexOf(region);
-    } else if (country != undefined) {
+    } else if (country !== undefined) {
       index = address.indexOf(country);
     } else {
       index = address.length + 1;

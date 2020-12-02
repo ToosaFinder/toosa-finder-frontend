@@ -34,7 +34,7 @@ export async function whoAmI(): Promise<string> {
     .then((resp) => {
       const { code, response } = resp;
       if (code === 200) {
-        const { login, email } = response;
+        const { login } = response;
         return login;
       } else {
         console.log(

@@ -20,7 +20,6 @@ import {
   UserRes,
 } from "./interfaces";
 import Cookies from "js-cookie";
-import Axios from "axios";
 import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
 
 export interface ApiClient {
