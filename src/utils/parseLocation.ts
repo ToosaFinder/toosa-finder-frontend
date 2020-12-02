@@ -13,7 +13,7 @@ export default function parseLocation(
   let region: string;
   let country: string;
   let address: string[] = [];
-
+// eslint-disable-next-line
   location.results[0].address_components.map((val) => {
     if (val.types.includes("establishment")) {
       establishment = val.long_name;
@@ -42,7 +42,9 @@ export default function parseLocation(
   });
 
   let district: AddressComponent;
+  // eslint-disable-next-line
   location.results.find((value) => {
+    // eslint-disable-next-line
     district = value.address_components.find((adrComp) => {
       if (adrComp.types.includes("sublocality_level_2")) return true;
     });
