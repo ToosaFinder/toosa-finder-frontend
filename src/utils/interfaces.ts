@@ -18,6 +18,7 @@ export interface RestorePasswordCredentials {
 }
 
 export type LoginResponse = LoginResponseBody | ErrorBody;
+export type ConfirmEmailResponse = string | ErrorBody;
 export type RegistrationResponse = string | ErrorBody;
 
 export interface Credentials {

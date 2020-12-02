@@ -2,13 +2,14 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { getURL } from "./utils";
 import {
   ApiResponse,
+  ConfirmEmailResponse,
   Credentials,
   ErrorBody,
   ForgotPasswordResponse,
   LoginResponse,
-  RestorePasswordCredentials,
   RegistrationCredentials,
   RegistrationResponse,
+  RestorePasswordCredentials,
   SetPasswordCredentials,
   SetPasswordResponse,
   PopularTagsResponse,
@@ -33,6 +34,7 @@ export interface ApiClient {
   createNewPassword(
     credentials: SetPasswordCredentials
   ): Promise<ApiResponse<SetPasswordResponse>>;
+  confirmEmail(emailToken: string): Promise<ApiResponse<ConfirmEmailResponse>>;
   getPopularTags(): Promise<ApiResponse<PopularTagsResponse>>;
   getLocationName(
     cords: Coordinates
@@ -122,6 +124,19 @@ class ApiClientImpl implements ApiClient {
   ): Promise<ApiResponse<SetPasswordResponse>> {
     return await axios
       .post<string>(`http://${getURL()}/user/set-password`, credentials)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async confirmEmail(
+    emailToken: string
+  ): Promise<ApiResponse<ConfirmEmailResponse>> {
+    console.log("confirmEmail called");
+
+    return await axios
+      .put<ConfirmEmailResponse>(
+        `http://${getURL()}/user/email-confirmed/${emailToken}`
+      )
       .then(confirmationHandler)
       .catch(errorHandler);
   }

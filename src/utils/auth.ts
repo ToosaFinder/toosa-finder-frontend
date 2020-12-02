@@ -3,8 +3,8 @@ import {
   Credentials,
   ErrorBody,
   LoginResponseBody,
-  RestorePasswordCredentials,
   RegistrationCredentials,
+  RestorePasswordCredentials,
   SetPasswordCredentials,
 } from "./interfaces";
 import api from "./api";
@@ -68,6 +68,20 @@ export async function createNewPassword(
     return true;
   }
   return false;
+}
+
+export async function confirmEmail(emailToken: string): Promise<true | string> {
+  return api()
+    .confirmEmail(emailToken)
+    .then((resp) => {
+      const { response, code } = resp;
+      if (code === 200) {
+        return true;
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
+      }
+    });
 }
 
 export function logout(): void {
