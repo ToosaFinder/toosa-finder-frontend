@@ -35,7 +35,7 @@ export default function EventCreation(): JSX.Element {
   const [isPublic, setIsPublic] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [size, setSize] = useState<number>(3);
+  const [size, setSize] = useState<number>(50);
   const [date, setDate] = useState<Date>(new Date());
   const [isDateCorrect, setDateCorrectness] = useState<boolean>(true);
   const [listOfPickedTags, setListOfPickedTags] = useState<string[]>([]);
