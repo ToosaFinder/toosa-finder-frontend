@@ -10,9 +10,11 @@ export default function ValidDateTimePicker(props): JSX.Element{
     function valid(current){
         return current.isAfter(yesterday);
     }
+
+
     return <Datetime
-        onChange={props.onChangeFunc}
         isValidDate={valid}
-        initialValue={new Date()}
+        initialValue={props.initDate}
+        onClose={props.onClose}
     />
 }

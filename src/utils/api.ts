@@ -10,9 +10,12 @@ import {
   RegistrationCredentials,
   RegistrationResponse,
   SetPasswordCredentials,
-  SetPasswordResponse, PopularTagsResponse, PopularTags,
+  SetPasswordResponse, PopularTagsResponse,
+  Coordinates, ReverseGeocodingResponse, EventCreationReq, EventCreationResponse, UserRes
 } from "./interfaces";
 import Cookies from "js-cookie";
+import Axios from "axios";
+import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -26,6 +29,9 @@ export interface ApiClient {
     credentials: SetPasswordCredentials
   ): Promise<ApiResponse<SetPasswordResponse>>;
   getPopularTags(): Promise<ApiResponse<PopularTagsResponse>>;
+  getLocationName(cords: Coordinates): Promise<ApiResponse<ReverseGeocodingSuccess | ErrorBody>>
+  createEvent(data: EventCreationReq): Promise<ApiResponse<EventCreationResponse>>;
+  whoAmI(): Promise<ApiResponse<UserRes>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -119,7 +125,40 @@ class ApiClientImpl implements ApiClient {
         .catch(errorHandler);
   }
 
+  async getLocationName(cords: Coordinates): Promise<ApiResponse<ReverseGeocodingResponse>>{
+    return await axios
+      .get<ReverseGeocodingResponse>(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${cords.lat},${cords.lng}&key=${process.env.REACT_APP_GOOGLE_KEY}`)
+      .then(confirmationHandler)
+      .catch(
+        (error: AxiosError) => {
+          return {
+            code: error.response.status,
+            response:{
+              error: error.message+": "+error.response.data.error_message
+            }
+          } as ApiResponse<ErrorBody>;
+        }
+      );
+  }
+
+  async createEvent(data: EventCreationReq): Promise<ApiResponse<EventCreationResponse>>{
+    return await axios
+      .post<EventCreationResponse>(`http://${getURL()}/event/`,
+        data,
+        {headers: {Authorization: `Bearer ${Cookies.get("token")}`}})
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async whoAmI(): Promise<ApiResponse<UserRes>>{
+    return await axios
+      .get<UserRes>(`http://${getURL()}/user/me`,
+        {headers: {Authorization: `Bearer ${Cookies.get("token")}`}})
+      .then(confirmationHandler);
+  }
 }
+
+
 
 export default function api(): ApiClient {
   return ApiClientImpl.getInstance();

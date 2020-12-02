@@ -1,3 +1,5 @@
+import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
+
 export interface ApiResponse<T> {
   code: number;
   response: T;
@@ -43,3 +45,44 @@ export interface PopularTags {
 }
 
 export type PopularTagsResponse = PopularTags | ErrorBody;
+
+export interface Coordinates{
+  lat: number;
+  lng: number;
+}
+
+export type ReverseGeocodingResponse = ReverseGeocodingSuccess | ErrorBody;
+
+export interface EventCreationReq {
+  name: string;
+  creator: string;
+  description: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  participantsLimit: number;
+  startTime: Date;
+  isPublic: boolean;
+  tags: string[];
+}
+
+export interface EventCreationRes {
+  id: number;
+  name: string;
+  creator: string;
+  description: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  participantsLimit: number;
+  startTime: Date;
+  isPublic: boolean;
+  tags: string[];
+}
+
+export type EventCreationResponse = EventCreationRes | ErrorBody;
+
+export interface UserRes{
+  login: string;
+  email: string;
+}
