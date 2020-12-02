@@ -1,6 +1,11 @@
-import { AddressComponent, ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
+import {
+  AddressComponent,
+  ReverseGeocodingSuccess,
+} from "./reverseGeocodingResponseInterface";
 
-export default function parseLocation(location: ReverseGeocodingSuccess): string {
+export default function parseLocation(
+  location: ReverseGeocodingSuccess
+): string {
   let establishment: string;
   let streetNumber: string;
   let street: string;
@@ -37,19 +42,16 @@ export default function parseLocation(location: ReverseGeocodingSuccess): string
   });
 
   let district: AddressComponent;
-  location.results.find(value => {
+  location.results.find((value) => {
     district = value.address_components.find((adrComp) => {
-      if (adrComp.types.includes("sublocality_level_2"))
-        return true;
-    })
-    if (district !== undefined)
-      return true;
+      if (adrComp.types.includes("sublocality_level_2")) return true;
+    });
+    if (district !== undefined) return true;
   });
 
   let districtName: string;
 
-  if (district!=undefined)
-     districtName = district.long_name;
+  if (district != undefined) districtName = district.long_name;
 
   if (districtName != undefined) {
     let index;

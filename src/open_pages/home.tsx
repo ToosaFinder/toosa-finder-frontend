@@ -21,49 +21,51 @@ export default function Home(): JSX.Element {
     event.preventDefault();
   };
   const handleClick = (): void => {
-      console.log("clicked");
+    console.log("clicked");
   };
   return (
-      <Row>
-        <Switch>
-          <PrivateRoute path={`${url}/dima`} component={Dima} />
-          <PrivateRoute path={`${url}/olya`} component={Olya} />
-          <PrivateRoute path={`${url}/grisha`} component={Grisha} />
-            <PrivateRoute path={`${url}`} exact>
-                <Container fluid className={styles.container}>
-                <Row className={styles.formRow}>
-                    <h1 className="title, text-lg-center">Welcome to Toosa Finder!</h1>
-                </Row>
-                <Row className={styles.formRow}>
-                    <h4 className="text-lg-center">Developers:</h4>
-                </Row>
-                <Row className={styles.formRow}>
-                    {" "}
-                    <h5 className="text-md-center">
-                        <Link to={`${url}/dima`}> Дима </Link>
-                        <Link to={`${url}/olya`}> Оля </Link>
-                        <Link to={`${url}/grisha`}> Гриша </Link>
-                    </h5>
-                </Row>
-                <Row className={styles.formRow}>
-                    <Button className="btn-danger" onClick={onLogoutClick}>
-                        Logout
-                    </Button>
-                </Row>
-                <Row className={styles.eventCreation}>
-                    <Link to={`${url}/eventCreation`}>
-                        <Image
-                            className={styles.enlargingEffect}
-                            src={eventCreationIcon}
-                            alt="logo"
-                            onClick={handleClick}
-                        />
-                    </Link>
-                </Row>
-                </Container>
-            </PrivateRoute>
-            <PrivateRoute path={`${url}/eventCreation`} component={EventCreation}/>
-        </Switch>
-      </Row>
+    <Row>
+      <Switch>
+        <PrivateRoute path={`${url}/dima`} component={Dima} />
+        <PrivateRoute path={`${url}/olya`} component={Olya} />
+        <PrivateRoute path={`${url}/grisha`} component={Grisha} />
+        <PrivateRoute path={`${url}`} exact>
+          <Container fluid className={styles.container}>
+            <Row className={styles.formRow}>
+              <h1 className="title, text-lg-center">
+                Welcome to Toosa Finder!
+              </h1>
+            </Row>
+            <Row className={styles.formRow}>
+              <h4 className="text-lg-center">Developers:</h4>
+            </Row>
+            <Row className={styles.formRow}>
+              {" "}
+              <h5 className="text-md-center">
+                <Link to={`${url}/dima`}> Дима </Link>
+                <Link to={`${url}/olya`}> Оля </Link>
+                <Link to={`${url}/grisha`}> Гриша </Link>
+              </h5>
+            </Row>
+            <Row className={styles.formRow}>
+              <Button className="btn-danger" onClick={onLogoutClick}>
+                Logout
+              </Button>
+            </Row>
+            <Row className={styles.eventCreation}>
+              <Link to={`${url}/eventCreation`}>
+                <Image
+                  className={styles.enlargingEffect}
+                  src={eventCreationIcon}
+                  alt="logo"
+                  onClick={handleClick}
+                />
+              </Link>
+            </Row>
+          </Container>
+        </PrivateRoute>
+        <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
+      </Switch>
+    </Row>
   );
 }

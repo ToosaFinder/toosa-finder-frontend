@@ -46,7 +46,7 @@ export interface PopularTags {
 
 export type PopularTagsResponse = PopularTags | ErrorBody;
 
-export interface Coordinates{
+export interface Coordinates {
   lat: number;
   lng: number;
 }
@@ -82,7 +82,7 @@ export interface EventCreationRes {
 
 export type EventCreationResponse = EventCreationRes | ErrorBody;
 
-export interface UserRes{
+export interface UserRes {
   login: string;
   email: string;
 }

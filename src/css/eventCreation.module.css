@@ -1,38 +1,38 @@
-input[type='range'] {
+input[type="range"] {
   overflow: hidden;
   width: 160px;
   -webkit-appearance: none;
-  background-color: #101820FF;
+  background-color: #101820ff;
 }
 
-input[type='range']::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
   height: 10px;
   -webkit-appearance: none;
-  color: #F2AA4CFF;
+  color: #f2aa4cff;
   margin-top: -1px;
 }
 
-input[type='range']::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   width: 10px;
   -webkit-appearance: none;
   height: 10px;
   cursor: pointer;
   background: red;
   border-radius: 10px;
-  box-shadow: -80px 0 0 80px #F2AA4CFF;
+  box-shadow: -80px 0 0 80px #f2aa4cff;
 }
 
 input[type="range"]::-moz-range-progress {
-  background-color: #F2AA4CFF;
+  background-color: #f2aa4cff;
 }
 input[type="range"]::-moz-range-track {
-  background-color: #101820FF;
+  background-color: #101820ff;
 }
 input[type="range"]::-ms-fill-lower {
-  background-color: #F2AA4CFF;
+  background-color: #f2aa4cff;
 }
 input[type="range"]::-ms-fill-upper {
-  background-color: #101820FF;
+  background-color: #101820ff;
 }
 
 .datalist {
@@ -41,10 +41,9 @@ input[type="range"]::-ms-fill-upper {
   justify-content: space-between;
   margin-top: -23px;
   padding-top: 0px;
-
 }
 
-input[type="range"] + .datalist{
+input[type="range"] + .datalist {
   display: block;
   margin-top: -4px;
 }
@@ -55,7 +54,7 @@ input[type="range"] + datalist option {
   text-align: center;
 }
 input[type="range"] + datalist option:first-child {
-  width: calc((160px - 12px) / ( (4 - 1) * 2) + 6px);
+  width: calc((160px - 12px) / ((4 - 1) * 2) + 6px);
   text-align: left;
 }
 input[type="range"] + datalist option:last-child {
@@ -67,14 +66,14 @@ input[type="range"] + datalist option:last-child {
   transform: scale(1.2);
 }
 
-.mainContainer{
+.mainContainer {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-.eventCreationContainer{
+.eventCreationContainer {
   margin-top: 10px;
   display: flex !important;
   flex-direction: row !important;
@@ -83,14 +82,14 @@ input[type="range"] + datalist option:last-child {
   justify-content: center !important;
 }
 
-.eventCreationForm{
+.eventCreationForm {
   padding: 2%;
   border-radius: 25px;
   border-color: black;
   border-style: solid;
 }
 
-.tagAddingForm{
+.tagAddingForm {
   margin-top: 5%;
   padding: 2%;
   border-color: #343a40;
@@ -101,7 +100,7 @@ input[type="range"] + datalist option:last-child {
   margin-left: 2px;
 }
 
-.tagEditForm{
+.tagEditForm {
   margin-right: 5px;
   padding: 2%;
   border-radius: 25px;
@@ -111,7 +110,7 @@ input[type="range"] + datalist option:last-child {
   height: 180px !important;
 }
 
-.tagEditButtonsContainer{
+.tagEditButtonsContainer {
   margin-top: 20px;
   display: flex !important;
   flex-direction: row !important;
@@ -120,15 +119,15 @@ input[type="range"] + datalist option:last-child {
   justify-content: flex-start !important;
 }
 
-.cb{
+.cb {
   margin-left: 10px;
 }
 
-.tagButton{
+.tagButton {
   margin-bottom: 5px;
   font-size: large !important;
 }
-.tagCloseButton{
+.tagCloseButton {
   border-radius: 50% !important;
   background-color: red !important;
   margin-left: 5px !important;
@@ -136,28 +135,28 @@ input[type="range"] + datalist option:last-child {
   height: 25px !important;
 }
 
-.tagCloseButton:hover{
+.tagCloseButton:hover {
   background-color: black !important;
 }
 
-.createTagForm{
+.createTagForm {
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 10px;
 }
 
-.createTagButton{
+.createTagButton {
   margin-top: 10px;
 }
 
-.tagCrossButton{
+.tagCrossButton {
   -webkit-border-radius: 999px !important;
   -moz-border-radius: 999px !important;
   border-radius: 999px !important;
   width: 40px !important;
   height: 40px !important;
   padding: 0px !important;
-  background: #779BCA !important;
+  background: #779bca !important;
   border: 1px solid #003580 !important;
   color: #003580 !important;
   text-align: center !important;
@@ -166,13 +165,12 @@ input[type="range"] + datalist option:last-child {
   line-height: 0.9em !important;
 }
 
-.tagPromptText{
+.tagPromptText {
   font-size: 18px;
 }
 
-.pageHeader{
+.pageHeader {
   margin-top: 20px;
   font-family: "Lobster Two";
   text-align: center;
 }
-
