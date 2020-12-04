@@ -71,43 +71,47 @@ export default function EventCreation(): JSX.Element {
 
   const history = useHistory();
 
-  const onSwitchAction = () => {
+  const onSwitchAction = (): void => {
     setIsPublic(!isPublic);
   };
 
-  const onNameChange = (event) => {
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value);
+    console.log(event.target.value);
   };
 
-  const onDescriptionChange = (event) => {
+  const onDescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setDescription(event.target.value);
   };
 
-  const onSliderChange = (event) => {
-    let num: number = event.target.value;
+  const onSliderChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    let num: string = event.target.value;
+    let numb: number;
     switch (num) {
-      case 1:
-        num = 10;
+      case "1":
+        numb = 10;
         break;
-      case 2:
-        num = 20;
+      case "2":
+        numb = 20;
         break;
-      case 3:
-        num = 50;
+      case "3":
+        numb = 50;
         break;
-      case 4:
-        num = 100;
+      case "4":
+        numb = 100;
         break;
     }
-    setSize(num);
+    setSize(numb);
   };
 
-  const onDateClose = (date: Moment | string) => {
+  const onDateClose = (date: Moment | string): void => {
     if (typeof date === "string") {
       enableAlert("Invalid date input! Please pick valid date ;)", "warning");
       setDateCorrectness(false);
     } else {
-      var today = moment().subtract(0, "day");
+      let today = moment().subtract(0, "day");
       if (date.isBefore(today)) {
         enableAlert(
           "This date is from past. Please pick valid date ;)",
@@ -121,39 +125,37 @@ export default function EventCreation(): JSX.Element {
     }
   };
 
-  const enableAlert = (message: string, alertVarinat: string) => {
+  const enableAlert = (message: string, alertVariant: string) => {
     setAlertMsg(message);
-    setAlertVariant(alertVarinat);
+    setAlertVariant(alertVariant);
     setAlertVisibility(true);
   };
 
-  const onTagAddingButton = (e) => {
+  const onTagAddingButton = (): void => {
     if (!isTagAddingVisible) {
       setMapVisibility(false);
       setTagEditVisibility(false);
       getPopularTags().then((resp) => {
-        const { response, code } = resp;
-        if (code === 200) {
-          let { tags } = response as PopularTags;
+        if (typeof resp === "string") {
+          setListOfPopularTags([]);
+          setListOfPopularTagsForChecking([]);
+          enableAlert("Unable to download popular tags: " + resp, "danger");
+        } else {
+          let tags = resp as string[];
           setListOfPopularTagsForChecking(tags.slice());
           tags = tags.filter(
-            (tag, index, arr) =>
+            (tag: string) =>
               !listOfPopularTags.includes(tag) &&
               !listOfPickedTags.includes(tag)
           );
           setListOfPopularTags(listOfPopularTags.concat(tags));
-        } else {
-          const { error } = response as ErrorBody;
-          setListOfPopularTags([]);
-          setListOfPopularTagsForChecking([]);
-          enableAlert("Unable to download popular tags: " + error, "danger");
         }
       });
     }
     setTagAddingVisibility(!isTagAddingVisible);
   };
 
-  const onLocationClick = () => {
+  const onLocationClick = (): void => {
     if (!isMapVisible) {
       setTagAddingVisibility(false);
       setTagEditVisibility(false);
@@ -161,21 +163,32 @@ export default function EventCreation(): JSX.Element {
     setMapVisibility(!isMapVisible);
   };
 
-  const pickPopularTag = (e) => {
-    let str = e.target.value;
+  const pickPopularTag = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ): void => {
+    let str: string = event.target.value;
+
+    if (str === "state") {
+      return;
+    }
     if (!listOfPickedTags.includes(str))
       setListOfPickedTags((listOfPickedTags) => [...listOfPickedTags, str]);
-    setListOfPopularTags(listOfPopularTags.filter((e) => e !== str));
+    setListOfPopularTags(listOfPopularTags.filter((el) => el !== str));
+
+    event.target.selectedIndex = 0;
   };
 
-  const onTagClose = (event, tagname) => {
+  const onTagClose = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    tagname: string
+  ): void => {
     event.stopPropagation();
     setListOfPickedTags(listOfPickedTags.filter((e) => e !== tagname));
     if (listOfPopularTagsForChecking.includes(tagname))
       setListOfPopularTags((listOfTags) => [...listOfTags, tagname]);
   };
 
-  const editTag = (tagName) => {
+  const editTag = (tagName: string): void => {
     if (!isTagEditVisible) {
       setTagAddingVisibility(false);
       setMapVisibility(false);
@@ -185,24 +198,26 @@ export default function EventCreation(): JSX.Element {
     setChosenTagNameToEdit(tagName);
   };
 
-  const showTags = () => {
+  const showTags = (): JSX.Element => {
     return (
       <div>
-        {listOfPickedTags.map((val) => {
+        {listOfPickedTags.map((val: string) => {
           return (
             <>
               <Button
                 className={styles.tagButton}
-                size={"sm"}
-                variant={"success"}
-                onClick={(event) => editTag(val)}
+                size="sm"
+                variant="success"
+                onClick={() => editTag(val)}
               >
                 {val}
                 <Button
                   className={styles.tagCloseButton}
-                  variant={"danger"}
-                  size={"sm"}
-                  onClick={(event) => {
+                  variant="danger"
+                  size="sm"
+                  onClick={(
+                    event: React.MouseEvent<HTMLElement, MouseEvent>
+                  ) => {
                     onTagClose(event, val);
                   }}
                 >
@@ -216,7 +231,7 @@ export default function EventCreation(): JSX.Element {
     );
   };
 
-  const createNewTag = () => {
+  const createNewTag = (): void => {
     if (newTag.length === 0) {
       enableAlert("It is impossible to create empty tag ;d", "warning");
     } else if (newTag.length > 30) {
@@ -242,13 +257,13 @@ export default function EventCreation(): JSX.Element {
     HTMLInputElement
   >(null);
 
-  const onTagEdit = (event) => {
+  const onTagEdit = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTagToEdit(event.target.value);
   };
 
-  const saveTagNameChanges = () => {
+  const saveTagNameChanges = (): void => {
     let listOfPickedTagsCopy: string[] = listOfPickedTags.slice();
-    let index = listOfPickedTagsCopy.indexOf(chosenTagNameToEdit);
+    let index: number = listOfPickedTagsCopy.indexOf(chosenTagNameToEdit);
     if (index > -1) {
       listOfPickedTagsCopy.splice(index, 1, tagNameToEdit);
       setListOfPickedTags(listOfPickedTagsCopy);
@@ -258,17 +273,17 @@ export default function EventCreation(): JSX.Element {
     setTagEditVisibility(false);
   };
 
-  const onTagEditCancelButton = () => {
+  const onTagEditCancelButton = (): void => {
     setTagToEdit("");
     setChosenTagNameToEdit("");
     setTagEditVisibility(false);
   };
 
-  const onEventCreationCancel = () => {
+  const onEventCreationCancel = (): void => {
     setEventCancelAlertVisibility(true);
   };
 
-  const onEventCreation = () => {
+  const onEventCreation = (): void => {
     if (!isDateCorrect) {
       enableAlert("Please pick valid date before create event", "warning");
     } else if (name === "" || description === "" || locationName === "Where?")
@@ -277,8 +292,8 @@ export default function EventCreation(): JSX.Element {
         "warning"
       );
     else {
-      let login = "";
-      whoAmI().then((res) => {
+      let login: string = "";
+      whoAmI().then((res: string) => {
         login = res;
       });
       let eventData: EventCreationReq = {
@@ -294,7 +309,7 @@ export default function EventCreation(): JSX.Element {
         tags: listOfPickedTags,
       };
 
-      createEvent(eventData).then((result) => {
+      createEvent(eventData).then((result: boolean | string) => {
         if (result === true) {
           setSuccessfulAlertVisibility(true);
         } else {
@@ -307,15 +322,23 @@ export default function EventCreation(): JSX.Element {
     }
   };
 
-  const popover = (
-    <Popover id={"addTagPopover-basic"} style={{ marginLeft: `10px` }}>
+  const popover: JSX.Element = (
+    <Popover id="addTagPopover-basic" style={{ marginLeft: `10px` }}>
       <Popover.Content>
-        <Popover.Title as={"h3"}>Popular tags:</Popover.Title>
+        <Popover.Title as="h3">Popular tags:</Popover.Title>
         <Form.Group className={styles.createTagForm}>
           {listOfPopularTags.length > 0 ? (
-            <Form.Control as={"select"} size={"sm"} onClick={pickPopularTag}>
+            <Form.Control as="select" size="sm" onChange={pickPopularTag}>
+              <option
+                value="state"
+                selected={true}
+                disabled={true}
+                hidden={true}
+              >
+                Pick a tag you like
+              </option>
               {listOfPopularTags.map((val, index) => {
-                return <option>{val}</option>;
+                return <option value={val}>{val}</option>;
               })}
             </Form.Control>
           ) : (
@@ -325,21 +348,19 @@ export default function EventCreation(): JSX.Element {
       </Popover.Content>
 
       <Popover.Content>
-        <Popover.Title as={"h3"}>Create your tag</Popover.Title>
-        <Form.Group controlId={"tagCreation"} className={styles.pickTagForm}>
+        <Popover.Title as="h3">Create your tag</Popover.Title>
+        <Form.Group controlId="tagCreation" className={styles.pickTagForm}>
           <FormControl
-            placeholder={"Type tag name"}
+            placeholder="Type tag name"
             onChange={(event) => {
               setNewTag(event.target.value);
             }}
             ref={refToTagInputField}
           />
-          <Form.Text className={"text-muted"}>
-            Tag name must be unique
-          </Form.Text>
+          <Form.Text className="text-muted">Tag name must be unique</Form.Text>
           <Button
             className={styles.createTagButton}
-            variant={"primary"}
+            variant="primary"
             onClick={createNewTag}
           >
             Create tag
@@ -349,7 +370,7 @@ export default function EventCreation(): JSX.Element {
     </Popover>
   );
 
-  const onEventHasBeenCreated = () => {
+  const onEventHasBeenCreated = (): void => {
     setSuccessfulAlertVisibility(false);
     history.push("/");
   };
@@ -369,7 +390,7 @@ export default function EventCreation(): JSX.Element {
       </Alert>
 
       <Alert
-        variant={"secondary"}
+        variant="secondary"
         show={isEventCancelAlertVisible}
         dismissible={false}
       >
@@ -392,12 +413,12 @@ export default function EventCreation(): JSX.Element {
       </Alert>
 
       <Alert
-        variant={"success"}
+        variant="success"
         dismissible={false}
         show={isSuccessfulAlertVisible}
       >
         <p>Your event has been succesfully created!</p>
-        <Button variant={"dark"} onClick={onEventHasBeenCreated}>
+        <Button variant="dark" onClick={onEventHasBeenCreated}>
           Cool!
         </Button>
       </Alert>
@@ -408,16 +429,16 @@ export default function EventCreation(): JSX.Element {
           <Form.Group className={styles.tagEditForm}>
             <Form.Label>Edit tag name here:</Form.Label>
             <Form.Control
-              as={"input"}
+              as="input"
               value={tagNameToEdit}
               onChange={onTagEdit}
             />
             <div className={styles.tagEditButtonsContainer}>
-              <Button variant={"success"} onClick={saveTagNameChanges}>
+              <Button variant="success" onClick={saveTagNameChanges}>
                 Save
               </Button>
               <Button
-                variant={"danger"}
+                variant="danger"
                 className={styles.cb}
                 onClick={onTagEditCancelButton}
               >
@@ -440,7 +461,7 @@ export default function EventCreation(): JSX.Element {
           <Form.Group controlId="description">
             <Form.Label>Description</Form.Label>
             <Form.Control
-              as={"textarea"}
+              as="textarea"
               placeholder="Tell us interesting information about your event"
               onChange={onDescriptionChange}
             />
@@ -453,8 +474,8 @@ export default function EventCreation(): JSX.Element {
                 {showTags()}
                 <Col lg={{ span: 1, offset: 10 }}>
                   <OverlayTrigger
-                    trigger={"click"}
-                    placement={"right"}
+                    trigger="click"
+                    placement="right"
                     overlay={popover}
                     show={isTagAddingVisible}
                   >
@@ -480,8 +501,8 @@ export default function EventCreation(): JSX.Element {
                   </Col>
                   <Col lg={{ span: 1, offset: 4 }}>
                     <OverlayTrigger
-                      trigger={"click"}
-                      placement={"right"}
+                      trigger="click"
+                      placement="right"
                       overlay={popover}
                       show={isTagAddingVisible}
                     >
@@ -504,26 +525,26 @@ export default function EventCreation(): JSX.Element {
           <Form.Group controlId="slider">
             <Form.Label>Size</Form.Label>
             <Form.Control
-              as={"input"}
-              id={"myinput"}
-              type={"range"}
+              as="input"
+              id="myinput"
+              type="range"
               min={1}
               max={4}
               step={1}
-              list={"ticks"}
+              list="ticks"
               onChange={onSliderChange}
             />
             <datalist id="ticks" className={styles.datalist}>
-              <option className={styles.option} value="S" label="S">
+              <option className={styles.option} value="1" label="S">
                 S
               </option>
-              <option className={styles.option} value="M" label="M">
+              <option className={styles.option} value="2" label="M">
                 M
               </option>
-              <option className={styles.option} value="L" label="L">
+              <option className={styles.option} value="3" label="L">
                 L
               </option>
-              <option className={styles.option} value="XL+" label="XL+">
+              <option className={styles.option} value="4" label="XL+">
                 XL+
               </option>
             </datalist>
@@ -532,11 +553,11 @@ export default function EventCreation(): JSX.Element {
           <Row>
             <Col md={{ span: 10 }}>
               <Form.Control
-                as={"textarea"}
+                as="textarea"
                 value={locationName}
                 readOnly={true}
                 style={{ height: `120px` }}
-              ></Form.Control>
+              />
             </Col>
             <Col md={{ span: 1 }}>
               <Image
@@ -560,8 +581,8 @@ export default function EventCreation(): JSX.Element {
             <Col md={{ span: 10 }}>
               <Form.Switch
                 onChange={onSwitchAction}
-                id={"custom-switch"}
-                label={"Public"}
+                id="custom-switch"
+                label="Public"
                 checked={isPublic}
                 lg
               />
@@ -569,12 +590,12 @@ export default function EventCreation(): JSX.Element {
           </Row>
 
           <Row style={{ marginTop: 10 }}>
-            <Col md={{ span: 3 }}>
+            <Col md={3}>
               <Button variant="success" onClick={onEventCreation}>
                 Create
               </Button>
             </Col>
-            <Col md={{ span: 3 }}>
+            <Col md={3}>
               <Button variant="danger" onClick={onEventCreationCancel}>
                 Cancel
               </Button>

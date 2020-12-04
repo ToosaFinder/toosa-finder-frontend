@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
 import Marker from "../../utils/marker";
-import api from "../../utils/api";
 import { ErrorBody } from "../../utils/interfaces";
-import { ReverseGeocodingSuccess } from "../../utils/reverseGeocodingResponseInterface";
-import parseLocation from "../../utils/parseLocation";
+import { getLocationName } from "../../utils/eventCreationCommunicator";
 
 export default function Map(props): JSX.Element {
   const [curLat, setLat] = useState<number>(null);
@@ -14,18 +12,14 @@ export default function Map(props): JSX.Element {
     setLat(obj.lat);
     setLng(obj.lng);
 
-    api()
-      .getLocationName({ lat: obj.lat, lng: obj.lng })
-      .then((res) => {
-        const { response, code } = res;
-        if (code === 200) {
-          const location = response as ReverseGeocodingSuccess;
-          props.locationSetter(parseLocation(location));
-        } else {
-          const { error } = response as ErrorBody;
-          props.alertSetter(error, "danger");
-        }
-      });
+    getLocationName({ lat: obj.lat, lng: obj.lng }).then((res) => {
+      if (typeof res === "string") {
+        props.locationSetter(res);
+      } else {
+        const { error } = res as ErrorBody;
+        props.alertSetter(error, "danger");
+      }
+    });
     props.coordinatesSetter({ lat: obj.lat, lng: obj.lng });
   };
 

@@ -20,9 +20,7 @@ export default function Home(): JSX.Element {
     history.push("/");
     event.preventDefault();
   };
-  const handleClick = (): void => {
-    console.log("clicked");
-  };
+
   return (
     <Row>
       <Switch>
@@ -58,7 +56,6 @@ export default function Home(): JSX.Element {
                   className={styles.enlargingEffect}
                   src={eventCreationIcon}
                   alt="logo"
-                  onClick={handleClick}
                 />
               </Link>
             </Row>
