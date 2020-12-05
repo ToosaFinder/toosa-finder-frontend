@@ -1,0 +1,176 @@
+input[type="range"] {
+  overflow: hidden;
+  width: 160px;
+  -webkit-appearance: none;
+  background-color: #101820ff;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 10px;
+  -webkit-appearance: none;
+  color: #f2aa4cff;
+  margin-top: -1px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  width: 10px;
+  -webkit-appearance: none;
+  height: 10px;
+  cursor: pointer;
+  background: red;
+  border-radius: 10px;
+  box-shadow: -80px 0 0 80px #f2aa4cff;
+}
+
+input[type="range"]::-moz-range-progress {
+  background-color: #f2aa4cff;
+}
+input[type="range"]::-moz-range-track {
+  background-color: #101820ff;
+}
+input[type="range"]::-ms-fill-lower {
+  background-color: #f2aa4cff;
+}
+input[type="range"]::-ms-fill-upper {
+  background-color: #101820ff;
+}
+
+.datalist {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: -23px;
+  padding-top: 0px;
+}
+
+input[type="range"] + .datalist {
+  display: block;
+  margin-top: -4px;
+}
+
+input[type="range"] + datalist option {
+  display: inline-block;
+  width: calc((160px - 12px) / (4 - 1));
+  text-align: center;
+}
+input[type="range"] + datalist option:first-child {
+  width: calc((160px - 12px) / ((4 - 1) * 2) + 6px);
+  text-align: left;
+}
+input[type="range"] + datalist option:last-child {
+  width: calc((160px - 12px) / ((4 - 1) * 2) + 6px);
+  text-align: right;
+}
+
+.enlargingEffect:hover {
+  transform: scale(1.2);
+}
+
+.mainContainer {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.eventCreationContainer {
+  margin-top: 10px;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.eventCreationForm {
+  padding: 2%;
+  border-radius: 25px;
+  border-color: black;
+  border-style: solid;
+}
+
+.tagAddingForm {
+  margin-top: 5%;
+  padding: 2%;
+  border-color: #343a40;
+  border-width: 1px;
+  border-style: solid;
+  width: 250px !important;
+  height: 300px !important;
+  margin-left: 2px;
+}
+
+.tagEditForm {
+  margin-right: 5px;
+  padding: 2%;
+  border-radius: 25px;
+  border-color: black;
+  border-style: solid;
+  width: 300px !important;
+  height: 180px !important;
+}
+
+.tagEditButtonsContainer {
+  margin-top: 20px;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.cb {
+  margin-left: 10px;
+}
+
+.tagButton {
+  margin-bottom: 5px;
+  font-size: large !important;
+}
+.tagCloseButton {
+  border-radius: 50% !important;
+  background-color: red !important;
+  margin-left: 5px !important;
+  width: 25px !important;
+  height: 25px !important;
+}
+
+.tagCloseButton:hover {
+  background-color: black !important;
+}
+
+.createTagForm {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+}
+
+.createTagButton {
+  margin-top: 10px;
+}
+
+.tagCrossButton {
+  -webkit-border-radius: 999px !important;
+  -moz-border-radius: 999px !important;
+  border-radius: 999px !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0px !important;
+  background: #779bca !important;
+  border: 1px solid #003580 !important;
+  color: #003580 !important;
+  text-align: center !important;
+
+  font: 40px Arial, sans-serif !important;
+  line-height: 0.9em !important;
+}
+
+.tagPromptText {
+  font-size: 18px;
+}
+
+.pageHeader {
+  margin-top: 20px;
+  font-family: "Lobster Two";
+  text-align: center;
+}

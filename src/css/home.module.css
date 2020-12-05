@@ -7,3 +7,13 @@
   align-items: center;
   justify-content: center;
 }
+
+.eventCreation {
+  position: fixed;
+  bottom: 10%;
+  right: 10%;
+}
+
+.enlargingEffect:hover {
+  transform: scale(1.2);
+}
