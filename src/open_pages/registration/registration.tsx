@@ -187,8 +187,11 @@ export default function Registration(): JSX.Element {
                 type="checkbox"
                 className="custom-control-input"
                 id="customCheck1"
-                checked={checked}
-                onChange={() => setChecked((prev) => !prev)}
+                defaultChecked={checked}
+                onChange={(event: any) => {
+                  event.stopPropagation();
+                  setChecked(event.currentTarget.checked);
+                }}
               />
               <Form.Label
                 className="custom-control-label"

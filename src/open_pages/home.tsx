@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { Link, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import PrivateRoute from "../utils/private_route";
 import { Button, Container, Row } from "react-bootstrap";
 import styles from "../css/home.module.css";
@@ -9,6 +9,9 @@ import { Coordinates, EventDto, MapProps } from "../utils/interfaces";
 import Marker from "../utils/marker";
 import { getEvents } from "../utils/event_api";
 
+import Image from "react-bootstrap/Image";
+import eventCreationIcon from "./roundedcircle.png";
+import EventCreation from "./event_creation/event_creation";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -55,11 +58,11 @@ export default function Home(): JSX.Element {
 
   return (
     <Container className={styles.container}>
-      <Row className={styles.formRow}>
-        <h1 className="title, text-lg-center">Welcome to Toosa Finder!</h1>
-      </Row>
       <Switch>
         <PrivateRoute path={`${url}`} exact>
+          <Row className={styles.formRow}>
+            <h1 className="title, text-lg-center">Welcome to Toosa Finder!</h1>
+          </Row>
           <GoogleMapReact
             bootstrapURLKeys={{ key: "AIzaSyCmCqa6kM9MtaVWFU0GVBWAdoxJfG24Nfg" }}
             center={mapProps.center}
@@ -72,13 +75,23 @@ export default function Home(): JSX.Element {
               return <Marker key={index} lat={event.latitude} lng={event.longitude}>{event.name}</Marker>
             })}
           </GoogleMapReact>
+          <Row className={`mt-2 ${styles.formRow}`}>
+            <Button className="btn-danger" onClick={onLogoutClick}>
+              Logout
+            </Button>
+          </Row>
+          <Row className={styles.eventCreation}>
+            <Link to={`${url}/eventCreation`}>
+              <Image
+                className={styles.enlargingEffect}
+                src={eventCreationIcon}
+                alt="logo"
+              />
+            </Link>
+          </Row>
         </PrivateRoute>
+        <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
       </Switch>
-      <Row className={`mt-2 ${styles.formRow}`}>
-        <Button className="btn-danger" onClick={onLogoutClick}>
-          Logout
-        </Button>
-      </Row>
     </Container>
   );
 }

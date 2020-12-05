@@ -11,3 +11,13 @@
 .map {
   margin-bottom: 5vh;
 }
+
+.eventCreation {
+  position: fixed;
+  bottom: 10%;
+  right: 10%;
+}
+
+.enlargingEffect:hover {
+  transform: scale(1.2);
+}
