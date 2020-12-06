@@ -1,28 +1,20 @@
 import React from "react";
-import { Link, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import {Link, Switch, useRouteMatch} from "react-router-dom";
 import PrivateRoute from "../utils/private_route";
 import Dima from "../devs/dima";
 import Olya from "../devs/olya";
 import Grisha from "../devs/grisha";
-import { Button, Container, Row } from "react-bootstrap";
+import {Container, Row} from "react-bootstrap";
 import styles from "../css/home.module.css";
-import { logout } from "../utils/auth";
-import Image from "react-bootstrap/Image";
-import eventCreationIcon from "./roundedcircle.png";
 import EventCreation from "./event_creation/event_creation";
+import AppNavbar from "../standart/navbar";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
-  const history = useHistory();
-
-  const onLogoutClick = (event): void => {
-    logout();
-    history.push("/");
-    event.preventDefault();
-  };
 
   return (
-    <Row>
+    <>
+      <AppNavbar />
       <Switch>
         <PrivateRoute path={`${url}/dima`} component={Dima} />
         <PrivateRoute path={`${url}/olya`} component={Olya} />
@@ -45,24 +37,10 @@ export default function Home(): JSX.Element {
                 <Link to={`${url}/grisha`}> Гриша </Link>
               </h5>
             </Row>
-            <Row className={styles.formRow}>
-              <Button className="btn-danger" onClick={onLogoutClick}>
-                Logout
-              </Button>
-            </Row>
-            <Row className={styles.eventCreation}>
-              <Link to={`${url}/eventCreation`}>
-                <Image
-                  className={styles.enlargingEffect}
-                  src={eventCreationIcon}
-                  alt="logo"
-                />
-              </Link>
-            </Row>
           </Container>
         </PrivateRoute>
         <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
       </Switch>
-    </Row>
+    </>
   );
 }
