@@ -1,5 +1,6 @@
 import React from "react";
 import "react-datetime/css/react-datetime.css";
+// @ts-ignore
 import Datetime from "react-datetime";
 import moment from "moment";
 

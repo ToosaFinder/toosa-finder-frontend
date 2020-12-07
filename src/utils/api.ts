@@ -21,6 +21,32 @@ import {
 } from "./interfaces";
 import Cookies from "js-cookie";
 import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
+import { isAuthUrl } from "./auth";
+
+const instance = axios.create();
+
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 401 || error.response.status === 403) {
+      if (isAuthUrl(error.response.config.url)) {
+        return Promise.reject(error);
+      }
+      window.location.href = "/sign-in";
+    }
+    return Promise.reject(error);
+  }
+);
+
+instance.interceptors.request.use((request) => {
+  const jwt = Cookies.get("token");
+  if (jwt !== undefined) {
+    request.headers.authorization = `Bearer ${jwt}`;
+  }
+  return request;
+});
 
 export interface ApiClient {
   login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
@@ -92,7 +118,7 @@ class ApiClientImpl implements ApiClient {
   async login(creds: Credentials): Promise<ApiResponse<LoginResponse>> {
     console.log("Login called!");
 
-    return await axios
+    return await instance
       .post<LoginResponse>(`http://${getURL()}/user/login`, creds)
       .then(confirmationHandler)
       .catch(errorHandler);
@@ -103,7 +129,7 @@ class ApiClientImpl implements ApiClient {
   ): Promise<ApiResponse<RegistrationResponse>> {
     console.log("Registration called!");
 
-    return await axios
+    return await instance
       .post<string>(`http://${getURL()}/user/registration`, creds)
       .then(confirmationHandler)
       .catch(errorHandler);
@@ -112,7 +138,7 @@ class ApiClientImpl implements ApiClient {
   async forgotPassword(
     credentials: RestorePasswordCredentials
   ): Promise<ApiResponse<ForgotPasswordResponse>> {
-    return await axios
+    return await instance
       .post<string>(`http://${getURL()}/user/restore-password`, credentials)
       .then(confirmationHandler)
       .catch(errorHandler);
@@ -121,7 +147,7 @@ class ApiClientImpl implements ApiClient {
   async createNewPassword(
     credentials: SetPasswordCredentials
   ): Promise<ApiResponse<SetPasswordResponse>> {
-    return await axios
+    return await instance
       .post<string>(`http://${getURL()}/user/set-password`, credentials)
       .then(confirmationHandler)
       .catch(errorHandler);
@@ -132,7 +158,7 @@ class ApiClientImpl implements ApiClient {
   ): Promise<ApiResponse<ConfirmEmailResponse>> {
     console.log("confirmEmail called");
 
-    return await axios
+    return await instance
       .put<ConfirmEmailResponse>(
         `http://${getURL()}/user/email-confirmed/${emailToken}`
       )
@@ -141,10 +167,8 @@ class ApiClientImpl implements ApiClient {
   }
 
   async getPopularTags(): Promise<ApiResponse<PopularTagsResponse>> {
-    return await axios
-      .get<PopularTagsResponse>(`http://${getURL()}/event/tag/popular`, {
-        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
-      })
+    return await instance
+      .get<PopularTagsResponse>(`http://${getURL()}/event/tag/popular`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
@@ -152,7 +176,7 @@ class ApiClientImpl implements ApiClient {
   async getLocationName(
     cords: Coordinates
   ): Promise<ApiResponse<ReverseGeocodingResponse>> {
-    return await axios
+    return await instance
       .get<ReverseGeocodingResponse>(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${cords.lat},${cords.lng}&key=${process.env.REACT_APP_GOOGLE_KEY}`
       )
@@ -170,19 +194,15 @@ class ApiClientImpl implements ApiClient {
   async createEvent(
     data: EventCreationReq
   ): Promise<ApiResponse<EventCreationResponse>> {
-    return await axios
-      .post<EventCreationResponse>(`http://${getURL()}/event/`, data, {
-        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
-      })
+    return await instance
+      .post<EventCreationResponse>(`http://${getURL()}/event/`, data)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
 
   async whoAmI(): Promise<ApiResponse<UserRes>> {
-    return await axios
-      .get<UserRes>(`http://${getURL()}/user/me`, {
-        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
-      })
+    return await instance
+      .get<UserRes>(`http://${getURL()}/user/me`)
       .then(confirmationHandler);
   }
 }

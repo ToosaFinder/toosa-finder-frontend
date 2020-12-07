@@ -10,6 +10,17 @@ import {
 import api from "./api";
 
 const ACCESS_TOKEN_COOKIE = "token";
+const authUrls = [
+  "user/login",
+  "user/registration",
+  "user/restore-password",
+  "user/set-password",
+  "user/email-confirmed",
+];
+
+export const isAuthUrl = (url: string) => {
+  return authUrls.some((authUrl) => authUrl === url);
+};
 
 export async function login(credentials: Credentials): Promise<true | string> {
   return api()
