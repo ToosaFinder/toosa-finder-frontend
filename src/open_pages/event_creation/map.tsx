@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
 import Marker from "../../utils/marker";
 import { ErrorBody } from "../../utils/interfaces";
-import { getLocationName } from "../../utils/eventCreationCommunicator";
+import { getLocationName } from "../../utils/event_utils/eventCommunicator";
 
 export default function Map(props): JSX.Element {
   const [curLat, setLat] = useState<number>(null);

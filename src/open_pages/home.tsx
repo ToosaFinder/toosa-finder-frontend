@@ -10,6 +10,7 @@ import { logout } from "../utils/auth";
 import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
 import EventCreation from "./event_creation/event_creation";
+import ManagedEventsForAdmin from "./managed_events_admin/managed_events_admin";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -45,6 +46,14 @@ export default function Home(): JSX.Element {
                 <Link to={`${url}/grisha`}> Гриша </Link>
               </h5>
             </Row>
+
+            {/*temporary raw*/}
+            <Row className={styles.formRow}>
+              <Link to={`${url}/managedEvents`}>
+                <Button variant="success">ManagedEvents</Button>
+              </Link>
+            </Row>
+
             <Row className={styles.formRow}>
               <Button className="btn-danger" onClick={onLogoutClick}>
                 Logout
@@ -61,7 +70,8 @@ export default function Home(): JSX.Element {
             </Row>
           </Container>
         </PrivateRoute>
-        <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
+        <PrivateRoute path={`${url}/eventCreation`} component={EventCreation}/>
+        <PrivateRoute path={`${url}/managedEvents`} component={ManagedEventsForAdmin}/>
       </Switch>
     </Row>
   );
