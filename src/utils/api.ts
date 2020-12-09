@@ -208,10 +208,8 @@ class ApiClientImpl implements ApiClient {
   }
 
   async getEventsForAdmin():Promise<ApiResponse<GetEventsResponse>>{
-    return await axios
-      .get<GetEventsResponse>(`http://${getURL()}/event/my/admin`, {
-        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
-      })
+    return await instance
+      .get<GetEventsResponse>(`http://${getURL()}/event/my/admin`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
