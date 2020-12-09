@@ -1,15 +1,10 @@
 import { Form } from "react-bootstrap";
 import React from "react";
 
-export function Selector(props): JSX.Element{
+export function Selector(props): JSX.Element {
   return (
     <Form.Control as="select" size="sm" onChange={props.onpick}>
-      <option
-        value="state"
-        selected={true}
-        disabled={true}
-        hidden={true}
-      >
+      <option value="state" selected={true} disabled={true} hidden={true}>
         {props.defaultOptionText}
       </option>
       {props.list.map((val, index) => {

@@ -70,8 +70,11 @@ export default function Home(): JSX.Element {
             </Row>
           </Container>
         </PrivateRoute>
-        <PrivateRoute path={`${url}/eventCreation`} component={EventCreation}/>
-        <PrivateRoute path={`${url}/managedEvents`} component={ManagedEventsForAdmin}/>
+        <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
+        <PrivateRoute
+          path={`${url}/managedEvents`}
+          component={ManagedEventsForAdmin}
+        />
       </Switch>
     </Row>
   );

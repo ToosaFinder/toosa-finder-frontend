@@ -1,29 +1,29 @@
 .mainContainer {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin-top: 50px;
-    width: 80% !important;
-    height: 80% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 50px;
+  width: 80% !important;
+  height: 80% !important;
 }
 
 .pageHeader {
-    font-family: "Lobster Two", serif;
-    text-align: center;
+  font-family: "Lobster Two", serif;
+  text-align: center;
 }
 
-.infoButton{
-    border-radius: 30px !important;
-    width: 30px;
-    height: 30px;
+.infoButton {
+  border-radius: 30px !important;
+  width: 30px;
+  height: 30px;
 }
 
-.backButton{
-    margin-left: 70px;
-    margin-top: 20px;
+.backButton {
+  margin-left: 70px;
+  margin-top: 20px;
 }
 
-.table{
-    width: 750px;
+.table {
+  width: 750px;
 }

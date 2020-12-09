@@ -1,5 +1,11 @@
 import api from "../api";
-import { Coordinates, ErrorBody, Event, EventCreationReq, PopularTags } from "../interfaces";
+import {
+  Coordinates,
+  ErrorBody,
+  Event,
+  EventCreationReq,
+  PopularTags,
+} from "../interfaces";
 import { ReverseGeocodingSuccess } from "../reverseGeocodingResponseInterface";
 import parseLocation from "../parseLocation";
 
@@ -66,18 +72,16 @@ export async function getLocationName(
     });
 }
 
-export async function getEventsForAdmin(): Promise<string | Event[]>{
+export async function getEventsForAdmin(): Promise<string | Event[]> {
   return api()
     .getEventsForAdmin()
-    .then(
-      (res) => {
-        const {response, code} = res;
-        if (code === 200){
-          return response as Event[];
-        } else {
-          const {error} = response as ErrorBody;
-          return error;
-        }
+    .then((res) => {
+      const { response, code } = res;
+      if (code === 200) {
+        return response as Event[];
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
       }
-    )
+    });
 }

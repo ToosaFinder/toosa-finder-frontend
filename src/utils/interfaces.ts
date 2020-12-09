@@ -88,7 +88,7 @@ export interface UserRes {
   email: string;
 }
 
-export interface Event{
+export interface Event {
   id: number;
   name: string;
   description: string;
