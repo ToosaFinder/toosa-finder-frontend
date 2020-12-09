@@ -36,8 +36,7 @@ export default function ManagedEventsForAdmin(): JSX.Element {
               let events: Event[] = res as Event[];
               if (events === undefined){
                 enableAlert("Unable to load your administrated events", "danger");
-              }
-              else if (events.length===0){
+              } else if (events.length===0){
                 enableAlert("You don't administrate any events", "warning");
               } else{
                 events = sortEventsByDate(events);
@@ -45,8 +44,6 @@ export default function ManagedEventsForAdmin(): JSX.Element {
                 setCurEvents(events.slice());
                 setTags(extractTags(events));
               }
-
-              console.log("res as Event[]: ", res as Event[]);
             }
           }
         );
@@ -76,7 +73,7 @@ export default function ManagedEventsForAdmin(): JSX.Element {
       <h1 className={styles.pageHeader}>Your administrated events</h1>
       <Container>
         <Button
-          style={{marginLeft: `70px`, marginTop: `20px`}}
+          className={styles.backButton}
           onClick={onBackButton}
         >
           Back
@@ -84,14 +81,14 @@ export default function ManagedEventsForAdmin(): JSX.Element {
       </Container>
       <Row>
         <EventFilter
-          allEvents={allEvents/*events*/}
+          allEvents={allEvents}
           eventsSetter={setCurEvents}
           alltags={allTags}
         />
       </Row>
 
       <Row>
-        <Table bordered hover variant="dark" size="sm" style={{width: `750px`}}>
+        <Table bordered hover variant="dark" size="sm" className={styles.table}>
           <thead>
           <tr>
             <th>Event name</th>
