@@ -11,6 +11,7 @@ import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
 import EventCreation from "./event_creation/event_creation";
 import ManagedEventsForAdmin from "./managed_events_admin/managed_events_admin";
+import ParticipatedEvents from "./participated_events/participated_events";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -50,7 +51,14 @@ export default function Home(): JSX.Element {
             {/*temporary raw*/}
             <Row className={styles.formRow}>
               <Link to={`${url}/managedEvents`}>
-                <Button variant="success">ManagedEvents</Button>
+                <Button variant="success">Managed events</Button>
+              </Link>
+            </Row>
+
+            {/*temporary raw*/}
+            <Row className={styles.formRow}>
+              <Link to={`${url}/participatedEvents`}>
+                <Button variant="success">Participated events</Button>
               </Link>
             </Row>
 
@@ -74,6 +82,10 @@ export default function Home(): JSX.Element {
         <PrivateRoute
           path={`${url}/managedEvents`}
           component={ManagedEventsForAdmin}
+        />
+        <PrivateRoute
+          path={`${url}/participatedEvents`}
+          component={ParticipatedEvents}
         />
       </Switch>
     </Row>

@@ -70,6 +70,7 @@ export interface ApiClient {
   ): Promise<ApiResponse<EventCreationResponse>>;
   whoAmI(): Promise<ApiResponse<UserRes>>;
   getEventsForAdmin(): Promise<ApiResponse<GetEventsResponse>>;
+  getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -211,6 +212,13 @@ class ApiClientImpl implements ApiClient {
   async getEventsForAdmin(): Promise<ApiResponse<GetEventsResponse>> {
     return await instance
       .get<GetEventsResponse>(`http://${getURL()}/event/my/admin`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>> {
+    return await instance
+      .get<GetEventsResponse>(`http://${getURL()}/event/my/participant`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
