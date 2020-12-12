@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import PrivateRoute from "../utils/private_route";
-import { Button, Container, Row } from "react-bootstrap";
+import { Button, Card, Container, Row } from "react-bootstrap";
 import styles from "../css/home.module.css";
 import { logout } from "../utils/auth";
-import { Coordinates, EventDto, MapProps } from "../utils/interfaces";
+import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
-import { getEvents } from "../utils/event_api";
+import { getEvent, getEvents } from "../utils/event_api";
 
 import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
@@ -28,11 +28,24 @@ export default function Home(): JSX.Element {
     lng: 83.106,
   });
 
-  const [mapProps, setMapProps] = useState<MapProps>({
-    center: defaultPosition,
-    zoom: 15,
-  });
+  const [center, setCenter] = useState<Coordinates>(defaultPosition);
   const [loading, setLoading] = useState<boolean>(true);
+  const [showEvent, isShowEvent] = useState<boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState<SingleEventDto>({
+    address: "",
+    creator: "",
+    description: "",
+    id: 0,
+    isClosed: false,
+    isPublic: false,
+    latitude: 0,
+    longitude: 0,
+    name: "",
+    participants: [],
+    participantsLimit: 0,
+    startTime: "",
+    tags: [],
+  });
   const [activeEvents, setActiveEvents] = useState<EventDto>({ events: [] });
 
   useEffect(() => {
@@ -41,7 +54,7 @@ export default function Home(): JSX.Element {
       navigator.geolocation.getCurrentPosition((success) => {
         const { latitude, longitude } = success.coords;
         setMyLocation({ lat: latitude, lng: longitude });
-        setMapProps({ ...mapProps, center: { lat: latitude, lng: longitude } });
+        setCenter({ lat: latitude, lng: longitude });
       });
       getEvents().then((result) => {
         if (typeof result !== "string") {
@@ -50,12 +63,32 @@ export default function Home(): JSX.Element {
         }
       });
     }
-  }, [loading, mapProps]);
+  }, [loading]);
 
   const onLogoutClick = (event): void => {
     logout();
     history.push("/");
     event.preventDefault();
+  };
+
+  const onEventMarkerClick = (event): void => {
+    const id = event.currentTarget.id;
+    const cachedEvent = activeEvents.events.find(
+      (event) => event.id.toString() === id
+    );
+    if (cachedEvent) {
+      setSelectedEvent(cachedEvent);
+      isShowEvent(true);
+    } else {
+      getEvent(parseInt(id)).then((event) => {
+        if (typeof event !== "string") {
+          setSelectedEvent(event as SingleEventDto);
+          isShowEvent(true);
+        } else {
+          isShowEvent(false);
+        }
+      });
+    }
   };
 
   return (
@@ -65,22 +98,53 @@ export default function Home(): JSX.Element {
           <Row className={styles.formRow}>
             <h1 className="title, text-lg-center">Welcome to Toosa Finder!</h1>
           </Row>
-          <Map
-            show
-            defaultLocation={defaultPosition}
-            style={{ height: `600px`, width: `auto`, marginTop: `25px` }}
-          >
-            <Marker lat={myLocation.lat} lng={myLocation.lng}>
-              Я
-            </Marker>
-            {activeEvents.events.map((event, index) => {
-              return (
-                <Marker key={index} lat={event.latitude} lng={event.longitude}>
-                  {event.name}
-                </Marker>
-              );
-            })}
-          </Map>
+          <span className={`${styles.mainContainer} mt-2`}>
+            <Map
+              show
+              defaultLocation={defaultPosition}
+              className={`${styles.map} mr-2`}
+              centerState={[center, setCenter]}
+            >
+              <Marker lat={myLocation.lat} lng={myLocation.lng}>
+                Я
+              </Marker>
+              {activeEvents.events.map((event) => {
+                return (
+                  <Marker
+                    id={event.id}
+                    key={event.id}
+                    lat={event.latitude}
+                    lng={event.longitude}
+                    hoverable
+                    onClick={onEventMarkerClick}
+                  >
+                    i
+                  </Marker>
+                );
+              })}
+            </Map>
+            <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
+              <Card.Body>
+                <Card.Title>{`${selectedEvent.name} by ${selectedEvent.creator}`}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">
+                  {`${
+                    selectedEvent.tags.length > 0
+                      ? `Tags: ${selectedEvent.tags.join(", ")}`
+                      : ""
+                  }`}
+                </Card.Subtitle>
+                <Card.Text>
+                  <p>{`Max guests: ${selectedEvent.participantsLimit}`}</p>
+                  <p>{selectedEvent.description}</p>
+                  <p>{selectedEvent.address}</p>
+                  <p>{new Date(selectedEvent.startTime).toDateString()}</p>
+                </Card.Text>
+              </Card.Body>
+              <Card.Footer>
+                <Button onClick={(): void => isShowEvent(false)}>Close</Button>
+              </Card.Footer>
+            </Card>
+          </span>
           <Row className={`mt-2 ${styles.formRow}`}>
             <Button className="btn-danger" onClick={onLogoutClick}>
               Logout
