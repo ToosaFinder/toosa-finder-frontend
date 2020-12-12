@@ -1,5 +1,12 @@
-import React, {RefObject, useRef, useState} from "react";
-import {Alert, Card, Form, FormControl, OverlayTrigger, Row,} from "react-bootstrap";
+import React, { RefObject, useRef, useState } from "react";
+import {
+  Alert,
+  Card,
+  Form,
+  FormControl,
+  OverlayTrigger,
+  Row,
+} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
@@ -9,11 +16,16 @@ import "react-datetime/css/react-datetime.css";
 import ValidDateTimePicker from "../../utils/ValidDateTimePicker";
 import Button from "react-bootstrap/Button";
 import Popover from "react-bootstrap/Popover";
-import {Coordinates, EventCreationReq, UserRes, ErrorBody} from "../../utils/interfaces";
-import {useHistory} from "react-router-dom";
+import { Coordinates, UserRes, ErrorBody } from "../../utils/interfaces";
+import { useHistory } from "react-router-dom";
 import Map from "./map";
-import {createEvent, getLocationName, getPopularTags, whoAmI,} from "../../utils/eventCreationCommunicator";
-import moment, {Moment} from "moment";
+import {
+  createEvent,
+  getLocationName,
+  getPopularTags,
+  whoAmI,
+} from "../../utils/eventCreationCommunicator";
+import moment, { Moment } from "moment";
 import AppNavbar from "../../standart/navbar";
 import Marker from "../../utils/marker";
 
@@ -585,16 +597,16 @@ export default function EventCreation(): JSX.Element {
               </Col>
             </Row>
 
-          <Row style={{ marginTop: 10 }}>
-            <Col md={{ span: 10 }}>
-              <Form.Switch
-                onChange={onSwitchAction}
-                id="custom-switch"
-                label="Public"
-                checked={isPublic}
-              />
-            </Col>
-          </Row>
+            <Row style={{ marginTop: 10 }}>
+              <Col md={{ span: 10 }}>
+                <Form.Switch
+                  onChange={onSwitchAction}
+                  id="custom-switch"
+                  label="Public"
+                  checked={isPublic}
+                />
+              </Col>
+            </Row>
 
             <Row style={{ marginTop: 10 }}>
               <Col md={3}>
@@ -610,18 +622,18 @@ export default function EventCreation(): JSX.Element {
             </Row>
           </Col>
 
-        <Map
-          show={isMapVisible}
-          defaultLocation={defaultLocation}
-          onMapClick={onMapClick}
-          style={{ height: `600px`, width: `600px`, marginLeft: `25px` }}
-        >
-          <Marker lat={curLat} lng={curLng}>
-            я
-          </Marker>
-        </Map>
+          <Map
+            show={isMapVisible}
+            defaultLocation={defaultLocation}
+            onMapClick={onMapClick}
+            style={{ height: `600px`, width: `600px`, marginLeft: `25px` }}
+          >
+            <Marker lat={curLat} lng={curLng}>
+              я
+            </Marker>
+          </Map>
+        </Container>
       </Container>
-    </Container>
     </>
   );
 }

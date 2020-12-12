@@ -1,6 +1,12 @@
 import api from "./api";
-import {Coordinates, ErrorBody, EventCreationReq, PopularTags, UserRes,} from "./interfaces";
-import {ReverseGeocodingSuccess} from "./reverseGeocodingResponseInterface";
+import {
+  Coordinates,
+  ErrorBody,
+  EventCreationReq,
+  PopularTags,
+  UserRes,
+} from "./interfaces";
+import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
 import parseLocation from "./parseLocation";
 
 export async function getPopularTags(): Promise<string | string[]> {

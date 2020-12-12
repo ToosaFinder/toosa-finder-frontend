@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {Button, Form, Nav, Navbar} from "react-bootstrap";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Form, Nav, Navbar } from "react-bootstrap";
 import styles from "../css/navbar.module.css";
-import {useHistory} from "react-router";
-import {whoAmI} from "../utils/eventCreationCommunicator";
-import {UserRes} from "../utils/interfaces";
-import {logout} from "../utils/auth";
+import { useHistory } from "react-router";
+import { whoAmI } from "../utils/eventCreationCommunicator";
+import { UserRes } from "../utils/interfaces";
+import { logout } from "../utils/auth";
 
 export default function AppNavbar(): JSX.Element {
   const history = useHistory();
@@ -18,12 +18,9 @@ export default function AppNavbar(): JSX.Element {
   );
 
   useEffect(() => {
-    //TODO check this
     whoAmI().then((res) => {
       setUserInfo(res);
     });
-    //TODO delete temp userInfo
-    setUserInfo({ login: "test", email: "test@gmail.com" });
   }, []);
 
   const onLogoutClick = useCallback(
@@ -48,7 +45,7 @@ export default function AppNavbar(): JSX.Element {
       </Nav.Link>
       <Navbar.Collapse className="justify-content-end">
         <h6 className={styles.WhiteText}>
-          {`Signed in as: ${userInfo?.login} (${userInfo?.email})`}
+          {userInfo && `Signed in as: ${userInfo.login} (${userInfo.email})`}
         </h6>
       </Navbar.Collapse>
       <Form inline>
