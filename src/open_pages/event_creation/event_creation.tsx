@@ -16,10 +16,7 @@ import "react-datetime/css/react-datetime.css";
 import ValidDateTimePicker from "../../utils/ValidDateTimePicker";
 import Button from "react-bootstrap/Button";
 import Popover from "react-bootstrap/Popover";
-import {
-  Coordinates,
-  ErrorBody
-} from "../../utils/interfaces";
+import { Coordinates, ErrorBody } from "../../utils/interfaces";
 import { useHistory } from "react-router-dom";
 import Map from "./map";
 import {
