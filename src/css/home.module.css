@@ -8,6 +8,10 @@
   justify-content: center;
 }
 
+.map {
+  margin-bottom: 5vh;
+}
+
 .eventCreation {
   position: fixed;
   bottom: 10%;
