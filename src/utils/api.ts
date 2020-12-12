@@ -19,6 +19,7 @@ import {
   EventCreationResponse,
   UserRes,
   SetPasswordResponse,
+  SingleEventResponse,
 } from "./interfaces";
 import Cookies from "js-cookie";
 import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
@@ -70,6 +71,7 @@ export interface ApiClient {
   ): Promise<ApiResponse<EventCreationResponse>>;
   whoAmI(): Promise<ApiResponse<UserRes>>;
   getEvents(): Promise<ApiResponse<EventResponse>>;
+  getEvent(id: number): Promise<ApiResponse<SingleEventResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -208,6 +210,12 @@ class ApiClientImpl implements ApiClient {
   async getEvents(): Promise<ApiResponse<EventResponse>> {
     return await instance
       .get<EventResponse>(`http://${getURL()}/event`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+  async getEvent(id: number): Promise<ApiResponse<SingleEventResponse>> {
+    return await instance
+      .get<SingleEventResponse>(`http://${getURL()}/event/${id}`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
