@@ -18,8 +18,7 @@ import Button from "react-bootstrap/Button";
 import Popover from "react-bootstrap/Popover";
 import {
   Coordinates,
-  ErrorBody,
-  EventCreationReq,
+  ErrorBody
 } from "../../utils/interfaces";
 import { useHistory } from "react-router-dom";
 import Map from "./map";
