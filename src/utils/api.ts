@@ -4,7 +4,8 @@ import {
   ApiResponse,
   ConfirmEmailResponse,
   Credentials,
-  ErrorBody, EventResponse,
+  ErrorBody,
+  EventResponse,
   ForgotPasswordResponse,
   LoginResponse,
   RegistrationCredentials,
@@ -17,7 +18,7 @@ import {
   EventCreationReq,
   EventCreationResponse,
   UserRes,
-  SetPasswordResponse
+  SetPasswordResponse,
 } from "./interfaces";
 import Cookies from "js-cookie";
 import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
@@ -68,7 +69,7 @@ export interface ApiClient {
     data: EventCreationReq
   ): Promise<ApiResponse<EventCreationResponse>>;
   whoAmI(): Promise<ApiResponse<UserRes>>;
-  getEvents(): Promise<ApiResponse<EventResponse>>
+  getEvents(): Promise<ApiResponse<EventResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -173,8 +174,9 @@ class ApiClientImpl implements ApiClient {
   async getLocationName(
     cords: Coordinates
   ): Promise<ApiResponse<ReverseGeocodingResponse>> {
-    return await instance
+    return await axios
       .get<ReverseGeocodingResponse>(
+        // eslint-disable-next-line no-undef
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${cords.lat},${cords.lng}&key=${process.env.REACT_APP_GOOGLE_KEY}`
       )
       .then(confirmationHandler)
@@ -204,7 +206,8 @@ class ApiClientImpl implements ApiClient {
   }
 
   async getEvents(): Promise<ApiResponse<EventResponse>> {
-    return await axios.get<EventResponse>(`http://${getURL()}/event`, {headers: { 'Authorization': `Bearer ${Cookies.get('token')}`}})
+    return await instance
+      .get<EventResponse>(`http://${getURL()}/event`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }

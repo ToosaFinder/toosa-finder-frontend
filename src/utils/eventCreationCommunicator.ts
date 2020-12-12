@@ -14,7 +14,7 @@ export async function getPopularTags(): Promise<string | string[]> {
     .then((resp) => {
       const { response, code } = resp;
       if (code === 200) {
-        let { tags } = response as PopularTags;
+        const { tags } = response as PopularTags;
         return tags as string[];
       } else {
         const { error } = response as ErrorBody;
