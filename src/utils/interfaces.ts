@@ -59,6 +59,8 @@ export interface SetPasswordCredentials {
 }
 
 export type EventResponse = EventDto | ErrorBody;
+export type EmptyResponse = void | ErrorBody;
+export type Empty = void | string;
 export type SingleEventResponse = SingleEventDto | ErrorBody;
 export type Event = EventDto | string;
 export type SingleEvent = SingleEventDto | string;

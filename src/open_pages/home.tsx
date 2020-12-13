@@ -6,7 +6,7 @@ import styles from "../css/home.module.css";
 import { logout } from "../utils/auth";
 import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
-import { getEvent, getEvents } from "../utils/event_api";
+import { deleteEvent, getEvent, getEvents } from "../utils/event_api";
 
 import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
@@ -14,6 +14,7 @@ import EventCreation from "./event_creation/event_creation";
 import Map from "./event_creation/map";
 import ManagedEventsForAdmin from "./managed_events_admin/managed_events_admin";
 import ParticipatedEvents from "./participated_events/participated_events";
+import { whoAmI } from "../utils/event_utils/eventCommunicator";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -30,6 +31,7 @@ export default function Home(): JSX.Element {
     lng: 83.106,
   });
 
+  const [me, setMe] = useState<string>("");
   const [center, setCenter] = useState<Coordinates>(defaultPosition);
   const [loading, setLoading] = useState<boolean>(true);
   const [showEvent, isShowEvent] = useState<boolean>(false);
@@ -64,6 +66,9 @@ export default function Home(): JSX.Element {
           setActiveEvents(result as EventDto);
         }
       });
+      whoAmI().then((res) => {
+        setMe(res);
+      });
     }
   }, [loading]);
 
@@ -71,6 +76,20 @@ export default function Home(): JSX.Element {
     logout();
     history.push("/");
     event.preventDefault();
+  };
+
+  const onDeleteClick = (): void => {
+    const selectedEventId = selectedEvent.id;
+    deleteEvent(selectedEventId).then((res) => {
+      if (typeof res !== "string") {
+        isShowEvent(false);
+        setActiveEvents({
+          events: activeEvents.events.filter(
+            (event) => event.id !== selectedEventId
+          ),
+        });
+      }
+    });
   };
 
   const onEventMarkerClick = (event): void => {
@@ -144,6 +163,14 @@ export default function Home(): JSX.Element {
               </Card.Body>
               <Card.Footer>
                 <Button onClick={(): void => isShowEvent(false)}>Close</Button>
+                <Button
+                  hidden={selectedEvent.creator !== me}
+                  className="ml-2"
+                  variant="danger"
+                  onClick={onDeleteClick}
+                >
+                  Delete
+                </Button>
               </Card.Footer>
             </Card>
           </span>
