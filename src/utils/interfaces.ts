@@ -1,20 +1,15 @@
 import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
 
-export interface MapProps {
-  center: Coordinates;
-  zoom: number;
-}
-
 export interface Coordinates {
   lat: number;
   lng: number;
 }
 
 export interface EventDto {
-  events: SingleEvent[];
+  events: SingleEventDto[];
 }
 
-export interface SingleEvent {
+export interface SingleEventDto {
   id: number;
   latitude: number;
   longitude: number;
@@ -64,7 +59,9 @@ export interface SetPasswordCredentials {
 }
 
 export type EventResponse = EventDto | ErrorBody;
+export type SingleEventResponse = SingleEventDto | ErrorBody;
 export type Event = EventDto | string;
+export type SingleEvent = SingleEventDto | string;
 export type LoginResponse = LoginResponseBody | ErrorBody;
 export type ConfirmEmailResponse = string | ErrorBody;
 export type RegistrationResponse = string | ErrorBody;
@@ -117,3 +114,5 @@ export interface UserRes {
   login: string;
   email: string;
 }
+
+export type GetEventsResponse = SingleEventDto[] | ErrorBody;
