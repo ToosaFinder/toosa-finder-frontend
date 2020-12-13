@@ -6,7 +6,7 @@ import {
   EventCreationReq,
   GetEventsResponse,
   PopularTags,
-    UserRes,
+  UserRes,
   SingleEventDto,
 } from "../interfaces";
 import { ReverseGeocodingSuccess } from "../reverseGeocodingResponseInterface";

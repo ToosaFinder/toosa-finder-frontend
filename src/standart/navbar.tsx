@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Form, Nav, Navbar } from "react-bootstrap";
 import styles from "../css/navbar.module.css";
 import { useHistory } from "react-router";
-import { whoAmI } from "../utils/eventCreationCommunicator";
+import { whoAmI } from "../utils/event_utils/eventCommunicator";
 import { UserRes } from "../utils/interfaces";
 import { logout } from "../utils/auth";
 
@@ -38,10 +38,16 @@ export default function AppNavbar(): JSX.Element {
         <h6 className={styles.Brand}>Toosa-finder</h6>
       </Navbar.Brand>
       <Nav.Link onClick={() => handleLinkClick("/home")}>
-        <h6 className={styles.WhiteText}>Главная</h6>
+        <h6 className={styles.WhiteText}>Home</h6>
       </Nav.Link>
       <Nav.Link onClick={() => handleLinkClick("/event-creation")}>
-        <h6 className={styles.WhiteText}>Создание мероприятия</h6>
+        <h6 className={styles.WhiteText}>Event creation</h6>
+      </Nav.Link>
+      <Nav.Link onClick={() => handleLinkClick("/participated-events")}>
+        <h6 className={styles.WhiteText}>Participated events</h6>
+      </Nav.Link>
+      <Nav.Link onClick={() => handleLinkClick("/administrated-events")}>
+        <h6 className={styles.WhiteText}>Administrated events</h6>
       </Nav.Link>
       <Navbar.Collapse className="justify-content-end">
         <h6 className={styles.WhiteText}>
