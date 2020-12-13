@@ -21,6 +21,7 @@ import {
   GetEventsResponse,
   SetPasswordResponse,
   SingleEventResponse,
+  EmptyResponse,
   JoinEventResponse,
   LeaveEventResponse,
 } from "./interfaces";
@@ -78,6 +79,7 @@ export interface ApiClient {
   getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>>;
   getEvents(): Promise<ApiResponse<EventResponse>>;
   getEvent(id: number): Promise<ApiResponse<SingleEventResponse>>;
+  deleteEvent(id: number): Promise<ApiResponse<EmptyResponse>>;
   joinEvent(id: number): Promise<ApiResponse<JoinEventResponse>>;
   leaveEvent(id: number): Promise<ApiResponse<LeaveEventResponse>>;
 }
@@ -238,6 +240,13 @@ class ApiClientImpl implements ApiClient {
   async getEvent(id: number): Promise<ApiResponse<SingleEventResponse>> {
     return await instance
       .get<SingleEventResponse>(`http://${getURL()}/event/${id}`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async deleteEvent(id: number): Promise<ApiResponse<EmptyResponse>> {
+    return await instance
+      .delete<EmptyResponse>(`http://${getURL()}/event/${id}`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
