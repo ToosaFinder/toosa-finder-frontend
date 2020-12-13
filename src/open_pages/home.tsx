@@ -6,11 +6,8 @@ import styles from "../css/home.module.css";
 import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
 import { getEvent, getEvents, joinEvent, leaveEvent } from "../utils/event_api";
-import Image from "react-bootstrap/Image";
-import eventCreationIcon from "./roundedcircle.png";
-import EventCreation from "./event_creation/event_creation";
 import Map from "./event_creation/map";
-import { whoAmI } from "../utils/eventCreationCommunicator";
+import { whoAmI } from "../utils/event_utils/eventCommunicator";
 import Alert from "react-bootstrap/Alert";
 import AppNavbar from "../standart/navbar";
 
@@ -100,7 +97,7 @@ export default function Home(): JSX.Element {
 
   useEffect(() => {
     whoAmI().then((result) => {
-      setUser(result);
+      setUser(result.login);
     });
   }, []);
 
@@ -157,81 +154,88 @@ export default function Home(): JSX.Element {
   };
 
   return (
-      <>
-          <AppNavbar />
-          <Alert
-              variant={alertVariant}
-              show={showAlert}
-              onClose={(): void => setShowAlert(false)}
-              dismissible
-          >
-              <div className="p-1">{alertMsg}</div>
-          </Alert>
-    <Container className={styles.container}>
-      <Switch>
-        <PrivateRoute path={`${url}`} exact>
-          <Row className={styles.formRow}>
-            <h1 className="title, text-lg-center">Welcome to Toosa Finder!</h1>
-          </Row>
-          <span className={`${styles.mainContainer} mt-2`}>
-            <Map
-              show
-              defaultLocation={defaultPosition}
-              className={`${styles.map} mr-2`}
-              centerState={[center, setCenter]}
-            >
-              <Marker lat={myLocation.lat} lng={myLocation.lng}>
-                Я
-              </Marker>
-              {activeEvents.events.map((event) => {
-                return (
-                  <Marker
-                    id={event.id}
-                    key={event.id}
-                    lat={event.latitude}
-                    lng={event.longitude}
-                    hoverable
-                    onClick={onEventMarkerClick}
+    <>
+      <AppNavbar />
+      <Alert
+        variant={alertVariant}
+        show={showAlert}
+        onClose={(): void => setShowAlert(false)}
+        dismissible
+      >
+        <div className="p-1">{alertMsg}</div>
+      </Alert>
+      <Container className={styles.container}>
+        <Switch>
+          <PrivateRoute path={`${url}`} exact>
+            <Row className={styles.formRow}>
+              <h1 className="title, text-lg-center">
+                Welcome to Toosa Finder!
+              </h1>
+            </Row>
+            <span className={`${styles.mainContainer} mt-2`}>
+              <Map
+                show
+                defaultLocation={defaultPosition}
+                className={`${styles.map} mr-2`}
+                centerState={[center, setCenter]}
+              >
+                <Marker lat={myLocation.lat} lng={myLocation.lng}>
+                  Я
+                </Marker>
+                {activeEvents.events.map((event) => {
+                  return (
+                    <Marker
+                      id={event.id}
+                      key={event.id}
+                      lat={event.latitude}
+                      lng={event.longitude}
+                      hoverable
+                      onClick={onEventMarkerClick}
+                    >
+                      i
+                    </Marker>
+                  );
+                })}
+              </Map>
+              <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
+                <Card.Body>
+                  <Card.Title>{`${selectedEvent.name} by ${selectedEvent.creator}`}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    {`${
+                      selectedEvent.tags.length > 0
+                        ? `Tags: ${selectedEvent.tags.join(", ")}`
+                        : ""
+                    }`}
+                  </Card.Subtitle>
+                  <Card.Text>
+                    <p>{`Max guests: ${selectedEvent.participantsLimit}`}</p>
+                    <p>{selectedEvent.description}</p>
+                    <p>{selectedEvent.address}</p>
+                    <p>{new Date(selectedEvent.startTime).toDateString()}</p>
+                  </Card.Text>
+                </Card.Body>
+                <Card.Footer>
+                  <Button
+                    onClick={(): void => isShowEvent(false)}
+                    className="mr-2"
                   >
-                    i
-                  </Marker>
-                );
-              })}
-            </Map>
-            <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
-              <Card.Body>
-                <Card.Title>{`${selectedEvent.name} by ${selectedEvent.creator}`}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">
-                  {`${
-                    selectedEvent.tags.length > 0
-                      ? `Tags: ${selectedEvent.tags.join(", ")}`
-                      : ""
-                  }`}
-                </Card.Subtitle>
-                <Card.Text>
-                  <p>{`Max guests: ${selectedEvent.participantsLimit}`}</p>
-                  <p>{selectedEvent.description}</p>
-                  <p>{selectedEvent.address}</p>
-                  <p>{new Date(selectedEvent.startTime).toDateString()}</p>
-                </Card.Text>
-              </Card.Body>
-              <Card.Footer>
-                <Button onClick={(): void => isShowEvent(false)}>Close</Button>
+                    Close
+                  </Button>
                   {isParticipant() ? (
-                      <Button onClick={leaveEventClick} variant="warning">
-                          Leave
-                      </Button>
+                    <Button onClick={leaveEventClick} variant="warning">
+                      Leave
+                    </Button>
                   ) : (
-                      <Button onClick={joinEventClick} variant="success">
-                          Join
-                      </Button>
+                    <Button onClick={joinEventClick} variant="success">
+                      Join
+                    </Button>
                   )}
-              </Card.Footer>
-            </Card>
-          </span>
-        </PrivateRoute>
-      </Switch>
-    </Container>
-          </>
+                </Card.Footer>
+              </Card>
+            </span>
+          </PrivateRoute>
+        </Switch>
+      </Container>
+    </>
   );
 }
