@@ -9,6 +9,9 @@ import ForgotPassword from "./open_pages/forgot_password/forgot_password";
 import CreatePassword from "./open_pages/forgot_password/create_password";
 import ErrorPage from "./open_pages/confirm_email/error_page";
 import ConfirmEmail from "./open_pages/confirm_email/confirm_email";
+import EventCreation from "./open_pages/event_creation/event_creation";
+import ManagedEventsForAdmin from "./open_pages/managed_events_admin/managed_events_admin";
+import ParticipatedEvents from "./open_pages/participated_events/participated_events";
 
 function App(): JSX.Element {
   return (
@@ -22,6 +25,15 @@ function App(): JSX.Element {
         />
         <UnloggedRoute path="/sign-up" component={Registration} exact />
         <PrivateRoute path="/home" component={Home} />
+        <PrivateRoute path="/event-creation" component={EventCreation} />
+        <PrivateRoute
+          path="/administrated-events"
+          component={ManagedEventsForAdmin}
+        />
+        <PrivateRoute
+          path="/participated-events"
+          component={ParticipatedEvents}
+        />
         <Redirect from="/" to="/sign-in" exact />
         <UnloggedRoute
           path="/user/confirm-email/:emailToken"

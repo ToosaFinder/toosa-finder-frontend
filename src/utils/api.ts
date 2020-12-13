@@ -37,6 +37,7 @@ instance.interceptors.response.use(
       if (isAuthUrl(error.response.config.url)) {
         return Promise.reject(error);
       }
+      Cookies.remove("token");
       window.location.href = "/sign-in";
     }
     return Promise.reject(error);
