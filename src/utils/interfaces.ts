@@ -116,21 +116,5 @@ export interface UserRes {
   login: string;
   email: string;
 }
-/*
-export interface Event {
-  id: number;
-  name: string;
-  description: string;
-  creator: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  participantsLimit: number;
-  startTime: Date;
-  isPublic: boolean;
-  tags: string[];
-  participants: string[];
-}
-*/
 
 export type GetEventsResponse = SingleEventDto[] | ErrorBody;
