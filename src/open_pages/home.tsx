@@ -6,12 +6,18 @@ import styles from "../css/home.module.css";
 import { logout } from "../utils/auth";
 import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
-import { getEvent, getEvents } from "../utils/event_api";
-
+import { getEvent, getEvents, joinEvent, leaveEvent } from "../utils/event_api";
 import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
 import EventCreation from "./event_creation/event_creation";
 import Map from "./event_creation/map";
+import { whoAmI } from "../utils/eventCreationCommunicator";
+import Alert from "react-bootstrap/Alert";
+
+interface AlertMessage {
+  variant: string;
+  message: string;
+}
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -47,6 +53,19 @@ export default function Home(): JSX.Element {
     tags: [],
   });
   const [activeEvents, setActiveEvents] = useState<EventDto>({ events: [] });
+  const [user, setUser] = useState<string>("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMsg, setAlertMsg] = useState<string>("");
+  const [alertVariant, setAlertVariant] = useState<string>("");
+
+  const getActiveEvents = () => {
+    getEvents().then((result) => {
+      if (typeof result !== "string") {
+        console.log(result);
+        setActiveEvents(result as EventDto);
+      }
+    });
+  };
 
   useEffect(() => {
     if (loading) {
@@ -56,12 +75,7 @@ export default function Home(): JSX.Element {
         setMyLocation({ lat: latitude, lng: longitude });
         setCenter({ lat: latitude, lng: longitude });
       });
-      getEvents().then((result) => {
-        if (typeof result !== "string") {
-          console.log(result);
-          setActiveEvents(result as EventDto);
-        }
-      });
+      getActiveEvents();
     }
   }, [loading]);
 
@@ -91,77 +105,164 @@ export default function Home(): JSX.Element {
     }
   };
 
+  useEffect(() => {
+    whoAmI().then((result) => {
+      setUser(result);
+    });
+  }, []);
+
+  const enableAlert = (alert: AlertMessage): void => {
+    if (alert !== undefined && alert.message !== undefined) {
+      setAlertMsg(alert.message);
+      setShowAlert(true);
+      setAlertVariant(alert.variant);
+    }
+  };
+
+  const isParticipant = () => {
+    return selectedEvent.participants.includes(user);
+  };
+
+  const leaveEventClick = () => {
+    leaveEvent(selectedEvent.id).then((success) => {
+      if (success === true) {
+        isShowEvent(false);
+        const successAlert = {
+          variant: "warning",
+          message: "Вы покинули мероприятие " + selectedEvent.name,
+        };
+        enableAlert(successAlert);
+      } else {
+        const failAlert = {
+          variant: "danger",
+          message: success as string,
+        };
+        enableAlert(failAlert);
+      }
+      getActiveEvents();
+    });
+  };
+
+  const joinEventClick = () => {
+    joinEvent(selectedEvent.id).then((success) => {
+      if (success === true) {
+        isShowEvent(false);
+        const successAlert = {
+          variant: "success",
+          message: "Вы присоединились к мероприятию " + selectedEvent.name,
+        };
+        enableAlert(successAlert);
+      } else {
+        const failAlert = {
+          variant: "danger",
+          message: success as string,
+        };
+        enableAlert(failAlert);
+      }
+      getActiveEvents();
+    });
+  };
+
   return (
-    <Container className={styles.container}>
-      <Switch>
-        <PrivateRoute path={`${url}`} exact>
-          <Row className={styles.formRow}>
-            <h1 className="title, text-lg-center">Welcome to Toosa Finder!</h1>
-          </Row>
-          <span className={`${styles.mainContainer} mt-2`}>
-            <Map
-              show
-              defaultLocation={defaultPosition}
-              className={`${styles.map} mr-2`}
-              centerState={[center, setCenter]}
-            >
-              <Marker lat={myLocation.lat} lng={myLocation.lng}>
-                Я
-              </Marker>
-              {activeEvents.events.map((event) => {
-                return (
-                  <Marker
-                    id={event.id}
-                    key={event.id}
-                    lat={event.latitude}
-                    lng={event.longitude}
-                    hoverable
-                    onClick={onEventMarkerClick}
+    <>
+      <Alert
+        variant={alertVariant}
+        show={showAlert}
+        onClose={(): void => setShowAlert(false)}
+        dismissible
+      >
+        <div className="p-1">{alertMsg}</div>
+      </Alert>
+      <Container className={styles.container}>
+        <Switch>
+          <PrivateRoute path={`${url}`} exact>
+            <Row className={styles.formRow}>
+              <h1 className="title, text-lg-center">
+                Welcome to Toosa Finder!
+              </h1>
+            </Row>
+            <span className={`${styles.mainContainer} mt-2`}>
+              <Map
+                show
+                defaultLocation={defaultPosition}
+                className={`${styles.map} mr-2`}
+                centerState={[center, setCenter]}
+              >
+                <Marker lat={myLocation.lat} lng={myLocation.lng}>
+                  Я
+                </Marker>
+                {activeEvents.events.map((event) => {
+                  return (
+                    <Marker
+                      id={event.id}
+                      key={event.id}
+                      lat={event.latitude}
+                      lng={event.longitude}
+                      hoverable
+                      onClick={onEventMarkerClick}
+                    >
+                      i
+                    </Marker>
+                  );
+                })}
+              </Map>
+              <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
+                <Card.Body>
+                  <Card.Title>{`${selectedEvent.name} by ${selectedEvent.creator}`}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    {`${
+                      selectedEvent.tags.length > 0
+                        ? `Tags: ${selectedEvent.tags.join(", ")}`
+                        : ""
+                    }`}
+                  </Card.Subtitle>
+                  <Card.Text>
+                    <p>{`Max guests: ${selectedEvent.participantsLimit}`}</p>
+                    <p>{selectedEvent.description}</p>
+                    <p>{selectedEvent.address}</p>
+                    <p>{new Date(selectedEvent.startTime).toDateString()}</p>
+                  </Card.Text>
+                </Card.Body>
+                <Card.Footer>
+                  <Button
+                    onClick={(): void => isShowEvent(false)}
+                    className="mr-2"
                   >
-                    i
-                  </Marker>
-                );
-              })}
-            </Map>
-            <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
-              <Card.Body>
-                <Card.Title>{`${selectedEvent.name} by ${selectedEvent.creator}`}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">
-                  {`${
-                    selectedEvent.tags.length > 0
-                      ? `Tags: ${selectedEvent.tags.join(", ")}`
-                      : ""
-                  }`}
-                </Card.Subtitle>
-                <Card.Text>
-                  <p>{`Max guests: ${selectedEvent.participantsLimit}`}</p>
-                  <p>{selectedEvent.description}</p>
-                  <p>{selectedEvent.address}</p>
-                  <p>{new Date(selectedEvent.startTime).toDateString()}</p>
-                </Card.Text>
-              </Card.Body>
-              <Card.Footer>
-                <Button onClick={(): void => isShowEvent(false)}>Close</Button>
-              </Card.Footer>
-            </Card>
-          </span>
-          <Row className={`mt-2 ${styles.formRow}`}>
-            <Button className="btn-danger" onClick={onLogoutClick}>
-              Logout
-            </Button>
-          </Row>
-          <Row className={styles.eventCreation}>
-            <Link to={`${url}/eventCreation`}>
-              <Image
-                className={styles.enlargingEffect}
-                src={eventCreationIcon}
-                alt="logo"
-              />
-            </Link>
-          </Row>
-        </PrivateRoute>
-        <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
-      </Switch>
-    </Container>
+                    Close
+                  </Button>
+                  {isParticipant() ? (
+                    <Button onClick={leaveEventClick} variant="warning">
+                      Leave
+                    </Button>
+                  ) : (
+                    <Button onClick={joinEventClick} variant="success">
+                      Join
+                    </Button>
+                  )}
+                </Card.Footer>
+              </Card>
+            </span>
+            <Row className={`mt-2 ${styles.formRow}`}>
+              <Button className="btn-danger" onClick={onLogoutClick}>
+                Logout
+              </Button>
+            </Row>
+            <Row className={styles.eventCreation}>
+              <Link to={`${url}/eventCreation`}>
+                <Image
+                  className={styles.enlargingEffect}
+                  src={eventCreationIcon}
+                  alt="logo"
+                />
+              </Link>
+            </Row>
+          </PrivateRoute>
+          <PrivateRoute
+            path={`${url}/eventCreation`}
+            component={EventCreation}
+          />
+        </Switch>
+      </Container>
+    </>
   );
 }
