@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom";
+import { Switch, useRouteMatch, useHistory } from "react-router-dom";
 import PrivateRoute from "../utils/private_route";
 import { Button, Card, Container, Row } from "react-bootstrap";
 import styles from "../css/home.module.css";
@@ -19,7 +19,6 @@ import Map from "./event_creation/map";
 import { whoAmI } from "../utils/event_utils/eventCommunicator";
 import Alert from "react-bootstrap/Alert";
 import AppNavbar from "../standart/navbar";
-import { logout } from "../utils/auth";
 
 interface AlertMessage {
   variant: string;
