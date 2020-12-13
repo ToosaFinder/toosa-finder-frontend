@@ -8,6 +8,23 @@
   justify-content: center;
 }
 
+.map {
+  height: 600px;
+  width: 100%;
+}
+
+.mainContainer {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  width: auto;
+}
+
+.card {
+  width: auto;
+  height: fit-content;
+}
+
 .eventCreation {
   position: fixed;
   bottom: 10%;

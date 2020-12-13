@@ -5,13 +5,13 @@ import {
   ConfirmEmailResponse,
   Credentials,
   ErrorBody,
+  EventResponse,
   ForgotPasswordResponse,
   LoginResponse,
   RegistrationCredentials,
   RegistrationResponse,
   RestorePasswordCredentials,
   SetPasswordCredentials,
-  SetPasswordResponse,
   PopularTagsResponse,
   Coordinates,
   ReverseGeocodingResponse,
@@ -19,6 +19,8 @@ import {
   EventCreationResponse,
   UserRes,
   GetEventsResponse,
+  SetPasswordResponse,
+  SingleEventResponse,
 } from "./interfaces";
 import Cookies from "js-cookie";
 import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
@@ -71,6 +73,8 @@ export interface ApiClient {
   whoAmI(): Promise<ApiResponse<UserRes>>;
   getEventsForAdmin(): Promise<ApiResponse<GetEventsResponse>>;
   getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>>;
+  getEvents(): Promise<ApiResponse<EventResponse>>;
+  getEvent(id: number): Promise<ApiResponse<SingleEventResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -99,10 +103,6 @@ function errorHandler(error: AxiosError): ApiResponse<ErrorBody> {
       },
     };
   }
-}
-
-export interface ApiClient {
-  login(credentials: Credentials): Promise<ApiResponse<LoginResponse>>;
 }
 
 class ApiClientImpl implements ApiClient {
@@ -179,8 +179,9 @@ class ApiClientImpl implements ApiClient {
   async getLocationName(
     cords: Coordinates
   ): Promise<ApiResponse<ReverseGeocodingResponse>> {
-    return await instance
+    return await axios
       .get<ReverseGeocodingResponse>(
+        // eslint-disable-next-line no-undef
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${cords.lat},${cords.lng}&key=${process.env.REACT_APP_GOOGLE_KEY}`
       )
       .then(confirmationHandler)
@@ -219,6 +220,19 @@ class ApiClientImpl implements ApiClient {
   async getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>> {
     return await instance
       .get<GetEventsResponse>(`http://${getURL()}/event/my/participant`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async getEvents(): Promise<ApiResponse<EventResponse>> {
+    return await instance
+      .get<EventResponse>(`http://${getURL()}/event`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+  async getEvent(id: number): Promise<ApiResponse<SingleEventResponse>> {
+    return await instance
+      .get<SingleEventResponse>(`http://${getURL()}/event/${id}`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }

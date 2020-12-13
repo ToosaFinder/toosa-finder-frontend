@@ -16,17 +16,19 @@ import "react-datetime/css/react-datetime.css";
 import ValidDateTimePicker from "../../utils/ValidDateTimePicker";
 import Button from "react-bootstrap/Button";
 import Popover from "react-bootstrap/Popover";
-import { Coordinates, EventCreationReq } from "../../utils/interfaces";
+import { Coordinates, ErrorBody } from "../../utils/interfaces";
 import { useHistory } from "react-router-dom";
 import Map from "./map";
 import {
   createEvent,
+  getLocationName,
   getPopularTags,
   whoAmI,
 } from "../../utils/event_utils/eventCommunicator";
 import moment, { Moment } from "moment";
 import { ShowTags } from "../../utils/tag_utils/show_tag";
 import { Selector } from "../../utils/selector";
+import Marker from "../../utils/marker";
 
 export default function EventCreation(): JSX.Element {
   const [isPublic, setIsPublic] = useState<boolean>(false);
@@ -64,6 +66,15 @@ export default function EventCreation(): JSX.Element {
     lng: 83.090425,
   });
 
+  const [curLat, setLat] = useState<number>(54.843417);
+  const [curLng, setLng] = useState<number>(83.090425);
+
+  const enableAlert = (message: string, alertVariant: string): void => {
+    setAlertMsg(message);
+    setAlertVariant(alertVariant);
+    setAlertVisibility(true);
+  };
+
   const defaultLocation: Coordinates = coordinates;
 
   const history = useHistory();
@@ -84,7 +95,7 @@ export default function EventCreation(): JSX.Element {
   };
 
   const onSliderChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    let num: string = event.target.value;
+    const num: string = event.target.value;
     let numb: number;
     switch (num) {
       case "1":
@@ -108,7 +119,7 @@ export default function EventCreation(): JSX.Element {
       enableAlert("Invalid date input! Please pick valid date ;)", "warning");
       setDateCorrectness(false);
     } else {
-      let today = moment().subtract(0, "day");
+      const today = moment().subtract(0, "day");
       if (date.isBefore(today)) {
         enableAlert(
           "This date is from past. Please pick valid date ;)",
@@ -120,6 +131,20 @@ export default function EventCreation(): JSX.Element {
         setDateCorrectness(true);
       }
     }
+  };
+  const onMapClick = (obj): void => {
+    setLat(obj.lat);
+    setLng(obj.lng);
+
+    getLocationName({ lat: obj.lat, lng: obj.lng }).then((res) => {
+      if (typeof res === "string") {
+        setLocationName(res);
+      } else {
+        const { error } = res as ErrorBody;
+        enableAlert(error, "danger");
+      }
+    });
+    setCoordinates({ lat: obj.lat, lng: obj.lng });
   };
 
   const enableAlert = (message: string, alertVariant: string): void => {
@@ -163,7 +188,7 @@ export default function EventCreation(): JSX.Element {
   const pickPopularTag = (
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
-    let str: string = event.target.value;
+    const str: string = event.target.value;
 
     if (str === "state") {
       return;
@@ -217,7 +242,7 @@ export default function EventCreation(): JSX.Element {
     setNewTag("");
   };
 
-  let refToTagInputField: RefObject<HTMLInputElement> = useRef<
+  const refToTagInputField: RefObject<HTMLInputElement> = useRef<
     HTMLInputElement
   >(null);
 
@@ -226,8 +251,8 @@ export default function EventCreation(): JSX.Element {
   };
 
   const saveTagNameChanges = (): void => {
-    let listOfPickedTagsCopy: string[] = listOfPickedTags.slice();
-    let index: number = listOfPickedTagsCopy.indexOf(chosenTagNameToEdit);
+    const listOfPickedTagsCopy: string[] = listOfPickedTags.slice();
+    const index: number = listOfPickedTagsCopy.indexOf(chosenTagNameToEdit);
     if (index > -1) {
       listOfPickedTagsCopy.splice(index, 1, tagNameToEdit);
       setListOfPickedTags(listOfPickedTagsCopy);
@@ -256,33 +281,32 @@ export default function EventCreation(): JSX.Element {
         "warning"
       );
     else {
-      let login: string = "";
-      whoAmI().then((res: string) => {
-        login = res;
-      });
-      let eventData: EventCreationReq = {
-        name: name,
-        creator: login,
-        description: description,
-        address: locationName,
-        latitude: coordinates.lng,
-        longitude: coordinates.lng,
-        participantsLimit: size,
-        startTime: date,
-        isPublic: isPublic,
-        tags: listOfPickedTags,
-      };
-
-      createEvent(eventData).then((result: boolean | string) => {
-        if (result === true) {
-          setSuccessfulAlertVisibility(true);
-        } else {
-          enableAlert(
-            ("Event has not been created due to: " + result) as string,
-            "danger"
-          );
-        }
-      });
+      whoAmI()
+        .then((res: string) => {
+          return {
+            name: name,
+            creator: res,
+            description: description,
+            address: locationName,
+            latitude: coordinates.lat,
+            longitude: coordinates.lng,
+            participantsLimit: size,
+            startTime: date,
+            isPublic: isPublic,
+            tags: listOfPickedTags,
+          };
+        })
+        .then(createEvent)
+        .then((result: boolean | string) => {
+          if (result === true) {
+            setSuccessfulAlertVisibility(true);
+          } else {
+            enableAlert(
+              ("Event has not been created due to: " + result) as string,
+              "danger"
+            );
+          }
+        });
     }
   };
 
@@ -544,7 +568,6 @@ export default function EventCreation(): JSX.Element {
                 id="custom-switch"
                 label="Public"
                 checked={isPublic}
-                lg
               />
             </Col>
           </Row>
@@ -565,11 +588,14 @@ export default function EventCreation(): JSX.Element {
 
         <Map
           show={isMapVisible}
-          locationSetter={setLocationName}
-          alertSetter={enableAlert}
-          coordinatesSetter={setCoordinates}
           defaultLocation={defaultLocation}
-        />
+          onMapClick={onMapClick}
+          style={{ height: `600px`, width: `600px`, marginLeft: `25px` }}
+        >
+          <Marker lat={curLat} lng={curLng}>
+            я
+          </Marker>
+        </Map>
       </Container>
     </Container>
   );

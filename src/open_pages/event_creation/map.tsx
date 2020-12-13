@@ -1,42 +1,42 @@
 import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
-import Marker from "../../utils/marker";
-import { ErrorBody } from "../../utils/interfaces";
-import { getLocationName } from "../../utils/event_utils/eventCommunicator";
+import { Coordinates } from "../../utils/interfaces";
 
-export default function Map(props): JSX.Element {
-  const [curLat, setLat] = useState<number>(null);
-  const [curLng, setLng] = useState<number>(null);
+interface MapProps {
+  onMapClick?: (event) => void;
+  show: boolean;
+  defaultLocation: Coordinates;
+  children?: any;
+  style?: React.CSSProperties;
+  className?: string;
+  centerState?: [
+    Coordinates,
+    React.Dispatch<React.SetStateAction<Coordinates>>
+  ];
+}
 
-  const onMapClick = (obj) => {
-    setLat(obj.lat);
-    setLng(obj.lng);
-
-    getLocationName({ lat: obj.lat, lng: obj.lng }).then((res) => {
-      if (typeof res === "string") {
-        props.locationSetter(res);
-      } else {
-        const { error } = res as ErrorBody;
-        props.alertSetter(error, "danger");
-      }
-    });
-    props.coordinatesSetter({ lat: obj.lat, lng: obj.lng });
-  };
+export default function Map(props: MapProps): JSX.Element {
+  let [center, setCenter] = useState<Coordinates>(props.defaultLocation);
+  if (props.centerState) {
+    [center, setCenter] = props.centerState;
+  }
 
   return (
     props.show && (
-      <div style={{ height: `100%`, width: `100%`, marginLeft: `25px` }}>
+      <div style={props.style} className={props.className}>
         <GoogleMapReact
           bootstrapURLKeys={{
             key: process.env.REACT_APP_GOOGLE_KEY,
           }}
           defaultCenter={props.defaultLocation}
+          center={center}
           defaultZoom={16}
-          onClick={onMapClick}
+          onClick={props.onMapClick}
+          onChildClick={(key, childProps) => {
+            setCenter({ lat: childProps.lat, lng: childProps.lng });
+          }}
         >
-          <Marker lat={curLat} lng={curLng}>
-            я
-          </Marker>
+          {props.children}
         </GoogleMapReact>
       </div>
     )
