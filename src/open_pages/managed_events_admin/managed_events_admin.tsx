@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../../css/managed_events_admin.module.css";
 import { Alert, Button, Container, Row, Table } from "react-bootstrap";
 import { getEventsForAdmin } from "../../utils/event_utils/eventCommunicator";
-import { Event } from "../../utils/interfaces";
+import { SingleEventDto } from "../../utils/interfaces";
 import EventFilter from "../../utils/event_utils/event_filter";
 import { sortEventsByDate } from "../../utils/event_utils/event_sorter_by_date";
 import { extractTags } from "../../utils/tag_utils/extract_tags";
@@ -10,8 +10,8 @@ import { useHistory } from "react-router-dom";
 
 export default function ManagedEventsForAdmin(): JSX.Element {
   const [isLoaded, setLoading] = useState<boolean>(true);
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
-  const [curEvents, setCurEvents] = useState<Event[]>([]);
+  const [allEvents, setAllEvents] = useState<SingleEventDto[]>([]);
+  const [curEvents, setCurEvents] = useState<SingleEventDto[]>([]);
   const [allTags, setTags] = useState<string[]>([]);
   const [isAlertVisible, setAlertVisibility] = useState<boolean>(false);
   const [alertMsg, setAlertMsg] = useState<string>("");
@@ -26,14 +26,14 @@ export default function ManagedEventsForAdmin(): JSX.Element {
 
   useEffect(() => {
     if (isLoaded) {
-      getEventsForAdmin().then((res) => {
+      getEventsForAdmin().then((res: string | SingleEventDto[]) => {
         if (typeof res === "string") {
           enableAlert(
             ("Unable to load your administrated events: " + res) as string,
             "danger"
           );
         } else {
-          let events: Event[] = res as Event[];
+          let events: SingleEventDto[] = res as SingleEventDto[];
           if (events === undefined) {
             enableAlert("Unable to load your administrated events", "danger");
           } else if (events.length === 0) {

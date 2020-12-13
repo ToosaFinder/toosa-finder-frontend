@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
-import { Event } from "../interfaces";
+import { SingleEventDto } from "../interfaces";
 import { ShowTags } from "../tag_utils/show_tag";
 import { Selector } from "../selector";
 import { filterEventsByTag } from "./filter_events_by_tags";
 import { filterEventsByEventname } from "./filter_events_by_eventname";
 
 export default function EventFilter(props): JSX.Element {
-  const events: Event[] = props.allEvents.slice();
+  const events: SingleEventDto[] = props.allEvents.slice();
   const [listOfAllTags, setListOfAllTags] = useState<string[]>(props.alltags);
   console.log("listOfAllTags: ", listOfAllTags.join(", "));
   const [listOfPickedTags, setListOfPickedTags] = useState<string[]>([]);

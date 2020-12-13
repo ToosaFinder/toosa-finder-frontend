@@ -147,12 +147,6 @@ export default function EventCreation(): JSX.Element {
     setCoordinates({ lat: obj.lat, lng: obj.lng });
   };
 
-  const enableAlert = (message: string, alertVariant: string): void => {
-    setAlertMsg(message);
-    setAlertVariant(alertVariant);
-    setAlertVisibility(true);
-  };
-
   const onTagAddingButton = (): void => {
     if (!isTagAddingVisible) {
       setMapVisibility(false);

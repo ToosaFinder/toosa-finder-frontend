@@ -1,9 +1,9 @@
-import { Event } from "../interfaces";
+import { SingleEventDto } from "../interfaces";
 
 export function filterEventsByEventname(
-  events: Event[],
+  events: SingleEventDto[],
   eventname: string
-): Event[] {
+): SingleEventDto[] {
   return events.filter((event, index, array) => {
     return event.name
       .toLocaleLowerCase()

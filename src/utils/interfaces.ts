@@ -114,7 +114,7 @@ export interface UserRes {
   login: string;
   email: string;
 }
-
+/*
 export interface Event {
   id: number;
   name: string;
@@ -129,5 +129,6 @@ export interface Event {
   tags: string[];
   participants: string[];
 }
+*/
 
-export type GetEventsResponse = Event[] | ErrorBody;
+export type GetEventsResponse = SingleEventDto[] | ErrorBody;

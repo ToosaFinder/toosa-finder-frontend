@@ -3,10 +3,10 @@ import {
   ApiResponse,
   Coordinates,
   ErrorBody,
-  Event,
   EventCreationReq,
   GetEventsResponse,
   PopularTags,
+  SingleEventDto,
 } from "../interfaces";
 import { ReverseGeocodingSuccess } from "../reverseGeocodingResponseInterface";
 import parseLocation from "../parseLocation";
@@ -74,13 +74,13 @@ export async function getLocationName(
     });
 }
 
-export async function getEventsForAdmin(): Promise<string | Event[]> {
+export async function getEventsForAdmin(): Promise<string | SingleEventDto[]> {
   return api()
     .getEventsForAdmin()
     .then((res: ApiResponse<GetEventsResponse>) => {
       const { response, code } = res;
       if (code === 200) {
-        return response as Event[];
+        return response as SingleEventDto[];
       } else {
         const { error } = response as ErrorBody;
         return error;
@@ -88,13 +88,15 @@ export async function getEventsForAdmin(): Promise<string | Event[]> {
     });
 }
 
-export async function getParticipatedEvents(): Promise<string | Event[]> {
+export async function getParticipatedEvents(): Promise<
+  string | SingleEventDto[]
+> {
   return api()
     .getEventsForAdmin()
     .then((res: ApiResponse<GetEventsResponse>) => {
       const { response, code } = res;
       if (code === 200) {
-        return response as Event[];
+        return response as SingleEventDto[];
       } else {
         const { error } = response as ErrorBody;
         return error;

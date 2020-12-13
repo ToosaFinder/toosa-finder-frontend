@@ -1,9 +1,9 @@
-import { Event } from "../interfaces";
+import { SingleEventDto } from "../interfaces";
 
 export function filterEventsByTag(
-  events: Event[],
+  events: SingleEventDto[],
   pickedTags: string[]
-): Event[] {
+): SingleEventDto[] {
   return events.filter((event, index, arr) => {
     //const res: boolean = event.tags.every((tag, index, array) => {return pickedTags.includes(tag)});
     const res: boolean = pickedTags.every((tag, index, array) => {
