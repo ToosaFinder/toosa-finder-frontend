@@ -92,7 +92,7 @@ export async function getParticipatedEvents(): Promise<
   string | SingleEventDto[]
 > {
   return api()
-    .getEventsForAdmin()
+    .getParticipatedEvents()
     .then((res: ApiResponse<GetEventsResponse>) => {
       const { response, code } = res;
       if (code === 200) {
