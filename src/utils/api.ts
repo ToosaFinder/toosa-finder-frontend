@@ -18,6 +18,7 @@ import {
   EventCreationReq,
   EventCreationResponse,
   UserRes,
+  GetEventsResponse,
   SetPasswordResponse,
   SingleEventResponse,
 } from "./interfaces";
@@ -70,6 +71,8 @@ export interface ApiClient {
     data: EventCreationReq
   ): Promise<ApiResponse<EventCreationResponse>>;
   whoAmI(): Promise<ApiResponse<UserRes>>;
+  getEventsForAdmin(): Promise<ApiResponse<GetEventsResponse>>;
+  getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>>;
   getEvents(): Promise<ApiResponse<EventResponse>>;
   getEvent(id: number): Promise<ApiResponse<SingleEventResponse>>;
 }
@@ -205,6 +208,20 @@ class ApiClientImpl implements ApiClient {
     return await instance
       .get<UserRes>(`http://${getURL()}/user/me`)
       .then(confirmationHandler);
+  }
+
+  async getEventsForAdmin(): Promise<ApiResponse<GetEventsResponse>> {
+    return await instance
+      .get<GetEventsResponse>(`http://${getURL()}/event/my/admin`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>> {
+    return await instance
+      .get<GetEventsResponse>(`http://${getURL()}/event/my/participant`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
   }
 
   async getEvents(): Promise<ApiResponse<EventResponse>> {

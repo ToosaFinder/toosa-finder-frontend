@@ -12,6 +12,8 @@ import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
 import EventCreation from "./event_creation/event_creation";
 import Map from "./event_creation/map";
+import ManagedEventsForAdmin from "./managed_events_admin/managed_events_admin";
+import ParticipatedEvents from "./participated_events/participated_events";
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -161,6 +163,14 @@ export default function Home(): JSX.Element {
           </Row>
         </PrivateRoute>
         <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
+        <PrivateRoute
+          path={`${url}/managedEvents`}
+          component={ManagedEventsForAdmin}
+        />
+        <PrivateRoute
+          path={`${url}/participatedEvents`}
+          component={ParticipatedEvents}
+        />
       </Switch>
     </Container>
   );

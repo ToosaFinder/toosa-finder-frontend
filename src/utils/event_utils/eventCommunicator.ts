@@ -1,12 +1,15 @@
-import api from "./api";
+import api from "../api";
 import {
+  ApiResponse,
   Coordinates,
   ErrorBody,
   EventCreationReq,
+  GetEventsResponse,
   PopularTags,
-} from "./interfaces";
-import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
-import parseLocation from "./parseLocation";
+  SingleEventDto,
+} from "../interfaces";
+import { ReverseGeocodingSuccess } from "../reverseGeocodingResponseInterface";
+import parseLocation from "../parseLocation";
 
 export async function getPopularTags(): Promise<string | string[]> {
   return api()
@@ -67,6 +70,36 @@ export async function getLocationName(
         return parseLocation(location);
       } else {
         return response as ErrorBody;
+      }
+    });
+}
+
+export async function getEventsForAdmin(): Promise<string | SingleEventDto[]> {
+  return api()
+    .getEventsForAdmin()
+    .then((res: ApiResponse<GetEventsResponse>) => {
+      const { response, code } = res;
+      if (code === 200) {
+        return response as SingleEventDto[];
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
+      }
+    });
+}
+
+export async function getParticipatedEvents(): Promise<
+  string | SingleEventDto[]
+> {
+  return api()
+    .getEventsForAdmin()
+    .then((res: ApiResponse<GetEventsResponse>) => {
+      const { response, code } = res;
+      if (code === 200) {
+        return response as SingleEventDto[];
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
       }
     });
 }

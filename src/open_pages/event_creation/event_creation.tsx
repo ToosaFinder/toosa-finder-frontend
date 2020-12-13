@@ -24,8 +24,10 @@ import {
   getLocationName,
   getPopularTags,
   whoAmI,
-} from "../../utils/eventCreationCommunicator";
+} from "../../utils/event_utils/eventCommunicator";
 import moment, { Moment } from "moment";
+import { ShowTags } from "../../utils/tag_utils/show_tag";
+import { Selector } from "../../utils/selector";
 import Marker from "../../utils/marker";
 
 export default function EventCreation(): JSX.Element {
@@ -155,7 +157,7 @@ export default function EventCreation(): JSX.Element {
           setListOfPopularTagsForChecking([]);
           enableAlert("Unable to download popular tags: " + resp, "danger");
         } else {
-          let tags = resp as string[];
+          let tags: string[] = resp as string[];
           setListOfPopularTagsForChecking(tags.slice());
           tags = tags.filter(
             (tag: string) =>
@@ -212,43 +214,6 @@ export default function EventCreation(): JSX.Element {
     setChosenTagNameToEdit(tagName);
   };
 
-  const showTags = (): JSX.Element => {
-    return (
-      <div>
-        {listOfPickedTags.map((val: string) => {
-          return (
-            <>
-              <Button
-                className={styles.tagButton}
-                size="sm"
-                variant="success"
-                onClick={() => editTag(val)}
-              >
-                {val}
-                <Button
-                  className={styles.tagCloseButton}
-                  variant="danger"
-                  size="sm"
-                  onClick={(
-                    event: React.MouseEvent<HTMLElement, MouseEvent>
-                  ) => {
-                    onTagClose(event, val);
-                  }}
-                >
-                  X
-                </Button>
-              </Button>{" "}
-            </>
-          );
-        })}
-      </div>
-    );
-  };
-
-  const refToTagInputField: RefObject<HTMLInputElement> = useRef<
-    HTMLInputElement
-  >(null);
-
   const createNewTag = (): void => {
     if (newTag.length === 0) {
       enableAlert("It is impossible to create empty tag ;d", "warning");
@@ -270,6 +235,10 @@ export default function EventCreation(): JSX.Element {
     refToTagInputField.current.value = "";
     setNewTag("");
   };
+
+  const refToTagInputField: RefObject<HTMLInputElement> = useRef<
+    HTMLInputElement
+  >(null);
 
   const onTagEdit = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTagToEdit(event.target.value);
@@ -341,23 +310,11 @@ export default function EventCreation(): JSX.Element {
         <Popover.Title as="h3">Popular tags:</Popover.Title>
         <Form.Group className={styles.createTagForm}>
           {listOfPopularTags.length > 0 ? (
-            <Form.Control as="select" size="sm" onChange={pickPopularTag}>
-              <option
-                value="state"
-                selected={true}
-                disabled={true}
-                hidden={true}
-              >
-                Pick a tag you like
-              </option>
-              {listOfPopularTags.map((val, index) => {
-                return (
-                  <option key={index} value={val}>
-                    {val}
-                  </option>
-                );
-              })}
-            </Form.Control>
+            <Selector
+              onpick={pickPopularTag}
+              list={listOfPopularTags}
+              defaultOptionText="Pick a tag you like"
+            />
           ) : (
             <Card body>List of available tags is empty</Card>
           )}
@@ -488,7 +445,11 @@ export default function EventCreation(): JSX.Element {
             <Form.Label>Tags</Form.Label>
             {listOfPickedTags.length > 0 ? (
               <>
-                {showTags()}
+                <ShowTags
+                  listOfPickedTags={listOfPickedTags}
+                  onTextualButtonClick={editTag}
+                  onCloseButtonClick={onTagClose}
+                />
                 <Col lg={{ span: 1, offset: 10 }}>
                   <OverlayTrigger
                     trigger="click"
