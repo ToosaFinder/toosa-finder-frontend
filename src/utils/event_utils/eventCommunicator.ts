@@ -6,6 +6,7 @@ import {
   EventCreationReq,
   GetEventsResponse,
   PopularTags,
+  UserRes,
   SingleEventDto,
 } from "../interfaces";
 import { ReverseGeocodingSuccess } from "../reverseGeocodingResponseInterface";
@@ -42,14 +43,13 @@ export async function createEvent(
     });
 }
 
-export async function whoAmI(): Promise<string> {
+export async function whoAmI(): Promise<UserRes> {
   return api()
     .whoAmI()
     .then((resp) => {
       const { code, response } = resp;
       if (code === 200) {
-        const { login } = response;
-        return login;
+        return response;
       } else {
         console.log(
           "В спецификации wiki не предусмотрено наличие ошибок у метода get /user/me бекенда"

@@ -22,6 +22,8 @@ import {
   SetPasswordResponse,
   SingleEventResponse,
   EmptyResponse,
+  JoinEventResponse,
+  LeaveEventResponse,
 } from "./interfaces";
 import Cookies from "js-cookie";
 import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
@@ -38,6 +40,7 @@ instance.interceptors.response.use(
       if (isAuthUrl(error.response.config.url)) {
         return Promise.reject(error);
       }
+      Cookies.remove("token");
       window.location.href = "/sign-in";
     }
     return Promise.reject(error);
@@ -77,6 +80,8 @@ export interface ApiClient {
   getEvents(): Promise<ApiResponse<EventResponse>>;
   getEvent(id: number): Promise<ApiResponse<SingleEventResponse>>;
   deleteEvent(id: number): Promise<ApiResponse<EmptyResponse>>;
+  joinEvent(id: number): Promise<ApiResponse<JoinEventResponse>>;
+  leaveEvent(id: number): Promise<ApiResponse<LeaveEventResponse>>;
 }
 
 function confirmationHandler<T>(result: AxiosResponse<T>): ApiResponse<T> {
@@ -242,6 +247,20 @@ class ApiClientImpl implements ApiClient {
   async deleteEvent(id: number): Promise<ApiResponse<EmptyResponse>> {
     return await instance
       .delete<EmptyResponse>(`http://${getURL()}/event/${id}`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async joinEvent(id: number): Promise<ApiResponse<JoinEventResponse>> {
+    return await instance
+      .put<JoinEventResponse>(`http://${getURL()}/event/${id}/participant`)
+      .then(confirmationHandler)
+      .catch(errorHandler);
+  }
+
+  async leaveEvent(id: number): Promise<ApiResponse<LeaveEventResponse>> {
+    return await instance
+      .delete<LeaveEventResponse>(`http://${getURL()}/event/${id}/participant`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
