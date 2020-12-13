@@ -1,0 +1,19 @@
+.AppNavbar {
+  width: 100%;
+}
+
+.Brand {
+  color: white;
+  font-weight: bold;
+  margin: unset;
+}
+
+.WhiteText {
+  color: white;
+  font-weight: normal;
+  margin: unset;
+}
+
+.Logout {
+  margin-left: 8px;
+}

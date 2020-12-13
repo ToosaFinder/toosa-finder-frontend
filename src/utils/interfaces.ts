@@ -116,3 +116,5 @@ export interface UserRes {
   login: string;
   email: string;
 }
+
+export type GetEventsResponse = SingleEventDto[] | ErrorBody;

@@ -1,12 +1,16 @@
-import api from "./api";
+import api from "../api";
 import {
+  ApiResponse,
   Coordinates,
   ErrorBody,
   EventCreationReq,
+  GetEventsResponse,
   PopularTags,
-} from "./interfaces";
-import { ReverseGeocodingSuccess } from "./reverseGeocodingResponseInterface";
-import parseLocation from "./parseLocation";
+  UserRes,
+  SingleEventDto,
+} from "../interfaces";
+import { ReverseGeocodingSuccess } from "../reverseGeocodingResponseInterface";
+import parseLocation from "../parseLocation";
 
 export async function getPopularTags(): Promise<string | string[]> {
   return api()
@@ -39,14 +43,13 @@ export async function createEvent(
     });
 }
 
-export async function whoAmI(): Promise<string> {
+export async function whoAmI(): Promise<UserRes> {
   return api()
     .whoAmI()
     .then((resp) => {
       const { code, response } = resp;
       if (code === 200) {
-        const { login } = response;
-        return login;
+        return response;
       } else {
         console.log(
           "В спецификации wiki не предусмотрено наличие ошибок у метода get /user/me бекенда"
@@ -67,6 +70,36 @@ export async function getLocationName(
         return parseLocation(location);
       } else {
         return response as ErrorBody;
+      }
+    });
+}
+
+export async function getEventsForAdmin(): Promise<string | SingleEventDto[]> {
+  return api()
+    .getEventsForAdmin()
+    .then((res: ApiResponse<GetEventsResponse>) => {
+      const { response, code } = res;
+      if (code === 200) {
+        return response as SingleEventDto[];
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
+      }
+    });
+}
+
+export async function getParticipatedEvents(): Promise<
+  string | SingleEventDto[]
+> {
+  return api()
+    .getParticipatedEvents()
+    .then((res: ApiResponse<GetEventsResponse>) => {
+      const { response, code } = res;
+      if (code === 200) {
+        return response as SingleEventDto[];
+      } else {
+        const { error } = response as ErrorBody;
+        return error;
       }
     });
 }

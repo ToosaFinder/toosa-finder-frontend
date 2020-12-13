@@ -16,7 +16,7 @@ import "react-datetime/css/react-datetime.css";
 import ValidDateTimePicker from "../../utils/ValidDateTimePicker";
 import Button from "react-bootstrap/Button";
 import Popover from "react-bootstrap/Popover";
-import { Coordinates, ErrorBody } from "../../utils/interfaces";
+import { Coordinates, UserRes, ErrorBody } from "../../utils/interfaces";
 import { useHistory } from "react-router-dom";
 import Map from "./map";
 import {
@@ -24,8 +24,11 @@ import {
   getLocationName,
   getPopularTags,
   whoAmI,
-} from "../../utils/eventCreationCommunicator";
+} from "../../utils/event_utils/eventCommunicator";
 import moment, { Moment } from "moment";
+import { ShowTags } from "../../utils/tag_utils/show_tag";
+import { Selector } from "../../utils/selector";
+import AppNavbar from "../../standart/navbar";
 import Marker from "../../utils/marker";
 
 export default function EventCreation(): JSX.Element {
@@ -155,7 +158,7 @@ export default function EventCreation(): JSX.Element {
           setListOfPopularTagsForChecking([]);
           enableAlert("Unable to download popular tags: " + resp, "danger");
         } else {
-          let tags = resp as string[];
+          let tags: string[] = resp as string[];
           setListOfPopularTagsForChecking(tags.slice());
           tags = tags.filter(
             (tag: string) =>
@@ -212,43 +215,6 @@ export default function EventCreation(): JSX.Element {
     setChosenTagNameToEdit(tagName);
   };
 
-  const showTags = (): JSX.Element => {
-    return (
-      <div>
-        {listOfPickedTags.map((val: string) => {
-          return (
-            <>
-              <Button
-                className={styles.tagButton}
-                size="sm"
-                variant="success"
-                onClick={() => editTag(val)}
-              >
-                {val}
-                <Button
-                  className={styles.tagCloseButton}
-                  variant="danger"
-                  size="sm"
-                  onClick={(
-                    event: React.MouseEvent<HTMLElement, MouseEvent>
-                  ) => {
-                    onTagClose(event, val);
-                  }}
-                >
-                  X
-                </Button>
-              </Button>{" "}
-            </>
-          );
-        })}
-      </div>
-    );
-  };
-
-  const refToTagInputField: RefObject<HTMLInputElement> = useRef<
-    HTMLInputElement
-  >(null);
-
   const createNewTag = (): void => {
     if (newTag.length === 0) {
       enableAlert("It is impossible to create empty tag ;d", "warning");
@@ -270,6 +236,10 @@ export default function EventCreation(): JSX.Element {
     refToTagInputField.current.value = "";
     setNewTag("");
   };
+
+  const refToTagInputField: RefObject<HTMLInputElement> = useRef<
+    HTMLInputElement
+  >(null);
 
   const onTagEdit = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setTagToEdit(event.target.value);
@@ -307,10 +277,10 @@ export default function EventCreation(): JSX.Element {
       );
     else {
       whoAmI()
-        .then((res: string) => {
+        .then((res: UserRes) => {
           return {
             name: name,
-            creator: res,
+            creator: res.login,
             description: description,
             address: locationName,
             latitude: coordinates.lat,
@@ -341,23 +311,11 @@ export default function EventCreation(): JSX.Element {
         <Popover.Title as="h3">Popular tags:</Popover.Title>
         <Form.Group className={styles.createTagForm}>
           {listOfPopularTags.length > 0 ? (
-            <Form.Control as="select" size="sm" onChange={pickPopularTag}>
-              <option
-                value="state"
-                selected={true}
-                disabled={true}
-                hidden={true}
-              >
-                Pick a tag you like
-              </option>
-              {listOfPopularTags.map((val, index) => {
-                return (
-                  <option key={index} value={val}>
-                    {val}
-                  </option>
-                );
-              })}
-            </Form.Control>
+            <Selector
+              onpick={pickPopularTag}
+              list={listOfPopularTags}
+              defaultOptionText="Pick a tag you like"
+            />
           ) : (
             <Card body>List of available tags is empty</Card>
           )}
@@ -393,130 +351,109 @@ export default function EventCreation(): JSX.Element {
   };
 
   return (
-    <Container className={styles.mainContainer}>
-      <Alert
-        variant={alertVariant}
-        show={isAlertVisible}
-        onClose={() => {
-          setAlertVisibility(false);
-          setAlertMsg("");
-        }}
-        dismissible
-      >
-        <p>{alertMsg}</p>
-      </Alert>
-
-      <Alert
-        variant="secondary"
-        show={isEventCancelAlertVisible}
-        dismissible={false}
-      >
-        <p>Are you sure you want to cancel event creation?</p>
-        <Button
-          variant="info"
-          onClick={() => {
-            setEventCancelAlertVisibility(false);
-            history.goBack();
+    <>
+      <AppNavbar />
+      <Container className={styles.mainContainer}>
+        <Alert
+          variant={alertVariant}
+          show={isAlertVisible}
+          onClose={() => {
+            setAlertVisibility(false);
+            setAlertMsg("");
           }}
+          dismissible
         >
-          Yes
-        </Button>{" "}
-        <Button
-          variant="info"
-          onClick={() => setEventCancelAlertVisibility(false)}
+          <p>{alertMsg}</p>
+        </Alert>
+
+        <Alert
+          variant="secondary"
+          show={isEventCancelAlertVisible}
+          dismissible={false}
         >
-          No
-        </Button>{" "}
-      </Alert>
+          <p>Are you sure you want to cancel event creation?</p>
+          <Button
+            variant="info"
+            onClick={() => {
+              setEventCancelAlertVisibility(false);
+              history.goBack();
+            }}
+          >
+            Yes
+          </Button>{" "}
+          <Button
+            variant="info"
+            onClick={() => setEventCancelAlertVisibility(false)}
+          >
+            No
+          </Button>{" "}
+        </Alert>
 
-      <Alert
-        variant="success"
-        dismissible={false}
-        show={isSuccessfulAlertVisible}
-      >
-        <p>Your event has been succesfully created!</p>
-        <Button variant="dark" onClick={onEventHasBeenCreated}>
-          Cool!
-        </Button>
-      </Alert>
+        <Alert
+          variant="success"
+          dismissible={false}
+          show={isSuccessfulAlertVisible}
+        >
+          <p>Your event has been succesfully created!</p>
+          <Button variant="dark" onClick={onEventHasBeenCreated}>
+            Cool!
+          </Button>
+        </Alert>
 
-      <h2 className={styles.pageHeader}>Event creation</h2>
-      <Container className={styles.eventCreationContainer}>
-        {isTagEditVisible && (
-          <Form.Group className={styles.tagEditForm}>
-            <Form.Label>Edit tag name here:</Form.Label>
-            <Form.Control
-              as="input"
-              value={tagNameToEdit}
-              onChange={onTagEdit}
-            />
-            <div className={styles.tagEditButtonsContainer}>
-              <Button variant="success" onClick={saveTagNameChanges}>
-                Save
-              </Button>
-              <Button
-                variant="danger"
-                className={styles.cb}
-                onClick={onTagEditCancelButton}
-              >
-                Cancel
-              </Button>
-            </div>
-          </Form.Group>
-        )}
+        <h2 className={styles.pageHeader}>Event creation</h2>
+        <Container className={styles.eventCreationContainer}>
+          {isTagEditVisible && (
+            <Form.Group className={styles.tagEditForm}>
+              <Form.Label>Edit tag name here:</Form.Label>
+              <Form.Control
+                as="input"
+                value={tagNameToEdit}
+                onChange={onTagEdit}
+              />
+              <div className={styles.tagEditButtonsContainer}>
+                <Button variant="success" onClick={saveTagNameChanges}>
+                  Save
+                </Button>
+                <Button
+                  variant="danger"
+                  className={styles.cb}
+                  onClick={onTagEditCancelButton}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </Form.Group>
+          )}
 
-        <Col className={styles.eventCreationForm} md={{ span: 4 }}>
-          <Form.Group controlId="name">
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              placeholder="Your awesome event"
-              onChange={onNameChange}
-              value={name}
-            />
-          </Form.Group>
+          <Col className={styles.eventCreationForm} md={{ span: 4 }}>
+            <Form.Group controlId="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                placeholder="Your awesome event"
+                onChange={onNameChange}
+                value={name}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="description">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              placeholder="Tell us interesting information about your event"
-              onChange={onDescriptionChange}
-            />
-          </Form.Group>
+            <Form.Group controlId="description">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                placeholder="Tell us interesting information about your event"
+                onChange={onDescriptionChange}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="Tags">
-            <Form.Label>Tags</Form.Label>
-            {listOfPickedTags.length > 0 ? (
-              <>
-                {showTags()}
-                <Col lg={{ span: 1, offset: 10 }}>
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="right"
-                    overlay={popover}
-                    show={isTagAddingVisible}
-                  >
-                    <Button
-                      className={[
-                        styles.tagCrossButton,
-                        styles.enlargingEffect,
-                      ].join(" ")}
-                      onClick={onTagAddingButton}
-                    >
-                      &#43;
-                    </Button>
-                  </OverlayTrigger>
-                </Col>
-              </>
-            ) : (
-              <>
-                <Row>
-                  <Col lg={{ span: 6 }}>
-                    <span className={styles.tagPromptText}>
-                      Click <strong>+</strong> to add tag
-                    </span>
-                  </Col>
-                  <Col lg={{ span: 1, offset: 4 }}>
+            <Form.Group controlId="Tags">
+              <Form.Label>Tags</Form.Label>
+              {listOfPickedTags.length > 0 ? (
+                <>
+                  <ShowTags
+                    listOfPickedTags={listOfPickedTags}
+                    onTextualButtonClick={editTag}
+                    onCloseButtonClick={onTagClose}
+                  />
+                  <Col lg={{ span: 1, offset: 10 }}>
                     <OverlayTrigger
                       trigger="click"
                       placement="right"
@@ -534,102 +471,130 @@ export default function EventCreation(): JSX.Element {
                       </Button>
                     </OverlayTrigger>
                   </Col>
-                </Row>
-              </>
-            )}
-          </Form.Group>
+                </>
+              ) : (
+                <>
+                  <Row>
+                    <Col lg={{ span: 6 }}>
+                      <span className={styles.tagPromptText}>
+                        Click <strong>+</strong> to add tag
+                      </span>
+                    </Col>
+                    <Col lg={{ span: 1, offset: 4 }}>
+                      <OverlayTrigger
+                        trigger="click"
+                        placement="right"
+                        overlay={popover}
+                        show={isTagAddingVisible}
+                      >
+                        <Button
+                          className={[
+                            styles.tagCrossButton,
+                            styles.enlargingEffect,
+                          ].join(" ")}
+                          onClick={onTagAddingButton}
+                        >
+                          &#43;
+                        </Button>
+                      </OverlayTrigger>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </Form.Group>
 
-          <Form.Group controlId="slider">
-            <Form.Label>Size</Form.Label>
-            <Form.Control
-              as="input"
-              id="myinput"
-              type="range"
-              min={1}
-              max={4}
-              step={1}
-              list="ticks"
-              onChange={onSliderChange}
-            />
-            <datalist id="ticks" className={styles.datalist}>
-              <option className={styles.option} value="1" label="S">
-                S
-              </option>
-              <option className={styles.option} value="2" label="M">
-                M
-              </option>
-              <option className={styles.option} value="3" label="L">
-                L
-              </option>
-              <option className={styles.option} value="4" label="XL+">
-                XL+
-              </option>
-            </datalist>
-          </Form.Group>
-
-          <Row>
-            <Col md={{ span: 10 }}>
+            <Form.Group controlId="slider">
+              <Form.Label>Size</Form.Label>
               <Form.Control
-                as="textarea"
-                value={locationName}
-                readOnly={true}
-                style={{ height: `120px` }}
+                as="input"
+                id="myinput"
+                type="range"
+                min={1}
+                max={4}
+                step={1}
+                list="ticks"
+                onChange={onSliderChange}
               />
-            </Col>
-            <Col md={{ span: 1 }}>
-              <Image
-                className={styles.enlargingEffect}
-                src={locationIcon}
-                alt="locationIcon"
-                onClick={onLocationClick}
-                style={{ cursor: "pointer" }}
-              />
-            </Col>
-          </Row>
+              <datalist id="ticks" className={styles.datalist}>
+                <option className={styles.option} value="1" label="S">
+                  S
+                </option>
+                <option className={styles.option} value="2" label="M">
+                  M
+                </option>
+                <option className={styles.option} value="3" label="L">
+                  L
+                </option>
+                <option className={styles.option} value="4" label="XL+">
+                  XL+
+                </option>
+              </datalist>
+            </Form.Group>
 
-          <Row style={{ marginTop: 10 }}>
-            <Col md={{ span: 10 }}>
-              <Form.Label>Date</Form.Label>
-              <ValidDateTimePicker onClose={onDateClose} initDate={date} />
-            </Col>
-          </Row>
+            <Row>
+              <Col md={{ span: 10 }}>
+                <Form.Control
+                  as="textarea"
+                  value={locationName}
+                  readOnly={true}
+                  style={{ height: `120px` }}
+                />
+              </Col>
+              <Col md={{ span: 1 }}>
+                <Image
+                  className={styles.enlargingEffect}
+                  src={locationIcon}
+                  alt="locationIcon"
+                  onClick={onLocationClick}
+                  style={{ cursor: "pointer" }}
+                />
+              </Col>
+            </Row>
 
-          <Row style={{ marginTop: 10 }}>
-            <Col md={{ span: 10 }}>
-              <Form.Switch
-                onChange={onSwitchAction}
-                id="custom-switch"
-                label="Public"
-                checked={isPublic}
-              />
-            </Col>
-          </Row>
+            <Row style={{ marginTop: 10 }}>
+              <Col md={{ span: 10 }}>
+                <Form.Label>Date</Form.Label>
+                <ValidDateTimePicker onClose={onDateClose} initDate={date} />
+              </Col>
+            </Row>
 
-          <Row style={{ marginTop: 10 }}>
-            <Col md={3}>
-              <Button variant="success" onClick={onEventCreation}>
-                Create
-              </Button>
-            </Col>
-            <Col md={3}>
-              <Button variant="danger" onClick={onEventCreationCancel}>
-                Cancel
-              </Button>
-            </Col>
-          </Row>
-        </Col>
+            <Row style={{ marginTop: 10 }}>
+              <Col md={{ span: 10 }}>
+                <Form.Switch
+                  onChange={onSwitchAction}
+                  id="custom-switch"
+                  label="Public"
+                  checked={isPublic}
+                />
+              </Col>
+            </Row>
 
-        <Map
-          show={isMapVisible}
-          defaultLocation={defaultLocation}
-          onMapClick={onMapClick}
-          style={{ height: `600px`, width: `600px`, marginLeft: `25px` }}
-        >
-          <Marker lat={curLat} lng={curLng}>
-            я
-          </Marker>
-        </Map>
+            <Row style={{ marginTop: 10 }}>
+              <Col md={3}>
+                <Button variant="success" onClick={onEventCreation}>
+                  Create
+                </Button>
+              </Col>
+              <Col md={3}>
+                <Button variant="danger" onClick={onEventCreationCancel}>
+                  Cancel
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+
+          <Map
+            show={isMapVisible}
+            defaultLocation={defaultLocation}
+            onMapClick={onMapClick}
+            style={{ height: `600px`, width: `600px`, marginLeft: `25px` }}
+          >
+            <Marker lat={curLat} lng={curLng}>
+              я
+            </Marker>
+          </Map>
+        </Container>
       </Container>
-    </Container>
+    </>
   );
 }
