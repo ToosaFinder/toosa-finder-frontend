@@ -5,9 +5,16 @@ import { Button, Card, Container, Row } from "react-bootstrap";
 import styles from "../css/home.module.css";
 import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
-import { getEvent, getEvents } from "../utils/event_api";
+import { getEvent, getEvents, joinEvent, leaveEvent } from "../utils/event_api";
 import Map from "./event_creation/map";
+import { whoAmI } from "../utils/event_utils/eventCommunicator";
+import Alert from "react-bootstrap/Alert";
 import AppNavbar from "../standart/navbar";
+
+interface AlertMessage {
+  variant: string;
+  message: string;
+}
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
@@ -42,6 +49,19 @@ export default function Home(): JSX.Element {
     tags: [],
   });
   const [activeEvents, setActiveEvents] = useState<EventDto>({ events: [] });
+  const [user, setUser] = useState<string>("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMsg, setAlertMsg] = useState<string>("");
+  const [alertVariant, setAlertVariant] = useState<string>("");
+
+  const getActiveEvents = () => {
+    getEvents().then((result) => {
+      if (typeof result !== "string") {
+        console.log(result);
+        setActiveEvents(result as EventDto);
+      }
+    });
+  };
 
   useEffect(() => {
     if (loading) {
@@ -51,12 +71,7 @@ export default function Home(): JSX.Element {
         setMyLocation({ lat: latitude, lng: longitude });
         setCenter({ lat: latitude, lng: longitude });
       });
-      getEvents().then((result) => {
-        if (typeof result !== "string") {
-          console.log(result);
-          setActiveEvents(result as EventDto);
-        }
-      });
+      getActiveEvents();
     }
   }, [loading]);
 
@@ -80,9 +95,75 @@ export default function Home(): JSX.Element {
     }
   };
 
+  useEffect(() => {
+    whoAmI().then((result) => {
+      setUser(result.login);
+    });
+  }, []);
+
+  const enableAlert = (alert: AlertMessage): void => {
+    if (alert !== undefined && alert.message !== undefined) {
+      setAlertMsg(alert.message);
+      setShowAlert(true);
+      setAlertVariant(alert.variant);
+    }
+  };
+
+  const isParticipant = () => {
+    return selectedEvent.participants.includes(user);
+  };
+
+  const leaveEventClick = () => {
+    leaveEvent(selectedEvent.id).then((success) => {
+      if (success === true) {
+        isShowEvent(false);
+        const successAlert = {
+          variant: "warning",
+          message: "Вы покинули мероприятие " + selectedEvent.name,
+        };
+        enableAlert(successAlert);
+      } else {
+        const failAlert = {
+          variant: "danger",
+          message: success as string,
+        };
+        enableAlert(failAlert);
+      }
+      getActiveEvents();
+    });
+  };
+
+  const joinEventClick = () => {
+    joinEvent(selectedEvent.id).then((success) => {
+      if (success === true) {
+        isShowEvent(false);
+        const successAlert = {
+          variant: "success",
+          message: "Вы присоединились к мероприятию " + selectedEvent.name,
+        };
+        enableAlert(successAlert);
+      } else {
+        const failAlert = {
+          variant: "danger",
+          message: success as string,
+        };
+        enableAlert(failAlert);
+      }
+      getActiveEvents();
+    });
+  };
+
   return (
     <>
       <AppNavbar />
+      <Alert
+        variant={alertVariant}
+        show={showAlert}
+        onClose={(): void => setShowAlert(false)}
+        dismissible
+      >
+        <div className="p-1">{alertMsg}</div>
+      </Alert>
       <Container className={styles.container}>
         <Switch>
           <PrivateRoute path={`${url}`} exact>
@@ -134,9 +215,21 @@ export default function Home(): JSX.Element {
                   </Card.Text>
                 </Card.Body>
                 <Card.Footer>
-                  <Button onClick={(): void => isShowEvent(false)}>
+                  <Button
+                    onClick={(): void => isShowEvent(false)}
+                    className="mr-2"
+                  >
                     Close
                   </Button>
+                  {isParticipant() ? (
+                    <Button onClick={leaveEventClick} variant="warning">
+                      Leave
+                    </Button>
+                  ) : (
+                    <Button onClick={joinEventClick} variant="success">
+                      Join
+                    </Button>
+                  )}
                 </Card.Footer>
               </Card>
             </span>

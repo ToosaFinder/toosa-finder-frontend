@@ -30,3 +30,27 @@ export async function getEvent(id: number): Promise<SingleEvent> {
       }
     });
 }
+
+export async function joinEvent(id: number): Promise<true | string> {
+  return api()
+    .joinEvent(id)
+    .then((result) => {
+      if (result.code === 200) {
+        return true;
+      } else {
+        return (result.response as ErrorBody).error as string;
+      }
+    });
+}
+
+export async function leaveEvent(id: number): Promise<true | string> {
+  return api()
+    .leaveEvent(id)
+    .then((result) => {
+      if (result.code === 200) {
+        return true;
+      } else {
+        return (result.response as ErrorBody).error as string;
+      }
+    });
+}
