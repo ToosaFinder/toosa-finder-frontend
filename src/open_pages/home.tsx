@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { Switch, useRouteMatch } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom";
 import PrivateRoute from "../utils/private_route";
 import { Button, Card, Container, Row } from "react-bootstrap";
 import styles from "../css/home.module.css";
 import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
-import { deleteEvent, getEvent, getEvents, joinEvent, leaveEvent } from "../utils/event_api";
+import {
+  deleteEvent,
+  getEvent,
+  getEvents,
+  joinEvent,
+  leaveEvent,
+} from "../utils/event_api";
 
 import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
-import EventCreation from "./event_creation/event_creation";
 import Map from "./event_creation/map";
-import ManagedEventsForAdmin from "./managed_events_admin/managed_events_admin";
-import ParticipatedEvents from "./participated_events/participated_events";
 import { whoAmI } from "../utils/event_utils/eventCommunicator";
 import Alert from "react-bootstrap/Alert";
 import AppNavbar from "../standart/navbar";
+import { logout } from "../utils/auth";
 
 interface AlertMessage {
   variant: string;
@@ -24,6 +28,14 @@ interface AlertMessage {
 
 export default function Home(): JSX.Element {
   const { url } = useRouteMatch();
+
+  const history = useHistory();
+  const handleLinkClick = useCallback(
+    (route: string) => {
+      history.push(route);
+    },
+    [history]
+  );
 
   // academcity
   const defaultPosition = {
@@ -56,7 +68,6 @@ export default function Home(): JSX.Element {
     tags: [],
   });
   const [activeEvents, setActiveEvents] = useState<EventDto>({ events: [] });
-  const [user, setUser] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMsg, setAlertMsg] = useState<string>("");
   const [alertVariant, setAlertVariant] = useState<string>("");
@@ -86,16 +97,10 @@ export default function Home(): JSX.Element {
         }
       });
       whoAmI().then((res) => {
-        setMe(res);
+        setMe(res.login);
       });
     }
   }, [loading]);
-
-  const onLogoutClick = (event): void => {
-    logout();
-    history.push("/");
-    event.preventDefault();
-  };
 
   const onDeleteClick = (): void => {
     const selectedEventId = selectedEvent.id;
@@ -131,12 +136,6 @@ export default function Home(): JSX.Element {
     }
   };
 
-  useEffect(() => {
-    whoAmI().then((result) => {
-      setUser(result.login);
-    });
-  }, []);
-
   const enableAlert = (alert: AlertMessage): void => {
     if (alert !== undefined && alert.message !== undefined) {
       setAlertMsg(alert.message);
@@ -145,11 +144,15 @@ export default function Home(): JSX.Element {
     }
   };
 
-  const isParticipant = () => {
-    return selectedEvent.participants.includes(user);
+  const isHost = (): boolean => {
+    return selectedEvent.creator === me;
   };
 
-  const leaveEventClick = () => {
+  const isParticipant = (): boolean => {
+    return selectedEvent.participants.includes(me);
+  };
+
+  const leaveEventClick = (): void => {
     leaveEvent(selectedEvent.id).then((success) => {
       if (success === true) {
         isShowEvent(false);
@@ -257,7 +260,11 @@ export default function Home(): JSX.Element {
                   >
                     Close
                   </Button>
-                  {isParticipant() ? (
+                  {isHost() ? (
+                    <Button onClick={onDeleteClick} variant="danger">
+                      Delete
+                    </Button>
+                  ) : isParticipant() ? (
                     <Button onClick={leaveEventClick} variant="warning">
                       Leave
                     </Button>
@@ -269,30 +276,19 @@ export default function Home(): JSX.Element {
                 </Card.Footer>
               </Card>
             </span>
-            <Row className={`mt-2 ${styles.formRow}`}>
-              <Button className="btn-danger" onClick={onLogoutClick}>
-                Logout
-              </Button>
-            </Row>
             <Row className={styles.eventCreation}>
-              <Link to={`${url}/eventCreation`}>
+              <div
+                className={styles.divLink}
+                onClick={() => handleLinkClick("event-creation")}
+              >
                 <Image
                   className={styles.enlargingEffect}
                   src={eventCreationIcon}
                   alt="logo"
                 />
-              </Link>
+              </div>
             </Row>
           </PrivateRoute>
-          <PrivateRoute path={`${url}/eventCreation`} component={EventCreation} />
-          <PrivateRoute
-            path={`${url}/managedEvents`}
-            component={ManagedEventsForAdmin}
-          />
-          <PrivateRoute
-            path={`${url}/participatedEvents`}
-            component={ParticipatedEvents}
-          />
         </Switch>
       </Container>
     </>
