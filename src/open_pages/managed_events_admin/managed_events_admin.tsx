@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../css/managed_events_admin.module.css";
-import { Alert, Button, Container, Row, Table } from "react-bootstrap";
+import { Alert, Button, Container, Modal, Row, Table } from "react-bootstrap";
 import { getEventsForAdmin } from "../../utils/event_utils/eventCommunicator";
 import { SingleEventDto } from "../../utils/interfaces";
 import EventFilter from "../../utils/event_utils/event_filter";
 import { sortEventsByDate } from "../../utils/event_utils/event_sorter_by_date";
 import { extractTags } from "../../utils/tag_utils/extract_tags";
 import AppNavbar from "../../standart/navbar";
+import EventInfo from "../event_info";
+import { getEvent } from "../../utils/event_api";
+
+interface AlertMessage {
+  variant: string;
+  message: string;
+}
 
 export default function ManagedEventsForAdmin(): JSX.Element {
   const [isLoaded, setLoading] = useState<boolean>(true);
@@ -16,27 +23,98 @@ export default function ManagedEventsForAdmin(): JSX.Element {
   const [isAlertVisible, setAlertVisibility] = useState<boolean>(false);
   const [alertMsg, setAlertMsg] = useState<string>("");
   const [alertVariant, setAlertVariant] = useState<string>("danger");
+  const [showEvent, isShowEvent] = useState<boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState<SingleEventDto>({
+    address: "",
+    creator: "",
+    description: "",
+    id: 0,
+    isClosed: false,
+    isPublic: false,
+    latitude: 0,
+    longitude: 0,
+    name: "",
+    participants: [],
+    participantsLimit: 0,
+    startTime: "",
+    tags: [],
+  });
 
-  const enableAlert = (message: string, alertVariant: string): void => {
-    setAlertMsg(message);
-    setAlertVariant(alertVariant);
+  const enableAlert = (alert: AlertMessage): void => {
+    setAlertMsg(alert.message);
+    setAlertVariant(alert.variant);
     setAlertVisibility(true);
+  };
+
+  const onEventMarkerClick = (event): void => {
+    const id = event.currentTarget.id;
+    const cachedEvent = allEvents.find((event) => event.id.toString() === id);
+    if (cachedEvent) {
+      setSelectedEvent(cachedEvent);
+      isShowEvent(true);
+    } else {
+      getEvent(parseInt(id)).then((event) => {
+        if (typeof event !== "string") {
+          setSelectedEvent(event as SingleEventDto);
+          isShowEvent(true);
+        } else {
+          isShowEvent(false);
+        }
+      });
+    }
+  };
+
+  const getActiveEvents = () => {
+    getEventsForAdmin().then((res: string | SingleEventDto[]) => {
+      if (typeof res === "string") {
+        enableAlert({
+          message: `Unable to load your administrated events: ${res}`,
+          variant: "danger",
+        });
+      } else {
+        let events: SingleEventDto[] = res as SingleEventDto[];
+        if (events === undefined) {
+          enableAlert({
+            message: "Unable to load your administrated events",
+            variant: "danger",
+          });
+        } else if (events.length === 0) {
+          enableAlert({
+            message: "You don't administrate any events",
+            variant: "warning",
+          });
+          setCurEvents([]);
+        } else {
+          events = sortEventsByDate(events);
+          setAllEvents(events.slice());
+          setCurEvents(events.slice());
+          setTags(extractTags(events));
+        }
+      }
+    });
   };
 
   useEffect(() => {
     if (isLoaded) {
       getEventsForAdmin().then((res: string | SingleEventDto[]) => {
         if (typeof res === "string") {
-          enableAlert(
-            ("Unable to load your administrated events: " + res) as string,
-            "danger"
-          );
+          enableAlert({
+            message: `Unable to load your administrated events: ${res}`,
+            variant: "danger",
+          });
         } else {
           let events: SingleEventDto[] = res as SingleEventDto[];
           if (events === undefined) {
-            enableAlert("Unable to load your administrated events", "danger");
+            enableAlert({
+              message: "Unable to load your administrated events",
+              variant: "danger",
+            });
           } else if (events.length === 0) {
-            enableAlert("You don't administrate any events", "warning");
+            enableAlert({
+              message: "You don't administrate any events",
+              variant: "warning",
+            });
+            setCurEvents([]);
           } else {
             events = sortEventsByDate(events);
             setAllEvents(events.slice());
@@ -95,7 +173,12 @@ export default function ManagedEventsForAdmin(): JSX.Element {
                     <td>{event.name}</td>
                     <td>{event.startTime.toLocaleString()}</td>
                     <td style={{ width: `30px` }}>
-                      <Button size="sm" className={styles.infoButton}>
+                      <Button
+                        id={event.id.toString()}
+                        onClick={onEventMarkerClick}
+                        size="sm"
+                        className={styles.infoButton}
+                      >
                         i
                       </Button>
                     </td>
@@ -105,6 +188,17 @@ export default function ManagedEventsForAdmin(): JSX.Element {
             </tbody>
           </Table>
         </Row>
+
+        <Modal show={showEvent} onHide={isShowEvent}>
+          <Modal.Body>
+            <EventInfo
+              selectedEvent={selectedEvent}
+              enableAlert={enableAlert}
+              showEventState={[showEvent, isShowEvent]}
+              getActiveEvents={getActiveEvents}
+            />
+          </Modal.Body>
+        </Modal>
       </Container>
     </>
   );

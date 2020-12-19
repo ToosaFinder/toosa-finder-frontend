@@ -18,7 +18,6 @@ import {
   EventCreationReq,
   EventCreationResponse,
   UserRes,
-  GetEventsResponse,
   SetPasswordResponse,
   SingleEventResponse,
   EmptyResponse,
@@ -75,8 +74,8 @@ export interface ApiClient {
     data: EventCreationReq
   ): Promise<ApiResponse<EventCreationResponse>>;
   whoAmI(): Promise<ApiResponse<UserRes>>;
-  getEventsForAdmin(): Promise<ApiResponse<GetEventsResponse>>;
-  getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>>;
+  getEventsForAdmin(): Promise<ApiResponse<EventResponse>>;
+  getParticipatedEvents(): Promise<ApiResponse<EventResponse>>;
   getEvents(): Promise<ApiResponse<EventResponse>>;
   getEvent(id: number): Promise<ApiResponse<SingleEventResponse>>;
   deleteEvent(id: number): Promise<ApiResponse<EmptyResponse>>;
@@ -217,16 +216,16 @@ class ApiClientImpl implements ApiClient {
       .then(confirmationHandler);
   }
 
-  async getEventsForAdmin(): Promise<ApiResponse<GetEventsResponse>> {
+  async getEventsForAdmin(): Promise<ApiResponse<EventResponse>> {
     return await instance
-      .get<GetEventsResponse>(`http://${getURL()}/event/my/admin`)
+      .get<EventResponse>(`http://${getURL()}/event/my/admin`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }
 
-  async getParticipatedEvents(): Promise<ApiResponse<GetEventsResponse>> {
+  async getParticipatedEvents(): Promise<ApiResponse<EventResponse>> {
     return await instance
-      .get<GetEventsResponse>(`http://${getURL()}/event/my/participant`)
+      .get<EventResponse>(`http://${getURL()}/event/my/participant`)
       .then(confirmationHandler)
       .catch(errorHandler);
   }

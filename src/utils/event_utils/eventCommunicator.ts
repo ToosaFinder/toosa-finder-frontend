@@ -4,10 +4,11 @@ import {
   Coordinates,
   ErrorBody,
   EventCreationReq,
-  GetEventsResponse,
   PopularTags,
   UserRes,
   SingleEventDto,
+  EventResponse,
+  EventDto,
 } from "../interfaces";
 import { ReverseGeocodingSuccess } from "../reverseGeocodingResponseInterface";
 import parseLocation from "../parseLocation";
@@ -77,10 +78,10 @@ export async function getLocationName(
 export async function getEventsForAdmin(): Promise<string | SingleEventDto[]> {
   return api()
     .getEventsForAdmin()
-    .then((res: ApiResponse<GetEventsResponse>) => {
+    .then((res: ApiResponse<EventResponse>) => {
       const { response, code } = res;
       if (code === 200) {
-        return response as SingleEventDto[];
+        return (response as EventDto).events as SingleEventDto[];
       } else {
         const { error } = response as ErrorBody;
         return error;
@@ -93,10 +94,10 @@ export async function getParticipatedEvents(): Promise<
 > {
   return api()
     .getParticipatedEvents()
-    .then((res: ApiResponse<GetEventsResponse>) => {
+    .then((res: ApiResponse<EventResponse>) => {
       const { response, code } = res;
       if (code === 200) {
-        return response as SingleEventDto[];
+        return (response as EventDto).events as SingleEventDto[];
       } else {
         const { error } = response as ErrorBody;
         return error;
