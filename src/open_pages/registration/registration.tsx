@@ -45,7 +45,11 @@ export default function Registration(): JSX.Element {
     const { email, login, password } = credentials;
     registration({ email, login, password }).then((success) => {
       if (success === true) {
-        history.push("/sign-in");
+        const successAlert = {
+          success: true,
+          message: "Confirmation mail sent! Please check your email.",
+        };
+        enableAlert(successAlert);
       } else {
         const failAlert = {
           success: false,
