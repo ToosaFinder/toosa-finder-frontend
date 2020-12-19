@@ -1,24 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Switch, useRouteMatch, useHistory } from "react-router-dom";
 import PrivateRoute from "../utils/private_route";
-import { Button, Card, Container, Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import styles from "../css/home.module.css";
 import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
-import {
-  deleteEvent,
-  getEvent,
-  getEvents,
-  joinEvent,
-  leaveEvent,
-} from "../utils/event_api";
-
+import { getEvent, getEvents } from "../utils/event_api";
 import Image from "react-bootstrap/Image";
 import eventCreationIcon from "./roundedcircle.png";
 import Map from "./event_creation/map";
-import { whoAmI } from "../utils/event_utils/eventCommunicator";
 import Alert from "react-bootstrap/Alert";
 import AppNavbar from "../standart/navbar";
+import EventInfo from "./event_info";
 
 interface AlertMessage {
   variant: string;
@@ -47,7 +40,6 @@ export default function Home(): JSX.Element {
     lng: 83.106,
   });
 
-  const [me, setMe] = useState<string>("");
   const [center, setCenter] = useState<Coordinates>(defaultPosition);
   const [loading, setLoading] = useState<boolean>(true);
   const [showEvent, isShowEvent] = useState<boolean>(false);
@@ -89,31 +81,8 @@ export default function Home(): JSX.Element {
         setCenter({ lat: latitude, lng: longitude });
       });
       getActiveEvents();
-      getEvents().then((result) => {
-        if (typeof result !== "string") {
-          console.log(result);
-          setActiveEvents(result as EventDto);
-        }
-      });
-      whoAmI().then((res) => {
-        setMe(res.login);
-      });
     }
   }, [loading]);
-
-  const onDeleteClick = (): void => {
-    const selectedEventId = selectedEvent.id;
-    deleteEvent(selectedEventId).then((res) => {
-      if (typeof res !== "string") {
-        isShowEvent(false);
-        setActiveEvents({
-          events: activeEvents.events.filter(
-            (event) => event.id !== selectedEventId
-          ),
-        });
-      }
-    });
-  };
 
   const onEventMarkerClick = (event): void => {
     const id = event.currentTarget.id;
@@ -141,54 +110,6 @@ export default function Home(): JSX.Element {
       setShowAlert(true);
       setAlertVariant(alert.variant);
     }
-  };
-
-  const isHost = (): boolean => {
-    return selectedEvent.creator === me;
-  };
-
-  const isParticipant = (): boolean => {
-    return selectedEvent.participants.includes(me);
-  };
-
-  const leaveEventClick = (): void => {
-    leaveEvent(selectedEvent.id).then((success) => {
-      if (success === true) {
-        isShowEvent(false);
-        const successAlert = {
-          variant: "warning",
-          message: "Вы покинули мероприятие " + selectedEvent.name,
-        };
-        enableAlert(successAlert);
-      } else {
-        const failAlert = {
-          variant: "danger",
-          message: success as string,
-        };
-        enableAlert(failAlert);
-      }
-      getActiveEvents();
-    });
-  };
-
-  const joinEventClick = () => {
-    joinEvent(selectedEvent.id).then((success) => {
-      if (success === true) {
-        isShowEvent(false);
-        const successAlert = {
-          variant: "success",
-          message: "Вы присоединились к мероприятию " + selectedEvent.name,
-        };
-        enableAlert(successAlert);
-      } else {
-        const failAlert = {
-          variant: "danger",
-          message: success as string,
-        };
-        enableAlert(failAlert);
-      }
-      getActiveEvents();
-    });
   };
 
   return (
@@ -235,45 +156,12 @@ export default function Home(): JSX.Element {
                   );
                 })}
               </Map>
-              <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
-                <Card.Body>
-                  <Card.Title>{`${selectedEvent.name} by ${selectedEvent.creator}`}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
-                    {`${
-                      selectedEvent.tags.length > 0
-                        ? `Tags: ${selectedEvent.tags.join(", ")}`
-                        : ""
-                    }`}
-                  </Card.Subtitle>
-                  <Card.Text>
-                    <p>{`Max guests: ${selectedEvent.participantsLimit}`}</p>
-                    <p>{selectedEvent.description}</p>
-                    <p>{selectedEvent.address}</p>
-                    <p>{new Date(selectedEvent.startTime).toDateString()}</p>
-                  </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                  <Button
-                    onClick={(): void => isShowEvent(false)}
-                    className="mr-2"
-                  >
-                    Close
-                  </Button>
-                  {isHost() ? (
-                    <Button onClick={onDeleteClick} variant="danger">
-                      Delete
-                    </Button>
-                  ) : isParticipant() ? (
-                    <Button onClick={leaveEventClick} variant="warning">
-                      Leave
-                    </Button>
-                  ) : (
-                    <Button onClick={joinEventClick} variant="success">
-                      Join
-                    </Button>
-                  )}
-                </Card.Footer>
-              </Card>
+              <EventInfo
+                selectedEvent={selectedEvent}
+                enableAlert={enableAlert}
+                showEventState={[showEvent, isShowEvent]}
+                getActiveEvents={getActiveEvents}
+              />
             </span>
             <Row className={styles.eventCreation}>
               <div
