@@ -15,7 +15,10 @@ export default function SignIn(): JSX.Element {
   const [show, setShow] = useState<boolean>(false);
   const [alertMsg, setAlertMsg] = useState<string>("");
   const [alertVariant, setAlertVariant] = useState<string>("");
-  const [credentials, setCredentials] = React.useState<Credentials>();
+  const [credentials, setCredentials] = React.useState<Credentials>({
+    password: "",
+    userId: "",
+  });
   const history = useHistory<AlertMessage>();
 
   const enableAlert = (alert: AlertMessage): void => {
