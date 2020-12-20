@@ -56,13 +56,13 @@ jobs:
         run: |-
           gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} --zone ${{ secrets.GKE_ZONE }}
       - name: Deploy dev deployments
-        if: github.ref == 'dev'
+        if: github.ref == 'refs/heads/dev'
         run: |-
           kubectl apply -f ./deployments/toosa-frontend.yaml
           kubectl rollout restart deployment/toosa-frontend
           kubectl apply -f ./deployments/load-balancer.yaml
       - name: Deploy prod deployments
-        if: github.ref == 'master'
+        if: github.ref == 'refs/heads/master'
         run: |-
           kubectl apply -f ./deployments/prod/namespace.yaml
           kubectl apply -f ./deployments/prod/toosa-frontend.yaml
