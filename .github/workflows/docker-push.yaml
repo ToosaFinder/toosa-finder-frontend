@@ -1,0 +1,70 @@
+---
+name: push
+on:
+  push:
+    branches:
+      - master
+      - dev
+jobs:
+  pushImage:
+    name: Push docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: node-modules
+      - name: Install dependencies and build
+        env:
+          REACT_APP_GOOGLE_KEY: ${{ secrets.GoogleMapsKey }}
+        run: |
+          npm ci
+          npm run build --if-present
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: toosafinder/toosafinder-front
+          tag_with_ref: true
+
+  deploy-gke:
+    name: Deploy to Google Kubernetes Engine
+    runs-on: ubuntu-latest
+    needs: pushImage
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Setup GKE CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+      - name: Configure Docker to use the gcloud cl tool as a credential helper for authentication
+        run: |-
+          gcloud --quiet auth configure-docker
+      - name: Get the GKE credentials
+        run: |-
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} --zone ${{ secrets.GKE_ZONE }}
+      - name: Deploy dev deployments
+        if: github.ref == 'dev'
+        run: |-
+          kubectl apply -f ./deployments/toosa-frontend.yaml
+          kubectl rollout restart deployment/toosa-frontend
+          kubectl apply -f ./deployments/load-balancer.yaml
+      - name: Deploy prod deployments
+        if: github.ref == 'master'
+        run: |-
+          kubectl apply -f ./deployments/prod/namespace.yaml
+          kubectl apply -f ./deployments/prod/toosa-frontend.yaml
+          kubectl rollout restart deployment/prod/toosa-frontend
+          kubectl apply -f ./deployments/prod/load-balancer.yaml
