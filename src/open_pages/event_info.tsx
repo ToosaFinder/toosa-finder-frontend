@@ -1,5 +1,5 @@
 import styles from "../css/home.module.css";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Modal } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { deleteEvent, joinEvent, leaveEvent } from "../utils/event_api";
 import { SingleEventDto } from "../utils/interfaces";
@@ -15,6 +15,8 @@ interface EventInfoProps {
 export default function EventInfo(props: EventInfoProps) {
   const [showEvent, isShowEvent] = props.showEventState;
   const [me, setMe] = useState<string>("");
+  const [showModal, isShowModal] = useState<boolean>(false);
+  const [deletingEvent, setDeletingEvent] = useState<number>(-1);
 
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -28,11 +30,17 @@ export default function EventInfo(props: EventInfoProps) {
 
   const onDeleteClick = (): void => {
     const selectedEventId = props.selectedEvent.id;
-    deleteEvent(selectedEventId).then((res) => {
+    setDeletingEvent(selectedEventId);
+    isShowModal(true);
+  };
+
+  const deleteConfirmation = (): void => {
+    deleteEvent(deletingEvent).then((res) => {
       if (typeof res !== "string") {
         isShowEvent(false);
         props.getActiveEvents();
       }
+      isShowModal(false);
     });
   };
 
@@ -42,7 +50,7 @@ export default function EventInfo(props: EventInfoProps) {
         isShowEvent(false);
         const successAlert = {
           variant: "warning",
-          message: "Вы покинули мероприятие " + props.selectedEvent.name,
+          message: "You have left event " + props.selectedEvent.name,
         };
         props.enableAlert(successAlert);
       } else {
@@ -70,8 +78,7 @@ export default function EventInfo(props: EventInfoProps) {
         isShowEvent(false);
         const successAlert = {
           variant: "success",
-          message:
-            "Вы присоединились к мероприятию " + props.selectedEvent.name,
+          message: "You joined event " + props.selectedEvent.name,
         };
         props.enableAlert(successAlert);
       } else {
@@ -85,41 +92,58 @@ export default function EventInfo(props: EventInfoProps) {
     });
   };
   return (
-    <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
-      <Card.Body>
-        <Card.Title>{`${props.selectedEvent.name} by ${props.selectedEvent.creator}`}</Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">
-          {`${
-            props.selectedEvent.tags.length > 0
-              ? `Tags: ${props.selectedEvent.tags.join(", ")}`
-              : ""
-          }`}
-        </Card.Subtitle>
-        <Card.Text>
-          <p>{`Max guests: ${props.selectedEvent.participantsLimit}`}</p>
-          <p>{props.selectedEvent.description}</p>
-          <p>{props.selectedEvent.address}</p>
-          <p>{new Date(props.selectedEvent.startTime).toDateString()}</p>
-        </Card.Text>
-      </Card.Body>
-      <Card.Footer>
-        <Button onClick={(): void => isShowEvent(false)} className="mr-2">
-          Close
-        </Button>
-        {isHost() ? (
-          <Button onClick={onDeleteClick} variant="danger">
+    <>
+      <Modal size="sm" show={showModal}>
+        <Modal.Header>Are you sure?</Modal.Header>
+        <Modal.Body>
+          <Button
+            className="mr-2"
+            variant="secondary"
+            onClick={(): void => isShowModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={deleteConfirmation}>
             Delete
           </Button>
-        ) : isParticipant() ? (
-          <Button onClick={leaveEventClick} variant="warning">
-            Leave
+        </Modal.Body>
+      </Modal>
+      <Card className={`${styles.card} ${showEvent ? "" : "d-none"}`}>
+        <Card.Body>
+          <Card.Title>{`${props.selectedEvent.name} by ${props.selectedEvent.creator}`}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">
+            {`${
+              props.selectedEvent.tags.length > 0
+                ? `Tags: ${props.selectedEvent.tags.join(", ")}`
+                : ""
+            }`}
+          </Card.Subtitle>
+          <Card.Text>
+            <p>{`Max guests: ${props.selectedEvent.participantsLimit}`}</p>
+            <p>{props.selectedEvent.description}</p>
+            <p>{props.selectedEvent.address}</p>
+            <p>{new Date(props.selectedEvent.startTime).toDateString()}</p>
+          </Card.Text>
+        </Card.Body>
+        <Card.Footer>
+          <Button onClick={(): void => isShowEvent(false)} className="mr-2">
+            Close
           </Button>
-        ) : (
-          <Button onClick={joinEventClick} variant="success">
-            Join
-          </Button>
-        )}
-      </Card.Footer>
-    </Card>
+          {isHost() ? (
+            <Button onClick={onDeleteClick} variant="danger">
+              Delete
+            </Button>
+          ) : isParticipant() ? (
+            <Button onClick={leaveEventClick} variant="warning">
+              Leave
+            </Button>
+          ) : (
+            <Button onClick={joinEventClick} variant="success">
+              Join
+            </Button>
+          )}
+        </Card.Footer>
+      </Card>
+    </>
   );
 }
