@@ -19,7 +19,7 @@ export default function ManagedEventsForAdmin(): JSX.Element {
   const [isLoaded, setLoading] = useState<boolean>(true);
   const [allEvents, setAllEvents] = useState<SingleEventDto[]>([]);
   const [curEvents, setCurEvents] = useState<SingleEventDto[]>([]);
-  const [allTags, setTags] = useState<string[]>([]);
+  const [extractedTags, setTags] = useState<string[]>([]);
   const [isAlertVisible, setAlertVisibility] = useState<boolean>(false);
   const [alertMsg, setAlertMsg] = useState<string>("");
   const [alertVariant, setAlertVariant] = useState<string>("danger");
@@ -148,7 +148,7 @@ export default function ManagedEventsForAdmin(): JSX.Element {
           <EventFilter
             allEvents={allEvents}
             eventsSetter={setCurEvents}
-            alltags={allTags}
+            alltags={extractedTags}
           />
         </Row>
 

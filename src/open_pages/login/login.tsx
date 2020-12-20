@@ -20,7 +20,9 @@ export default function SignIn(): JSX.Element {
 
   const enableAlert = (alert: AlertMessage): void => {
     if (alert !== undefined && alert.message !== undefined) {
-      setAlertMsg(alert.message);
+      if (alert.message === "LOGIN_FAILED") {
+        setAlertMsg("Failed to login");
+      } else setAlertMsg(alert.message);
       setShow(true);
       alert.success ? setAlertVariant("success") : setAlertVariant("danger");
     }

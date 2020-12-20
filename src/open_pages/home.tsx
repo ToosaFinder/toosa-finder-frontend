@@ -7,7 +7,7 @@ import { Coordinates, EventDto, SingleEventDto } from "../utils/interfaces";
 import Marker from "../utils/marker";
 import { getEvent, getEvents } from "../utils/event_api";
 import Image from "react-bootstrap/Image";
-import eventCreationIcon from "./roundedcircle.png";
+import eventCreationIcon from "./roundedcircle-transparent-background.png";
 import Map from "./event_creation/map";
 import Alert from "react-bootstrap/Alert";
 import AppNavbar from "../standart/navbar";

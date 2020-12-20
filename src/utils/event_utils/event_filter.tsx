@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import { SingleEventDto } from "../interfaces";
 import { ShowTags } from "../tag_utils/show_tag";
@@ -9,9 +9,12 @@ import { filterEventsByEventname } from "./filter_events_by_eventname";
 export default function EventFilter(props): JSX.Element {
   const events: SingleEventDto[] = props.allEvents.slice();
   const [listOfAllTags, setListOfAllTags] = useState<string[]>(props.alltags);
-  console.log("listOfAllTags: ", listOfAllTags.join(", "));
   const [listOfPickedTags, setListOfPickedTags] = useState<string[]>([]);
   const [eventNameFilter, setEventNameFilter] = useState<string>("");
+
+  useEffect(() => {
+    setListOfAllTags(props.alltags);
+  }, [props.alltags]);
 
   const onEventName = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const eventName: string = event.target.value;
