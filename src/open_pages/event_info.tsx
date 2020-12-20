@@ -122,7 +122,7 @@ export default function EventInfo(props: EventInfoProps) {
             <p>{`Max guests: ${props.selectedEvent.participantsLimit}`}</p>
             <p>{props.selectedEvent.description}</p>
             <p>{props.selectedEvent.address}</p>
-            <p>{new Date(props.selectedEvent.startTime).toDateString()}</p>
+            <p>{new Date(props.selectedEvent.startTime).toLocaleString()}</p>
           </Card.Text>
         </Card.Body>
         <Card.Footer>
