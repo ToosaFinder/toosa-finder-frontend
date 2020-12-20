@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       labels:
-        app: toosa-frontend
+        app: toosa-frontend-prod
     spec:
       containers:
         - image: toosafinder/toosafinder-front:master
