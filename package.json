@@ -34,6 +34,8 @@
   "scripts": {
     "start": "set PORT=8080 && react-scripts start",
     "build": "react-scripts build",
+    "build_dev": "REACT_APP_API_HOST=34.68.138.148 react-scripts build",
+    "build_prod": "REACT_APP_API_HOST=34.67.197.88 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

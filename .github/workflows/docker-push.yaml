@@ -25,9 +25,14 @@ jobs:
       - name: Install dependencies and build
         env:
           REACT_APP_GOOGLE_KEY: ${{ secrets.GoogleMapsKey }}
+          CURRENT_BRANCH: ${{ github.ref }}
         run: |
           npm ci
-          npm run build --if-present
+          if [ "$CURRENT_BRANCH" = "refs/heads/master" ]; then
+            npm run build_prod --if-present
+          else
+            npm run build_dev --if-present
+          fi
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
@@ -66,5 +71,5 @@ jobs:
         run: |-
           kubectl apply -f ./deployments/prod/namespace.yaml
           kubectl apply -f ./deployments/prod/toosa-frontend.yaml
-          kubectl rollout restart deployment/prod/toosa-frontend
+          kubectl rollout restart deployment/toosa-frontend-prod -n prod
           kubectl apply -f ./deployments/prod/load-balancer.yaml
