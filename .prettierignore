@@ -4,6 +4,7 @@
 build
 node_modules
 public
+deployments
 
 .eslint*
 .prettier*
