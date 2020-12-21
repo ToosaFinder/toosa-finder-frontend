@@ -1,8 +1,5 @@
 export function getURL(): string {
-  // eslint-disable-next-line no-undef
-  if (process.env.NODE_ENV === "production") {
-    return "34.68.138.148";
-  } else {
-    return "localhost:8081";
-  }
+  return process.env.REACT_APP_API_HOST == null
+    ? "localhost:8081"
+    : process.env.REACT_APP_API_HOST;
 }

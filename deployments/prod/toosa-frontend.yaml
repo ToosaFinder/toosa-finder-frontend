@@ -20,7 +20,7 @@ spec:
         app: toosa-frontend-prod
     spec:
       containers:
-        - image: toosafinder/toosafinder-front:master
+        - image: toosafinder/toosafinder-front:latest
           imagePullPolicy: Always
           name: toosa-frontend-prod
           ports:
